@@ -228,8 +228,8 @@ if command -v brew &>/dev/null; then
 else
   echo "  $MSG_INSTALLING"
 
-  # Attempt installation
-  if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+  # Attempt installation (requires sudo)
+  if sudo -v && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
     # Success - add to PATH
     if [ -f "/opt/homebrew/bin/brew" ]; then
       eval "$(/opt/homebrew/bin/brew shellenv)"
