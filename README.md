@@ -85,7 +85,6 @@ Connect projects and the workspace-manager agent handles symlinks, `.gitignore`,
 | Server | Description |
 |--------|-------------|
 | **local-rag** | Search PDFs, markdown, and documents with Claude |
-| **Atlassian** | Read/write Jira tickets and Confluence pages |
 
 ### 4. Obsidian
 

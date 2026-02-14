@@ -100,7 +100,6 @@ Write-Host "  → $MSG_LANG_SET $LangName" -ForegroundColor Green
 $OptWorkspace = $false
 $OptObsidian = $false
 $OptMcpRag = $false
-$OptMcpAtlassian = $false
 $ConnectedProjects = @()
 
 # --- Prerequisite checks ---
@@ -366,46 +365,6 @@ if (Ask-YN $MSG_MCP_ASK) {
         Write-Skip
     }
 
-    # --- Atlassian ---
-    Write-Host ""
-    Write-Host "  🔗 $MSG_ATL_TITLE" -ForegroundColor Cyan
-    Write-Host "  $MSG_ATL_DESC"
-    Write-Host ""
-
-    if (Ask-YN $MSG_ATL_ASK "N") {
-        $OptMcpAtlassian = $true
-        $atlUrl = Read-Host "  $MSG_ATL_URL"
-        $atlEmail = Read-Host "  $MSG_ATL_EMAIL"
-        Write-Host "  $MSG_ATL_TOKEN_DESC"
-        Write-Host "  → $MSG_ATL_TOKEN_URL"
-        # Mask API token input
-        $secureToken = Read-Host "  $MSG_ATL_TOKEN" -AsSecureString
-        $atlToken = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
-            [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureToken))
-
-        $atlProject = Read-Host "  $MSG_ATL_PATH"
-
-        if (Test-Path $atlProject) {
-            $mcpFile = Join-Path $atlProject ".mcp.json"
-            if (Test-Path $mcpFile) {
-                Write-Host "  ⚠️  $MSG_MCP_FILE_EXISTS"
-                Write-Host "  → $MSG_MCP_FILE_REF $ScriptDir\templates\mcp-atlassian.json"
-            } else {
-                $template = Get-Content "$ScriptDir\templates\mcp-atlassian.json" -Raw
-                $template = $template.Replace("__ATLASSIAN_URL__", $atlUrl)
-                $template = $template.Replace("__ATLASSIAN_EMAIL__", $atlEmail)
-                $template = $template.Replace("__ATLASSIAN_API_TOKEN__", $atlToken)
-                Set-Content -Path $mcpFile -Value $template -Encoding UTF8
-                Write-Host "  → $mcpFile $MSG_MCP_FILE_DONE"
-            }
-            Write-Done
-        } else {
-            Write-Host "  ❌ $MSG_PROJ_NOT_FOUND $atlProject"
-        }
-    } else {
-        Write-Skip
-    }
-
 } else {
     Write-Skip
 }
@@ -425,8 +384,7 @@ if ($OptWorkspace) {
     "workspace": $($OptWorkspace.ToString().ToLower()),
     "obsidian": $($OptObsidian.ToString().ToLower()),
     "mcp": {
-      "localRag": $($OptMcpRag.ToString().ToLower()),
-      "atlassian": $($OptMcpAtlassian.ToString().ToLower())
+      "localRag": $($OptMcpRag.ToString().ToLower())
     }
   },
   "projects": [$projectsJson]

@@ -141,7 +141,6 @@ echo -e "  → $MSG_LANG_SET ${color_green}$LANG_NAME${color_reset}"
 OPT_WORKSPACE=false
 OPT_OBSIDIAN=false
 OPT_MCP_RAG=false
-OPT_MCP_ATLASSIAN=false
 CONNECTED_PROJECTS="[]"
 
 # --- Prerequisite checks ---
@@ -386,44 +385,6 @@ if ask_yn "$MSG_MCP_ASK"; then
     skip_msg
   fi
 
-  # --- Atlassian ---
-  echo ""
-  echo -e "  ${color_cyan}🔗 $MSG_ATL_TITLE${color_reset}"
-  echo "  $MSG_ATL_DESC"
-  echo ""
-
-  if ask_yn "$MSG_ATL_ASK" "N"; then
-    OPT_MCP_ATLASSIAN=true
-    read -p "  $MSG_ATL_URL" atl_url
-    read -p "  $MSG_ATL_EMAIL" atl_email
-    echo "  $MSG_ATL_TOKEN_DESC"
-    echo "  → $MSG_ATL_TOKEN_URL"
-    read -s -p "  $MSG_ATL_TOKEN" atl_token
-    echo ""
-
-    read -p "  $MSG_ATL_PATH" atl_project
-    atl_project="${atl_project/#\~/$HOME}"
-
-    if [ -d "$atl_project" ]; then
-      mcp_file="$atl_project/.mcp.json"
-      if [ -f "$mcp_file" ]; then
-        echo "  ⚠️  $MSG_MCP_FILE_EXISTS"
-        echo "  → $MSG_MCP_FILE_REF $SCRIPT_DIR/templates/mcp-atlassian.json"
-      else
-        # Use perl for safe substitution (handles special chars in URL/email/token)
-        ATL_URL="$atl_url" ATL_EMAIL="$atl_email" ATL_TOKEN="$atl_token" \
-          perl -pe 's|__ATLASSIAN_URL__|$ENV{ATL_URL}|g; s|__ATLASSIAN_EMAIL__|$ENV{ATL_EMAIL}|g; s|__ATLASSIAN_API_TOKEN__|$ENV{ATL_TOKEN}|g' \
-          "$SCRIPT_DIR/templates/mcp-atlassian.json" > "$mcp_file"
-        echo "  → $mcp_file $MSG_MCP_FILE_DONE"
-      fi
-      done_msg
-    else
-      echo "  ❌ $MSG_PROJ_NOT_FOUND $atl_project"
-    fi
-  else
-    skip_msg
-  fi
-
 else
   skip_msg
 fi
@@ -441,8 +402,7 @@ if [ "$OPT_WORKSPACE" = true ]; then
     "workspace": $OPT_WORKSPACE,
     "obsidian": $OPT_OBSIDIAN,
     "mcp": {
-      "localRag": $OPT_MCP_RAG,
-      "atlassian": $OPT_MCP_ATLASSIAN
+      "localRag": $OPT_MCP_RAG
     }
   },
   "projects": $CONNECTED_PROJECTS

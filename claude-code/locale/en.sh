@@ -76,17 +76,6 @@ MSG_MCP_FILE_EXISTS=".mcp.json already exists. Please add manually:"
 MSG_MCP_FILE_REF="See template:"
 MSG_MCP_FILE_DONE="created"
 
-# Atlassian
-MSG_ATL_TITLE="Atlassian (Jira / Confluence)"
-MSG_ATL_DESC="Skip if you don't use Jira/Confluence."
-MSG_ATL_ASK="Set up Atlassian MCP?"
-MSG_ATL_URL="Atlassian URL (e.g., https://company.atlassian.net): "
-MSG_ATL_EMAIL="Email: "
-MSG_ATL_TOKEN_DESC="An API token is required."
-MSG_ATL_TOKEN_URL="https://id.atlassian.com/manage-profile/security/api-tokens"
-MSG_ATL_TOKEN="API token: "
-MSG_ATL_PATH="Project path (e.g., ~/projects/my-app): "
-
 # Completion
 MSG_COMPLETE="Claude Code setup is complete!"
 MSG_USAGE="Usage: Type 'claude' in your project folder"

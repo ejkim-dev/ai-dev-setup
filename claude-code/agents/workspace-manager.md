@@ -40,7 +40,6 @@ Centrally manage from `~/claude-workspace/` and link to each project via symlink
 │       └── CLAUDE.local.md            # → Project root CLAUDE.local.md symlink
 └── templates/
     ├── mcp-local-rag.json
-    ├── mcp-atlassian.json
     └── CLAUDE.md
 ```
 
@@ -90,8 +89,7 @@ When project already has `.mcp.json` and adding a new MCP:
 ```json
 {
   "mcpServers": {
-    "local-rag": { ... },
-    "atlassian": { ... }
+    "local-rag": { ... }
   }
 }
 ```

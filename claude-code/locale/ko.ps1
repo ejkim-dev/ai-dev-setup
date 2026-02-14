@@ -74,17 +74,6 @@ $MSG_MCP_FILE_EXISTS = ".mcp.json이 이미 존재합니다. 수동으로 추가
 $MSG_MCP_FILE_REF = "참고:"
 $MSG_MCP_FILE_DONE = "생성 완료"
 
-# Atlassian
-$MSG_ATL_TITLE = "Atlassian (Jira / Confluence)"
-$MSG_ATL_DESC = "Jira/Confluence를 사용하지 않으면 건너뛰세요."
-$MSG_ATL_ASK = "Atlassian MCP를 설정하시겠습니까?"
-$MSG_ATL_URL = "Atlassian URL (예: https://회사.atlassian.net): "
-$MSG_ATL_EMAIL = "이메일: "
-$MSG_ATL_TOKEN_DESC = "API 토큰이 필요합니다."
-$MSG_ATL_TOKEN_URL = "https://id.atlassian.com/manage-profile/security/api-tokens"
-$MSG_ATL_TOKEN = "API 토큰: "
-$MSG_ATL_PATH = "프로젝트 경로 (예: C:\projects\my-app): "
-
 # Completion
 $MSG_COMPLETE = "Claude Code 설정이 완료되었습니다!"
 $MSG_USAGE = "사용법: 프로젝트 폴더에서 'claude' 입력"

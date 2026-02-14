@@ -113,38 +113,6 @@ Search PDFs, markdown, and text files with Claude.
 > How does API authentication work?
 ```
 
-### Atlassian (Jira / Confluence) — Optional
-
-Useful if your team uses Jira/Confluence.
-
-**Examples:**
-- "Show me ticket PROJ-123"
-- "List my tickets in the current sprint"
-- "Add a Jira comment with this bug fix summary"
-- "Create a meeting notes page in Confluence"
-
-**Prerequisites:**
-1. [Create an Atlassian API token](https://id.atlassian.com/manage-profile/security/api-tokens)
-2. Add config to `.mcp.json`
-
-**Config:**
-
-```json
-{
-  "mcpServers": {
-    "atlassian": {
-      "command": "npx",
-      "args": ["-y", "mcp-atlassian"],
-      "env": {
-        "ATLASSIAN_BASE_URL": "https://your-company.atlassian.net",
-        "ATLASSIAN_EMAIL": "your-email@company.com",
-        "ATLASSIAN_API_TOKEN": "your-api-token"
-      }
-    }
-  }
-}
-```
-
 ---
 
 ## Automated Setup
@@ -159,4 +127,4 @@ You can configure everything manually, or use the setup script:
 |--------|-------------|
 | claude-workspace | Central management of agents, CLAUDE.md, project settings |
 | Obsidian | Markdown note-taking app + RAG integration |
-| MCP servers | local-rag, Atlassian setup |
+| MCP servers | local-rag setup |

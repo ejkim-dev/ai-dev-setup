@@ -74,17 +74,6 @@ $MSG_MCP_FILE_EXISTS = ".mcp.jsonが既に存在します。手動で追加し�
 $MSG_MCP_FILE_REF = "テンプレート参照："
 $MSG_MCP_FILE_DONE = "作成完了"
 
-# Atlassian
-$MSG_ATL_TITLE = "Atlassian (Jira / Confluence)"
-$MSG_ATL_DESC = "Jira/Confluenceを使用しない場合はスキップしてください。"
-$MSG_ATL_ASK = "Atlassian MCPをセットアップしますか？"
-$MSG_ATL_URL = "Atlassian URL（例: https://会社.atlassian.net）: "
-$MSG_ATL_EMAIL = "メール: "
-$MSG_ATL_TOKEN_DESC = "APIトークンが必要です。"
-$MSG_ATL_TOKEN_URL = "https://id.atlassian.com/manage-profile/security/api-tokens"
-$MSG_ATL_TOKEN = "APIトークン: "
-$MSG_ATL_PATH = "プロジェクトパス（例: C:\projects\my-app）: "
-
 # Completion
 $MSG_COMPLETE = "Claude Codeのセットアップが完了しました！"
 $MSG_USAGE = "使い方: プロジェクトフォルダで 'claude' と入力"
