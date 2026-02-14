@@ -253,6 +253,7 @@ case "$terminal_choice" in
     else
       brew install --cask iterm2
     fi
+    open -a iTerm 2>/dev/null || true
     done_msg
     ;;
   3)
@@ -266,6 +267,7 @@ case "$terminal_choice" in
     else
       brew install --cask iterm2
     fi
+    open -a iTerm 2>/dev/null || true
     done_msg
     ;;
   4)
