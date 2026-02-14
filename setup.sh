@@ -4,6 +4,11 @@
 #
 set -e
 
+# Ensure interactive input (needed when run via curl | bash)
+if [ ! -t 0 ]; then
+  exec < /dev/tty
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 STEP=0
 TOTAL=9
