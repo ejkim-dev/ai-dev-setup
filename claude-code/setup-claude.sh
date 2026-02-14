@@ -55,10 +55,10 @@ select_menu() {
   done
 
   while true; do
-    read -rsn1 key
+    IFS= read -rsn1 -d '' key
     case "$key" in
       $'\x1b')
-        read -rsn2 key
+        IFS= read -rsn2 -d '' key
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -72,7 +72,7 @@ select_menu() {
             ;;
         esac
         ;;
-      '')
+      $'\n')
         break
         ;;
     esac
