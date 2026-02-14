@@ -130,6 +130,9 @@ echo -e "🔧 $MSG_SETUP_WELCOME_MAC"
 echo "   $MSG_SETUP_EACH_STEP"
 echo ""
 
+# Cache sudo credentials upfront
+sudo -v
+
 # --- 1. Xcode Command Line Tools ---
 step "$MSG_STEP_XCODE"
 if xcode-select -p &>/dev/null; then
