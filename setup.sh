@@ -239,18 +239,18 @@ else
   else
     # Failed - show manual install command and exit
     echo ""
-    echo "❌ Homebrew installation failed"
+    echo "❌ $MSG_BREW_FAILED"
     echo ""
-    echo "Please install Homebrew manually, then re-run this script."
+    echo "$MSG_BREW_MANUAL_INSTALL"
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "Copy and paste this command:"
+    echo "$MSG_BREW_COPY_PASTE"
     echo ""
     echo "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    echo "After Homebrew is installed, re-run:"
+    echo "$MSG_BREW_AFTER_INSTALL"
     echo "  ./setup.sh"
     echo ""
     exit 1
