@@ -67,10 +67,10 @@ select_menu() {
   done
 
   while true; do
-    read -rsn1 key
+    IFS= read -rsn1 -d '' key
     case "$key" in
       $'\x1b')
-        read -rsn2 key
+        IFS= read -rsn2 -d '' key
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -84,7 +84,7 @@ select_menu() {
             ;;
         esac
         ;;
-      '')
+      $'\n')
         break
         ;;
     esac
@@ -130,10 +130,10 @@ select_multi() {
   done
 
   while true; do
-    read -rsn1 key
+    IFS= read -rsn1 -d '' key
     case "$key" in
       $'\x1b')
-        read -rsn2 key
+        IFS= read -rsn2 -d '' key
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -154,7 +154,7 @@ select_multi() {
           checked[$selected]=1
         fi
         ;;
-      '')
+      $'\n')
         break
         ;;
     esac
@@ -324,10 +324,12 @@ case "$MENU_RESULT" in
   0)
     # Terminal.app - import Dev theme and set as default
     open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 1
+    sleep 2
     defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
     defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
+    killall cfprefsd 2>/dev/null || true
     echo "  $MSG_TERMINAL_APPLIED"
+    echo "  💡 새 터미널 창을 열면 Dev 테마가 적용됩니다"
     ;;
   1)
     # iTerm2 only
@@ -336,21 +338,31 @@ case "$MENU_RESULT" in
     else
       brew install --cask iterm2
     fi
-    echo "  💡 설치 완료. Applications 폴더에서 iTerm2를 실행하세요"
+    # Apply Dev profile
+    mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+    cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
+    echo "  ✅ iTerm2 Dev 프로파일 적용됨"
+    echo "  💡 iTerm2 실행 → Preferences → Profiles → Dev 선택"
     ;;
   2)
     # Both
     open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 1
+    sleep 2
     defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
     defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
+    killall cfprefsd 2>/dev/null || true
     echo "  Terminal.app: $MSG_TERMINAL_APPLIED"
+
     if [ -d "/Applications/iTerm.app" ]; then
       echo "  iTerm2: $MSG_ALREADY_INSTALLED"
     else
       brew install --cask iterm2
     fi
-    echo "  💡 새 터미널 창을 열면 Dev 테마가 적용됩니다"
+    # Apply Dev profile to iTerm2
+    mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+    cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
+    echo "  iTerm2: Dev 프로파일 적용됨"
+    echo "  💡 새 터미널/iTerm2 창을 열면 Dev 테마가 적용됩니다"
     ;;
   3)
     skip_msg

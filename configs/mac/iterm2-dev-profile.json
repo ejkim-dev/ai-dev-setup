@@ -1,0 +1,105 @@
+{
+  "Profiles": [
+    {
+      "Name": "Dev",
+      "Guid": "dev-profile-00000000-0000-0000-0000-000000000001",
+      "Normal Font": "D2Coding 12",
+      "Non Ascii Font": "Monaco 12",
+      "Background Color": {
+        "Red Component": 0.117,
+        "Green Component": 0.122,
+        "Blue Component": 0.159
+      },
+      "Foreground Color": {
+        "Red Component": 0.931,
+        "Green Component": 0.931,
+        "Blue Component": 0.926
+      },
+      "Ansi 0 Color": {
+        "Red Component": 0,
+        "Green Component": 0,
+        "Blue Component": 0
+      },
+      "Ansi 1 Color": {
+        "Red Component": 0.987,
+        "Green Component": 0.261,
+        "Blue Component": 0.273
+      },
+      "Ansi 2 Color": {
+        "Red Component": 0.314,
+        "Green Component": 0.982,
+        "Blue Component": 0.484
+      },
+      "Ansi 3 Color": {
+        "Red Component": 0.942,
+        "Green Component": 0.982,
+        "Blue Component": 0.548
+      },
+      "Ansi 4 Color": {
+        "Red Component": 0.287,
+        "Green Component": 0.728,
+        "Blue Component": 0.998
+      },
+      "Ansi 5 Color": {
+        "Red Component": 0.987,
+        "Green Component": 0.298,
+        "Blue Component": 0.705
+      },
+      "Ansi 6 Color": {
+        "Red Component": 0.545,
+        "Green Component": 0.915,
+        "Blue Component": 0.994
+      },
+      "Ansi 7 Color": {
+        "Red Component": 0.931,
+        "Green Component": 0.931,
+        "Blue Component": 0.926
+      },
+      "Ansi 8 Color": {
+        "Red Component": 0.4,
+        "Green Component": 0.4,
+        "Blue Component": 0.4
+      },
+      "Ansi 9 Color": {
+        "Red Component": 0.987,
+        "Green Component": 0.261,
+        "Blue Component": 0.273
+      },
+      "Ansi 10 Color": {
+        "Red Component": 0.314,
+        "Green Component": 0.982,
+        "Blue Component": 0.484
+      },
+      "Ansi 11 Color": {
+        "Red Component": 0.942,
+        "Green Component": 0.982,
+        "Blue Component": 0.548
+      },
+      "Ansi 12 Color": {
+        "Red Component": 0.287,
+        "Green Component": 0.728,
+        "Blue Component": 0.998
+      },
+      "Ansi 13 Color": {
+        "Red Component": 0.987,
+        "Green Component": 0.298,
+        "Blue Component": 0.705
+      },
+      "Ansi 14 Color": {
+        "Red Component": 0.545,
+        "Green Component": 0.915,
+        "Blue Component": 0.994
+      },
+      "Ansi 15 Color": {
+        "Red Component": 0.931,
+        "Green Component": 0.931,
+        "Blue Component": 0.926
+      },
+      "Transparency": 0.05,
+      "Blur": false,
+      "Use Bold Font": true,
+      "Use Bright Bold": true,
+      "Use Italic Font": true
+    }
+  ]
+}
