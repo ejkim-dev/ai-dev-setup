@@ -36,7 +36,7 @@ Supports **English**, **Korean**, and **Japanese** (selected at startup).
 | iTerm2 | Advanced terminal | O | - |
 | Oh My Zsh / Oh My Posh | Shell theme + plugins | O | O |
 | tmux | Terminal multiplexer | O | - |
-| Claude Code | AI coding tool | O | O |
+| AI coding tools | Claude Code, Gemini CLI, GitHub Copilot CLI | O | O |
 
 ## Claude Code Setup (optional)
 

@@ -112,6 +112,8 @@ $MSG_STEP_SSH = "SSH key (for GitHub)"
 $MSG_STEP_WINTERMINAL = "Windows Terminal theme"
 $MSG_STEP_OHMYPOSH = "Oh My Posh (PowerShell theme)"
 $MSG_STEP_CLAUDE = "Claude Code"
+$MSG_STEP_AI_TOOLS = "AI Coding Tools"
+$MSG_AI_TOOLS_HINT = "Up/Down move, Space toggle, Enter confirm"
 
 # winget
 $MSG_WINGET_NOT_INSTALLED = "winget is not installed."

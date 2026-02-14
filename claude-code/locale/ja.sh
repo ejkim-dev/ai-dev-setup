@@ -119,6 +119,8 @@ MSG_STEP_MACOS_SETTINGS="macOS 開発者設定"
 MSG_STEP_TERMINAL="ターミナル設定"
 MSG_STEP_OHMYZSH="Oh My Zsh"
 MSG_STEP_CLAUDE="Claude Code"
+MSG_STEP_AI_TOOLS="AIコーディングツール"
+MSG_AI_TOOLS_HINT="↑↓ 移動、Space 選択、Enter 確定"
 
 # Xcode
 MSG_XCODE_INSTALLING="インストール中...（ポップアップが表示されたら「インストール」をクリック）"
