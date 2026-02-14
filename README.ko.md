@@ -36,7 +36,6 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | 
 | Node.js | JavaScript 런타임 (Claude Code용) | ✅ | ✅ |
 | ripgrep | 빠른 코드 검색 도구 | ✅ | ✅ |
 | D2Coding | 한글 지원 개발 폰트 | ✅ | ✅ |
-| macOS 개발 설정 | 숨김 파일 표시, 키 반복 속도 등 | ✅ | - |
 | Terminal.app 테마 | 다크 테마 프로필 | ✅ | - |
 | Windows Terminal | 다크 테마 + 폰트 설정 | - | ✅ |
 | iTerm2 | 고급 터미널 (선택) | ✅ | - |

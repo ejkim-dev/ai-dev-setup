@@ -36,7 +36,6 @@ Essential tools and terminal setup. All steps are optional.
 | Node.js | JavaScript runtime (for Claude Code) | ✅ | ✅ |
 | ripgrep | Fast code search tool | ✅ | ✅ |
 | D2Coding | Dev font with Korean support | ✅ | ✅ |
-| OS dev settings | Show hidden files, key repeat, etc. | ✅ | - |
 | Terminal.app theme | Dark theme profile | ✅ | - |
 | Windows Terminal | Dark theme + font config | - | ✅ |
 | iTerm2 | Advanced terminal (optional) | ✅ | - |
