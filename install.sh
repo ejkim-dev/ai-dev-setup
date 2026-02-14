@@ -45,6 +45,6 @@ echo ""
 echo "  Starting setup..."
 echo ""
 
-# Run setup
+# Run setup (< /dev/tty: restore interactive input when run via curl | bash)
 cd "$INSTALL_DIR"
-./setup.sh
+./setup.sh < /dev/tty
