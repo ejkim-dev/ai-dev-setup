@@ -11,7 +11,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 STEP=0
-TOTAL=7
+TOTAL=6
 
 # === Utilities ===
 color_green="\033[0;32m"
@@ -295,7 +295,9 @@ done_msg
 # --- 3. Packages ---
 step "$MSG_STEP_PACKAGES"
 if command -v brew &>/dev/null; then
-  brew bundle --file="$SCRIPT_DIR/Brewfile" || echo "  ⚠️  Some packages may have failed to install."
+  echo ""
+  brew bundle --file="$SCRIPT_DIR/Brewfile" --verbose || echo "  ⚠️  Some packages may have failed to install."
+  echo ""
   done_msg
 else
   echo "  ⚠️  Homebrew not available. Skipping package installation."
@@ -312,41 +314,40 @@ else
 fi
 done_msg
 
-# --- 5. Terminal settings ---
+# --- 5. Terminal + Shell Setup ---
 step "$MSG_STEP_TERMINAL"
 select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG_TERMINAL_OPT4"
 
 case "$MENU_RESULT" in
   0)
-    open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 1
+    # Terminal.app only - import Dev theme without opening new window
+    defaults import com.apple.Terminal "$SCRIPT_DIR/configs/mac/Dev.terminal"
     defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
     defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
     echo "  $MSG_TERMINAL_APPLIED"
-    done_msg
+    echo "  💡 새 터미널 창을 열면 Dev 테마가 적용됩니다"
     ;;
   1)
+    # iTerm2 only
     if [ -d "/Applications/iTerm.app" ]; then
       echo "  iTerm2: $MSG_ALREADY_INSTALLED"
     else
       brew install --cask iterm2
     fi
-    open -a iTerm 2>/dev/null || true
-    done_msg
+    echo "  💡 설치 완료. Applications 폴더에서 iTerm2를 실행하세요"
     ;;
   2)
-    open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 1
+    # Both
+    defaults import com.apple.Terminal "$SCRIPT_DIR/configs/mac/Dev.terminal"
     defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
     defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
-    echo "  $MSG_TERMINAL_APPLIED"
+    echo "  Terminal.app: $MSG_TERMINAL_APPLIED"
     if [ -d "/Applications/iTerm.app" ]; then
       echo "  iTerm2: $MSG_ALREADY_INSTALLED"
     else
       brew install --cask iterm2
     fi
-    open -a iTerm 2>/dev/null || true
-    done_msg
+    echo "  💡 새 터미널 창을 열면 Dev 테마가 적용됩니다"
     ;;
   3)
     skip_msg
@@ -356,42 +357,42 @@ case "$MENU_RESULT" in
     ;;
 esac
 
-# --- 6. Oh My Zsh ---
-step "$MSG_STEP_OHMYZSH"
-if [ -d "$HOME/.oh-my-zsh" ]; then
-  echo "  $MSG_ALREADY_INSTALLED"
-  done_msg
-elif ask_yn "$MSG_OHMYZSH_INSTALL"; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended || echo "  ⚠️  Oh My Zsh installation failed."
-  done_msg
-else
-  skip_msg
-fi
-
-# zshrc
-if [ -f "$HOME/.zshrc" ] && grep -q "# === ai-dev-setup ===" "$HOME/.zshrc"; then
-  echo "  .zshrc: $MSG_ALREADY_INSTALLED"
-elif ask_yn "$MSG_ZSHRC_ASK"; then
-  if [ -f "$HOME/.zshrc" ]; then
-    echo "" >> "$HOME/.zshrc"
-    echo "# === ai-dev-setup ===" >> "$HOME/.zshrc"
-    cat "$SCRIPT_DIR/configs/shared/.zshrc" >> "$HOME/.zshrc"
-  else
-    cp "$SCRIPT_DIR/configs/shared/.zshrc" "$HOME/.zshrc"
+# Oh My Zsh (if terminal was selected)
+if [ "$MENU_RESULT" -ne 3 ]; then
+  echo ""
+  if [ -d "$HOME/.oh-my-zsh" ]; then
+    echo "  Oh My Zsh: $MSG_ALREADY_INSTALLED"
+  elif ask_yn "$MSG_OHMYZSH_INSTALL"; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended || echo "  ⚠️  Oh My Zsh installation failed."
   fi
-  echo "  $MSG_ZSHRC_DONE"
-fi
 
-# tmux
-if ask_yn "$MSG_TMUX_ASK"; then
-  if [ -f "$HOME/.tmux.conf" ]; then
-    cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup"
+  # zshrc
+  if [ -f "$HOME/.zshrc" ] && grep -q "# === ai-dev-setup ===" "$HOME/.zshrc"; then
+    echo "  .zshrc: $MSG_ALREADY_INSTALLED"
+  elif ask_yn "$MSG_ZSHRC_ASK"; then
+    if [ -f "$HOME/.zshrc" ]; then
+      echo "" >> "$HOME/.zshrc"
+      echo "# === ai-dev-setup ===" >> "$HOME/.zshrc"
+      cat "$SCRIPT_DIR/configs/shared/.zshrc" >> "$HOME/.zshrc"
+    else
+      cp "$SCRIPT_DIR/configs/shared/.zshrc" "$HOME/.zshrc"
+    fi
+    echo "  $MSG_ZSHRC_DONE"
   fi
-  cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf"
-  echo "  $MSG_TMUX_DONE"
+
+  # tmux
+  if ask_yn "$MSG_TMUX_ASK"; then
+    if [ -f "$HOME/.tmux.conf" ]; then
+      cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup"
+    fi
+    cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf"
+    echo "  $MSG_TMUX_DONE"
+  fi
 fi
 
-# --- 7. AI Coding Tools ---
+done_msg
+
+# --- 6. AI Coding Tools ---
 step "$MSG_STEP_AI_TOOLS"
 echo "  $MSG_AI_TOOLS_HINT"
 echo ""
