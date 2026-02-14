@@ -21,6 +21,12 @@ claude-code/
 ├── locale/           — i18n strings (en, ko, ja)
 ├── templates/        — .mcp.json templates (placeholder substitution)
 └── examples/         — CLAUDE.md, MEMORY.md examples
+.claude/              — (gitignored) Project-specific Claude settings
+├── agents/           — Project-specific agents
+├── mcp/              — Local MCP server configs
+├── tools/            — Custom tools
+└── notes/            — Private development notes
+CLAUDE.local.md       — (gitignored) Personal local settings and notes
 ```
 
 ## Core Design Principles
@@ -51,3 +57,17 @@ claude-code/
 - Common: Auto-detect already-installed tools and skip
 - Common: `ask_yn()` / `Ask-YN()` for unified Y/n prompts
 - Common: Locale files sourced after language selection for all UI strings
+
+## Project-specific Claude Settings
+
+**Use `.claude/` for all project-local Claude Code resources:**
+- MCP servers installed for this project → `.claude/mcp/`
+- Project-specific agents → `.claude/agents/`
+- Custom tools → `.claude/tools/`
+- Private notes → `.claude/notes/` or `CLAUDE.local.md`
+
+**CLAUDE.local.md pattern:**
+- `CLAUDE.md` — Team-shared rules (committed to git)
+- `CLAUDE.local.md` — Personal local settings (gitignored)
+
+This keeps project-specific Claude resources isolated from global `~/.claude/` config.
