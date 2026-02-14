@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 $STEP = 0
-$TOTAL = 7
+$TOTAL = 6
 
 function Write-Step($msg) {
     $script:STEP++
@@ -81,6 +81,7 @@ Write-Done
 Write-Step "$MSG_STEP_PACKAGES_WIN"
 
 $packages = @(
+    @{ id = "Git.Git"; name = "Git" },
     @{ id = "OpenJS.NodeJS.LTS"; name = "Node.js" },
     @{ id = "BurntSushi.ripgrep.MSVC"; name = "ripgrep" }
 )
@@ -93,6 +94,23 @@ foreach ($pkg in $packages) {
         Write-Host "  $($pkg.name) $MSG_INSTALLING"
         winget install --id $pkg.id -e --accept-source-agreements --accept-package-agreements
     }
+}
+
+# Verify Git (recommended for Claude Code)
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    Write-Host ""
+    Write-Host "⚠️  Git installation failed or not found" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  Git is recommended for Claude Code's version control features:"
+    Write-Host "  • Track code changes (git status, git diff)"
+    Write-Host "  • Auto-generate commits (AI writes commit messages)"
+    Write-Host "  • GitHub integration (create PRs, manage issues)"
+    Write-Host ""
+    Write-Host "  Manual install:"
+    Write-Host "  winget install --id Git.Git"
+    Write-Host ""
+    Write-Host "  Continuing without Git..."
+    Write-Host ""
 }
 
 # Verify Node.js (critical for AI tools)
@@ -234,9 +252,17 @@ Write-Step "$MSG_STEP_AI_TOOLS"
 Write-Host "  $MSG_AI_TOOLS_HINT"
 Write-Host "  1. Claude Code"
 Write-Host "  2. Gemini CLI"
-Write-Host "  3. GitHub Copilot CLI"
+Write-Host "  3. Codex CLI"
+
+# Check if gh CLI is available for GitHub Copilot CLI
+if (Get-Command gh -ErrorAction SilentlyContinue) {
+    Write-Host "  4. GitHub Copilot CLI"
+} else {
+    Write-Host "  4. GitHub Copilot CLI (requires gh)" -ForegroundColor DarkGray
+}
+
 Write-Host ""
-$aiChoice = Read-Host "  Select tools (comma-separated, e.g., 1,2) [1]"
+$aiChoice = Read-Host "  Select tools (comma-separated, e.g., 1,2,3) [1]"
 if ([string]::IsNullOrWhiteSpace($aiChoice)) { $aiChoice = "1" }
 $choices = $aiChoice -split "," | ForEach-Object { $_.Trim() }
 
@@ -281,6 +307,22 @@ foreach ($choice in $choices) {
             }
         }
         "3" {
+            # Check npm prerequisite
+            if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
+                Write-Host "  ❌ Codex CLI requires Node.js/npm" -ForegroundColor Red
+                Write-Host "     npm not found. Please install Node.js first:"
+                Write-Host "     winget install --id OpenJS.NodeJS.LTS"
+                continue
+            }
+
+            if (Get-Command codex -ErrorAction SilentlyContinue) {
+                Write-Host "  Codex CLI: $MSG_ALREADY_INSTALLED"
+            } else {
+                Write-Host "  $MSG_INSTALLING Codex CLI..."
+                try { npm install -g @openai/codex } catch { Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow }
+            }
+        }
+        "4" {
             # Check gh prerequisite
             if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
                 Write-Host "  ❌ GitHub Copilot CLI requires GitHub CLI (gh)" -ForegroundColor Red

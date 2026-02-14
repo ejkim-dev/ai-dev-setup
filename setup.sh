@@ -17,6 +17,7 @@ TOTAL=6
 color_green="\033[0;32m"
 color_yellow="\033[0;33m"
 color_cyan="\033[0;36m"
+color_gray="\033[0;90m"
 color_reset="\033[0m"
 
 step() {
@@ -67,10 +68,10 @@ select_menu() {
   done
 
   while true; do
-    IFS= read -rsn1 -d '' key
+    IFS= read -rsn1 key
     case "$key" in
       $'\x1b')
-        IFS= read -rsn2 -d '' key
+        IFS= read -rsn2 key
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -105,7 +106,7 @@ select_menu() {
 }
 
 # Multi-select checkbox menu
-# Usage: MULTI_DEFAULTS="0 2" select_multi "Option A" "Option B" "Option C"
+# Usage: MULTI_DEFAULTS="0 2" DISABLED_ITEMS="3" select_multi "Option A" "Option B" "Option C" "Option D"
 # Result: MULTI_RESULT array of selected indices (0-based)
 select_multi() {
   local options=("$@")
@@ -113,27 +114,46 @@ select_multi() {
   local selected=0
   local key
   local -a checked=()
+  local -a disabled=()
 
   for i in "${!options[@]}"; do checked[$i]=0; done
   for idx in $MULTI_DEFAULTS; do checked[$idx]=1; done
+  for i in "${!options[@]}"; do disabled[$i]=0; done
+  for idx in $DISABLED_ITEMS; do disabled[$idx]=1; done
 
   tput civis 2>/dev/null
   trap 'tput cnorm 2>/dev/null' EXIT
 
   for i in "${!options[@]}"; do
-    local mark=" "; if [ "${checked[$i]}" -eq 1 ]; then mark="x"; fi
+    local mark=" "
+    if [ "${disabled[$i]}" -eq 1 ]; then
+      mark="-"
+    elif [ "${checked[$i]}" -eq 1 ]; then
+      mark="x"
+    fi
+
     if [ "$i" -eq $selected ]; then
-      echo -e "  ${color_cyan}▸ [$mark] ${options[$i]}${color_reset}"
+      if [ "${disabled[$i]}" -eq 1 ]; then
+        echo -e "  ${color_gray}▸ [$mark] ${options[$i]}${color_reset}"
+      else
+        echo -e "  ${color_cyan}▸ [$mark] ${options[$i]}${color_reset}"
+      fi
     else
-      echo -e "    [$mark] ${options[$i]}"
+      if [ "${disabled[$i]}" -eq 1 ]; then
+        echo -e "  ${color_gray}  [$mark] ${options[$i]}${color_reset}"
+      elif [ "${checked[$i]}" -eq 1 ]; then
+        echo -e "    ${color_cyan}[$mark] ${options[$i]}${color_reset}"
+      else
+        echo -e "    [$mark] ${options[$i]}"
+      fi
     fi
   done
 
   while true; do
-    IFS= read -rsn1 -d '' key
+    IFS= read -rsn1 key
     case "$key" in
       $'\x1b')
-        IFS= read -rsn2 -d '' key
+        IFS= read -rsn2 key
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -148,7 +168,10 @@ select_multi() {
         esac
         ;;
       ' ')
-        if [ "${checked[$selected]}" -eq 1 ]; then
+        # Ignore Space key for disabled items
+        if [ "${disabled[$selected]}" -eq 1 ]; then
+          :
+        elif [ "${checked[$selected]}" -eq 1 ]; then
           checked[$selected]=0
         else
           checked[$selected]=1
@@ -162,11 +185,27 @@ select_multi() {
     tput cuu "$count" 2>/dev/null
     for i in "${!options[@]}"; do
       tput el 2>/dev/null
-      local mark=" "; if [ "${checked[$i]}" -eq 1 ]; then mark="x"; fi
+      local mark=" "
+      if [ "${disabled[$i]}" -eq 1 ]; then
+        mark="-"
+      elif [ "${checked[$i]}" -eq 1 ]; then
+        mark="x"
+      fi
+
       if [ "$i" -eq $selected ]; then
-        echo -e "  ${color_cyan}▸ [$mark] ${options[$i]}${color_reset}"
+        if [ "${disabled[$i]}" -eq 1 ]; then
+          echo -e "  ${color_gray}▸ [$mark] ${options[$i]}${color_reset}"
+        else
+          echo -e "  ${color_cyan}▸ [$mark] ${options[$i]}${color_reset}"
+        fi
       else
-        echo -e "    [$mark] ${options[$i]}"
+        if [ "${disabled[$i]}" -eq 1 ]; then
+          echo -e "  ${color_gray}  [$mark] ${options[$i]}${color_reset}"
+        elif [ "${checked[$i]}" -eq 1 ]; then
+          echo -e "    ${color_cyan}[$mark] ${options[$i]}${color_reset}"
+        else
+          echo -e "    [$mark] ${options[$i]}"
+        fi
       fi
     done
   done
@@ -531,7 +570,14 @@ done_msg
 step "$MSG_STEP_AI_TOOLS"
 echo "  $MSG_AI_TOOLS_HINT"
 echo ""
-MULTI_DEFAULTS="0" select_multi "Claude Code" "Gemini CLI" "GitHub Copilot CLI"
+
+# Check if gh CLI is available for GitHub Copilot CLI
+DISABLED_ITEMS=""
+if ! command -v gh &>/dev/null; then
+  DISABLED_ITEMS="3"  # Disable GitHub Copilot CLI (index 3)
+fi
+
+MULTI_DEFAULTS="0" select_multi "Claude Code" "Gemini CLI" "Codex CLI" "GitHub Copilot CLI (requires gh)"
 
 INSTALLED_CLAUDE=false
 for idx in "${MULTI_RESULT[@]}"; do
@@ -573,7 +619,23 @@ for idx in "${MULTI_RESULT[@]}"; do
         npm install -g @google/gemini-cli || echo "  ⚠️  Installation failed."
       fi
       ;;
-    2) # GitHub Copilot CLI
+    2) # Codex CLI
+      # Check npm prerequisite
+      if ! command -v npm &>/dev/null; then
+        echo "  ❌ Codex CLI requires Node.js/npm"
+        echo "     npm not found. Please install Node.js first:"
+        echo "     brew install node"
+        continue
+      fi
+
+      if command -v codex &>/dev/null; then
+        echo "  Codex CLI: $MSG_ALREADY_INSTALLED"
+      else
+        echo "  $MSG_INSTALLING Codex CLI..."
+        npm install -g @openai/codex || echo "  ⚠️  Installation failed."
+      fi
+      ;;
+    3) # GitHub Copilot CLI
       # Check gh prerequisite
       if ! command -v gh &>/dev/null; then
         echo "  ❌ GitHub Copilot CLI requires GitHub CLI (gh)"
