@@ -113,7 +113,7 @@ $MSG_STEP_WINTERMINAL = "Windows Terminal 테마 설정"
 $MSG_STEP_OHMYPOSH = "Oh My Posh (PowerShell 테마)"
 $MSG_STEP_CLAUDE = "Claude Code"
 $MSG_STEP_AI_TOOLS = "AI 코딩 도구"
-$MSG_AI_TOOLS_HINT = "↑↓ 이동, Space 선택/해제, Enter 확인"
+$MSG_AI_TOOLS_HINT = "쉼표로 구분하여 번호 입력 (예: 1,2)"
 
 # winget
 $MSG_WINGET_NOT_INSTALLED = "winget이 설치되어 있지 않습니다."

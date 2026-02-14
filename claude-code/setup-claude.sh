@@ -2,6 +2,7 @@
 #
 # Claude Code Setup: workspace, agents, MCP servers, Obsidian
 #
+set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKSPACE="$HOME/claude-workspace"
@@ -148,7 +149,7 @@ if ! command -v node &>/dev/null; then
   echo "  ⚠️  $MSG_NODE_NOT_INSTALLED"
   if command -v brew &>/dev/null; then
     if ask_yn "$MSG_NODE_INSTALL_ASK"; then
-      brew install node
+      brew install node || echo "  ⚠️  Installation failed."
       done_msg
     fi
   else
@@ -165,7 +166,7 @@ fi
 if ! command -v claude &>/dev/null; then
   echo "  $MSG_CLAUDE_NOT_INSTALLED"
   if ask_yn "$MSG_INSTALL_NOW"; then
-    npm install -g @anthropic-ai/claude-code
+    npm install -g @anthropic-ai/claude-code || echo "  ⚠️  Installation failed."
     done_msg
   else
     echo "  $MSG_CLAUDE_REQUIRED"
@@ -333,7 +334,7 @@ echo ""
 if ask_yn "$MSG_OBS_ASK"; then
   OPT_OBSIDIAN=true
   if command -v brew &>/dev/null; then
-    brew install --cask obsidian
+    brew install --cask obsidian || echo "  ⚠️  Installation failed."
   else
     echo "  → $MSG_BREW_NOT_FOUND_OBSIDIAN"
   fi
@@ -374,7 +375,7 @@ if ask_yn "$MSG_MCP_ASK"; then
         echo "  → $MSG_MCP_FILE_REF $SCRIPT_DIR/templates/mcp-local-rag.json"
       else
         # Use perl for safe substitution (handles special chars in paths)
-        perl -pe "s|__BASE_DIR__|$rag_data_dir|g" "$SCRIPT_DIR/templates/mcp-local-rag.json" > "$mcp_file"
+        BASE_DIR="$rag_data_dir" perl -pe 's|__BASE_DIR__|$ENV{BASE_DIR}|g' "$SCRIPT_DIR/templates/mcp-local-rag.json" > "$mcp_file"
         echo "  → $mcp_file $MSG_MCP_FILE_DONE"
       fi
       done_msg
@@ -410,7 +411,8 @@ if ask_yn "$MSG_MCP_ASK"; then
         echo "  → $MSG_MCP_FILE_REF $SCRIPT_DIR/templates/mcp-atlassian.json"
       else
         # Use perl for safe substitution (handles special chars in URL/email/token)
-        perl -pe "s|__ATLASSIAN_URL__|$atl_url|g; s|__ATLASSIAN_EMAIL__|$atl_email|g; s|__ATLASSIAN_API_TOKEN__|$atl_token|g" \
+        ATL_URL="$atl_url" ATL_EMAIL="$atl_email" ATL_TOKEN="$atl_token" \
+          perl -pe 's|__ATLASSIAN_URL__|$ENV{ATL_URL}|g; s|__ATLASSIAN_EMAIL__|$ENV{ATL_EMAIL}|g; s|__ATLASSIAN_API_TOKEN__|$ENV{ATL_TOKEN}|g' \
           "$SCRIPT_DIR/templates/mcp-atlassian.json" > "$mcp_file"
         echo "  → $mcp_file $MSG_MCP_FILE_DONE"
       fi

@@ -251,7 +251,6 @@ if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
 # --- 8. AI Coding Tools ---
 Write-Step "$MSG_STEP_AI_TOOLS"
 Write-Host "  $MSG_AI_TOOLS_HINT"
-Write-Host ""
 Write-Host "  1. Claude Code"
 Write-Host "  2. Gemini CLI"
 Write-Host "  3. GitHub Copilot CLI"

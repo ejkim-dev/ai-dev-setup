@@ -354,7 +354,7 @@ if (Ask-YN $MSG_MCP_ASK) {
                 Write-Host "  → $MSG_MCP_FILE_REF $ScriptDir\templates\mcp-local-rag.json"
             } else {
                 $template = Get-Content "$ScriptDir\templates\mcp-local-rag.json" -Raw
-                $template = $template -replace "__BASE_DIR__", ($ragDataDir -replace "\\", "/")
+                $template = $template.Replace("__BASE_DIR__", ($ragDataDir -replace "\\", "/"))
                 Set-Content -Path $mcpFile -Value $template -Encoding UTF8
                 Write-Host "  → $mcpFile $MSG_MCP_FILE_DONE"
             }
@@ -392,9 +392,9 @@ if (Ask-YN $MSG_MCP_ASK) {
                 Write-Host "  → $MSG_MCP_FILE_REF $ScriptDir\templates\mcp-atlassian.json"
             } else {
                 $template = Get-Content "$ScriptDir\templates\mcp-atlassian.json" -Raw
-                $template = $template -replace "__ATLASSIAN_URL__", $atlUrl
-                $template = $template -replace "__ATLASSIAN_EMAIL__", $atlEmail
-                $template = $template -replace "__ATLASSIAN_API_TOKEN__", $atlToken
+                $template = $template.Replace("__ATLASSIAN_URL__", $atlUrl)
+                $template = $template.Replace("__ATLASSIAN_EMAIL__", $atlEmail)
+                $template = $template.Replace("__ATLASSIAN_API_TOKEN__", $atlToken)
                 Set-Content -Path $mcpFile -Value $template -Encoding UTF8
                 Write-Host "  → $mcpFile $MSG_MCP_FILE_DONE"
             }

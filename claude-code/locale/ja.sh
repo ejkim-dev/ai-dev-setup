@@ -8,7 +8,6 @@ MSG_CLAUDE_REQUIRED="Claude Codeが必要です。先にインストールして
 MSG_CLAUDE_INSTALL_CMD="  npm install -g @anthropic-ai/claude-code"
 MSG_NODE_NOT_INSTALLED="Node.jsがインストールされていません。MCPサーバーに必要です。"
 MSG_NODE_INSTALL_ASK="HomebrewでNode.jsをインストールしますか？"
-MSG_NODE_INSTALL_ASK_WIN="wingetでNode.jsをインストールしますか？"
 MSG_NPM_NOT_FOUND="npmが見つかりません。先にNode.jsをインストールしてください。"
 MSG_BREW_NOT_FOUND_OBSIDIAN="Homebrewが見つかりません。Obsidianを直接インストールしてください: https://obsidian.md/"
 
@@ -146,7 +145,6 @@ MSG_TERMINAL_OPT1="Terminal.appのみ（ダークテーマ適用）"
 MSG_TERMINAL_OPT2="iTerm2をインストール"
 MSG_TERMINAL_OPT3="両方"
 MSG_TERMINAL_OPT4="スキップ"
-MSG_TERMINAL_SELECT="選択 [1-4]: "
 MSG_TERMINAL_APPLIED="Terminal.app 'Dev' プロファイル適用完了"
 
 # Oh My Zsh
@@ -167,7 +165,6 @@ MSG_OPEN_NEW_TERMINAL="新しいターミナルウィンドウを開いて確認
 MSG_CLAUDE_EXTRA_SETUP="Claude Code追加設定："
 
 # Windows-specific
-MSG_WINGET_CHECK="winget（パッケージマネージャー）確認"
 MSG_WINGET_NOT_INSTALLED="wingetがインストールされていません。"
 MSG_WINGET_STORE="→ Microsoft Storeから 'App Installer' をインストールしてください。"
 MSG_WINGET_UPDATE="→ または Windows 10 1709 以降にアップデートしてください。"

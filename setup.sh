@@ -118,6 +118,7 @@ select_multi() {
   for idx in $MULTI_DEFAULTS; do checked[$idx]=1; done
 
   tput civis 2>/dev/null
+  trap 'tput cnorm 2>/dev/null' EXIT
 
   for i in "${!options[@]}"; do
     local mark=" "; if [ "${checked[$i]}" -eq 1 ]; then mark="x"; fi
@@ -243,8 +244,8 @@ done_msg
 
 # --- 4. D2Coding font ---
 step "$MSG_STEP_D2CODING"
-# Check via system_profiler (more reliable than fc-list on macOS)
-if system_profiler SPFontsDataType 2>/dev/null | grep -qi "D2Coding"; then
+# Check font directories
+if ls ~/Library/Fonts/*D2Coding* /Library/Fonts/*D2Coding* 2>/dev/null | head -1 | grep -q .; then
   echo "  $MSG_ALREADY_INSTALLED"
 else
   echo "  $MSG_STEP_FONT_D2CODING_BREW"
@@ -307,14 +308,10 @@ fi
 
 # --- 7. Terminal settings ---
 step "$MSG_STEP_TERMINAL"
-echo "  1) $MSG_TERMINAL_OPT1"
-echo "  2) $MSG_TERMINAL_OPT2"
-echo "  3) $MSG_TERMINAL_OPT3"
-echo "  4) $MSG_TERMINAL_OPT4"
-read -p "  $MSG_TERMINAL_SELECT" terminal_choice
+select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG_TERMINAL_OPT4"
 
-case "$terminal_choice" in
-  1)
+case "$MENU_RESULT" in
+  0)
     open "$SCRIPT_DIR/configs/mac/Dev.terminal"
     sleep 1
     defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
@@ -322,7 +319,21 @@ case "$terminal_choice" in
     echo "  $MSG_TERMINAL_APPLIED"
     done_msg
     ;;
+  1)
+    if [ -d "/Applications/iTerm.app" ]; then
+      echo "  iTerm2: $MSG_ALREADY_INSTALLED"
+    else
+      brew install --cask iterm2
+    fi
+    open -a iTerm 2>/dev/null || true
+    done_msg
+    ;;
   2)
+    open "$SCRIPT_DIR/configs/mac/Dev.terminal"
+    sleep 1
+    defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
+    defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
+    echo "  $MSG_TERMINAL_APPLIED"
     if [ -d "/Applications/iTerm.app" ]; then
       echo "  iTerm2: $MSG_ALREADY_INSTALLED"
     else
@@ -332,20 +343,6 @@ case "$terminal_choice" in
     done_msg
     ;;
   3)
-    open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 1
-    defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
-    defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
-    echo "  $MSG_TERMINAL_APPLIED"
-    if [ -d "/Applications/iTerm.app" ]; then
-      echo "  iTerm2: $MSG_ALREADY_INSTALLED"
-    else
-      brew install --cask iterm2
-    fi
-    open -a iTerm 2>/dev/null || true
-    done_msg
-    ;;
-  4)
     skip_msg
     ;;
   *)
@@ -456,6 +453,7 @@ if [ -d "$SCRIPT_DIR/claude-code" ]; then
   chmod +x "$CLAUDE_CODE_DIR/setup-claude.sh"
 fi
 # Remove entire install directory (including .git if cloned)
+cd "$HOME"
 rm -rf "$SCRIPT_DIR"
 
 # === Done ===

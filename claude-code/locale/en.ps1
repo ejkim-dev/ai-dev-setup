@@ -113,7 +113,7 @@ $MSG_STEP_WINTERMINAL = "Windows Terminal theme"
 $MSG_STEP_OHMYPOSH = "Oh My Posh (PowerShell theme)"
 $MSG_STEP_CLAUDE = "Claude Code"
 $MSG_STEP_AI_TOOLS = "AI Coding Tools"
-$MSG_AI_TOOLS_HINT = "Up/Down move, Space toggle, Enter confirm"
+$MSG_AI_TOOLS_HINT = "Enter numbers separated by commas (e.g., 1,2)"
 
 # winget
 $MSG_WINGET_NOT_INSTALLED = "winget is not installed."
