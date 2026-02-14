@@ -228,8 +228,35 @@ if command -v brew &>/dev/null; then
 else
   echo "  $MSG_INSTALLING"
 
-  # Attempt installation (requires sudo)
-  if sudo -v && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+  # Check sudo permission first
+  if ! sudo -v 2>/dev/null; then
+    echo ""
+    echo "❌ $MSG_NO_SUDO"
+    echo ""
+    echo "$MSG_BREW_NEEDS_SUDO"
+    echo ""
+    echo "$MSG_SUDO_HOW_TO_FIX"
+    echo "  $MSG_SUDO_OPTION_1"
+    echo "  $MSG_SUDO_OPTION_2"
+    echo "  $MSG_SUDO_OPTION_3"
+    echo "  $MSG_SUDO_OPTION_4"
+    echo ""
+    echo "$MSG_SUDO_OR"
+    echo "  $MSG_SUDO_ADMIN_LOGIN"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "$MSG_BREW_REQUIRED_FOR"
+    echo "  $MSG_BREW_REQUIRED_NODE"
+    echo "  $MSG_BREW_REQUIRED_TOOLS"
+    echo ""
+    echo "$MSG_BREW_MANUAL_ALTERNATIVE"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    exit 1
+  fi
+
+  # Attempt installation (sudo already verified)
+  if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
     # Success - add to PATH
     if [ -f "/opt/homebrew/bin/brew" ]; then
       eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -246,7 +273,7 @@ else
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "$MSG_BREW_COPY_PASTE"
     echo ""
-    echo "  sudo -v && /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+    echo "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
