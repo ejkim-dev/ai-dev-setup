@@ -136,9 +136,17 @@ setup.sh (Phase 1)
   ↓ language selection → install tools → configure
   ↓ copy claude-code/ → ~/claude-code-setup/
   ↓ delete install directory (including .git if cloned)
-  Done!
+  ✅ Phase 1 Complete!
+
+  ↓ "Continue to Phase 2 now?" [Y/n]
+  ├─ Yes → "Open new terminal?" [Y/n]
+  │         ├─ Yes → automatically opens new terminal with Phase 2
+  │         └─ No → instructions to run manually later
+  └─ No → Phase 2 skipped (can run anytime later)
 
 ~/claude-code-setup/setup-claude.sh (Phase 2, optional)
+  ↓ runs automatically in new terminal (if you chose Yes above)
+  ↓ OR run manually anytime: ~/claude-code-setup/setup-claude.sh
   ↓ language selection → Git setup → workspace → agents → MCP → Obsidian
   ↓ save config to ~/claude-workspace/config.json
   Done!

@@ -493,7 +493,7 @@ rm -rf "$SCRIPT_DIR"
 # === Done ===
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "✨ ${color_green}$MSG_SETUP_COMPLETE${color_reset}"
+echo -e "✨ ${color_green}Phase 1 Complete!${color_reset}"
 echo ""
 
 # Show summary of failures (if any)
@@ -503,9 +503,46 @@ if [ "$BREW_INSTALL_FAILED" = true ]; then
   echo ""
 fi
 
-echo "  $MSG_OPEN_NEW_TERMINAL"
+echo "  Next: Phase 2 - Claude Code Setup (optional)"
 echo ""
-echo "  💡 $MSG_CLAUDE_EXTRA_SETUP"
-echo "     ~/claude-code-setup/setup-claude.sh"
+echo "  • Workspace management (central config)"
+echo "  • Global agents (workspace-manager, translate, doc-writer)"
+echo "  • MCP servers (document search)"
+echo "  • Git + GitHub (recommended for Claude features)"
+echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+if ask_yn "Continue to Phase 2 now?"; then
+  echo ""
+  echo "  ⚠️  Terminal restart required for Phase 2"
+  echo "     (to load updated PATH and shell config)"
+  echo ""
+
+  if ask_yn "Open new terminal and start Phase 2?"; then
+    echo ""
+    echo "  🚀 Opening new terminal..."
+    echo ""
+
+    # Open new terminal with setup-claude.sh
+    osascript <<EOF
+tell application "Terminal"
+    activate
+    do script "cd ~ && ~/claude-code-setup/setup-claude.sh"
+end tell
+EOF
+
+    echo "  ✅ New terminal opened with Phase 2 setup"
+    echo "  ℹ️  You can close this window after Phase 2 starts"
+  else
+    echo ""
+    echo "  💡 Run Phase 2 later in a new terminal:"
+    echo "     ~/claude-code-setup/setup-claude.sh"
+  fi
+else
+  echo ""
+  echo "  💡 You can run Phase 2 anytime:"
+  echo "     ~/claude-code-setup/setup-claude.sh"
+fi
+
 echo ""

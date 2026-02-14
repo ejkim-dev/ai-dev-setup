@@ -136,9 +136,17 @@ setup.sh (Phase 1)
   ↓ 언어 선택 → 도구 설치 → 설정
   ↓ claude-code/ 복사 → ~/claude-code-setup/
   ↓ 설치 디렉토리 삭제 (.git 포함)
-  완료!
+  ✅ Phase 1 완료!
+
+  ↓ "Phase 2 계속 진행?" [Y/n]
+  ├─ Yes → "새 터미널 열기?" [Y/n]
+  │         ├─ Yes → Phase 2로 새 터미널 자동 열림
+  │         └─ No → 나중에 수동 실행 안내
+  └─ No → Phase 2 건너뛰기 (언제든 나중에 실행 가능)
 
 ~/claude-code-setup/setup-claude.sh (Phase 2, 선택)
+  ↓ 새 터미널에서 자동 실행 (위에서 Yes 선택 시)
+  ↓ 또는 언제든 수동 실행: ~/claude-code-setup/setup-claude.sh
   ↓ 언어 선택 → Git 설정 → workspace → agents → MCP → Obsidian
   ↓ 설정을 ~/claude-workspace/config.json에 저장
   완료!

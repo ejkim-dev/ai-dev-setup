@@ -287,11 +287,43 @@ Remove-Item $ScriptDir -Recurse -Force -ErrorAction SilentlyContinue
 # === Done ===
 Write-Host ""
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor White
-Write-Host "✨ $MSG_SETUP_COMPLETE" -ForegroundColor Green
+Write-Host "✨ Phase 1 Complete!" -ForegroundColor Green
 Write-Host ""
-Write-Host "  $MSG_OPEN_NEW_TERMINAL"
+Write-Host "  Next: Phase 2 - Claude Code Setup (optional)"
 Write-Host ""
-Write-Host "  💡 $MSG_CLAUDE_EXTRA_SETUP"
-Write-Host "     ~\claude-code-setup\setup-claude.ps1" -ForegroundColor Cyan
+Write-Host "  • Workspace management (central config)"
+Write-Host "  • Global agents (workspace-manager, translate, doc-writer)"
+Write-Host "  • MCP servers (document search)"
+Write-Host "  • Git + GitHub (recommended for Claude features)"
+Write-Host ""
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor White
+Write-Host ""
+
+if (Ask-YN "Continue to Phase 2 now?") {
+    Write-Host ""
+    Write-Host "  ⚠️  Terminal restart required for Phase 2" -ForegroundColor Yellow
+    Write-Host "     (to load updated PATH and environment)"
+    Write-Host ""
+
+    if (Ask-YN "Open new PowerShell and start Phase 2?") {
+        Write-Host ""
+        Write-Host "  🚀 Opening new PowerShell..." -ForegroundColor Cyan
+        Write-Host ""
+
+        # Open new PowerShell window with setup-claude.ps1
+        Start-Process powershell -ArgumentList "-NoExit", "-Command", "& '$env:USERPROFILE\claude-code-setup\setup-claude.ps1'"
+
+        Write-Host "  ✅ New PowerShell opened with Phase 2 setup" -ForegroundColor Green
+        Write-Host "  ℹ️  You can close this window after Phase 2 starts"
+    } else {
+        Write-Host ""
+        Write-Host "  💡 Run Phase 2 later in a new PowerShell:"
+        Write-Host "     ~\claude-code-setup\setup-claude.ps1"
+    }
+} else {
+    Write-Host ""
+    Write-Host "  💡 You can run Phase 2 anytime:"
+    Write-Host "     ~\claude-code-setup\setup-claude.ps1"
+}
+
 Write-Host ""
