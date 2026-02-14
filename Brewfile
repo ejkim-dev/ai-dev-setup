@@ -1,6 +1,4 @@
 # Essential tools
-brew "git"
-brew "gh"
 brew "node"
 brew "ripgrep"
 brew "tmux"

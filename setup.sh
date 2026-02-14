@@ -11,7 +11,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 STEP=0
-TOTAL=9
+TOTAL=8
 
 # === Utilities ===
 color_green="\033[0;32m"
@@ -206,8 +206,28 @@ echo -e "🔧 $MSG_SETUP_WELCOME_MAC"
 echo "   $MSG_SETUP_EACH_STEP"
 echo ""
 
-# Cache sudo credentials upfront
-sudo -v || echo "  ⚠️  sudo not available. Some steps may need manual installation."
+# === Check sudo availability ===
+SUDO_AVAILABLE=false
+if sudo -n true 2>/dev/null; then
+  # Already has sudo (passwordless or cached)
+  SUDO_AVAILABLE=true
+elif sudo -v 2>/dev/null; then
+  # Prompted for password and succeeded
+  SUDO_AVAILABLE=true
+else
+  echo ""
+  echo "⚠️  $MSG_SUDO_UNAVAILABLE"
+  echo ""
+  echo "$MSG_SUDO_REQUIRED"
+  echo ""
+  if ask_yn "$MSG_SUDO_CONTINUE_ASK"; then
+    SUDO_AVAILABLE=false
+  else
+    echo ""
+    echo "$MSG_SUDO_EXIT"
+    exit 0
+  fi
+fi
 
 # --- 1. Xcode Command Line Tools ---
 step "$MSG_STEP_XCODE"
@@ -223,20 +243,81 @@ done_msg
 
 # --- 2. Homebrew ---
 step "$MSG_STEP_HOMEBREW"
+BREW_INSTALL_FAILED=false
+
 if command -v brew &>/dev/null; then
   echo "  $MSG_ALREADY_INSTALLED"
   echo "  $MSG_UPDATING"
   brew update || echo "  ⚠️  brew update failed, continuing..."
 else
   echo "  $MSG_INSTALLING"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || {
-    echo "  ⚠️  Homebrew installation failed. Some steps may not work."
-  }
-  # Apple Silicon path
-  if [ -f "/opt/homebrew/bin/brew" ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+  # Attempt installation
+  if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+    # Success - add to PATH
+    if [ -f "/opt/homebrew/bin/brew" ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -f "/usr/local/bin/brew" ]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+  else
+    BREW_INSTALL_FAILED=true
+
+    echo ""
+    echo "❌ $MSG_BREW_FAILED"
+    echo ""
+    echo "Possible causes:"
+    echo ""
+
+    # Diagnose the issue
+    if [ "$SUDO_AVAILABLE" = false ]; then
+      echo "  $MSG_BREW_DIAGNOSE_SUDO"
+      echo "     $MSG_BREW_SOLUTION_SUDO"
+      echo ""
+    fi
+
+    if ! xcode-select -p &>/dev/null; then
+      echo "  $MSG_BREW_DIAGNOSE_XCODE"
+      echo "     $MSG_BREW_SOLUTION_XCODE"
+      echo ""
+    fi
+
+    if ! curl -fsSL https://brew.sh &>/dev/null; then
+      echo "  $MSG_BREW_DIAGNOSE_NETWORK"
+      echo "     $MSG_BREW_SOLUTION_NETWORK"
+      echo ""
+    fi
+
+    # Check disk space (macOS)
+    AVAILABLE_GB=$(df -H / | awk 'NR==2 {print $4}' | sed 's/G//' | sed 's/T.*/999/')
+    if [ -n "$AVAILABLE_GB" ] && [ "$AVAILABLE_GB" -lt 5 ] 2>/dev/null; then
+      echo "  $MSG_BREW_DIAGNOSE_DISK (${AVAILABLE_GB}GB remaining)"
+      echo "     $MSG_BREW_SOLUTION_DISK"
+      echo ""
+    fi
+
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+
+    # Offer alternatives
+    if ask_yn "$MSG_BREW_SKIP_ASK"; then
+      echo "  ℹ️  $MSG_BREW_SKIP_INFO"
+      skip_msg
+    else
+      echo ""
+      echo "$MSG_BREW_EXIT_RETRY"
+      echo "$MSG_BREW_EXIT_SUDO"
+      exit 1
+    fi
   fi
 fi
+
+# Verify Homebrew is available
+if ! command -v brew &>/dev/null && [ "$BREW_INSTALL_FAILED" = false ]; then
+  echo "  ⚠️  Homebrew installed but not in PATH. Restart terminal and re-run."
+  exit 1
+fi
+
 done_msg
 
 # --- 3. Packages ---
@@ -259,40 +340,7 @@ else
 fi
 done_msg
 
-# --- 5. SSH key ---
-step "$MSG_STEP_SSH"
-if [ -f "$HOME/.ssh/id_ed25519" ]; then
-  echo "  $MSG_SSH_EXISTS"
-  if ask_yn "$MSG_SSH_REGISTER"; then
-    cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
-    echo ""
-    echo "  📋 $MSG_SSH_COPIED"
-    echo "  $MSG_SSH_GITHUB_URL"
-    echo ""
-    read -p "  $MSG_SSH_ENTER "
-  fi
-  done_msg
-elif ask_yn "$MSG_SSH_GENERATE"; then
-  read -p "  $MSG_SSH_EMAIL" ssh_email
-  if ssh-keygen -t ed25519 -C "$ssh_email" -f "$HOME/.ssh/id_ed25519"; then
-    eval "$(ssh-agent -s)" &>/dev/null || true
-    ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
-    cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
-    echo ""
-    echo "  📋 $MSG_SSH_COPIED"
-    echo "  $MSG_SSH_GITHUB_URL"
-    echo ""
-    read -p "  $MSG_SSH_ENTER "
-    done_msg
-  else
-    echo "  ⚠️  SSH key generation cancelled."
-    skip_msg
-  fi
-else
-  skip_msg
-fi
-
-# --- 6. macOS developer settings ---
+# --- 5. macOS developer settings ---
 step "$MSG_STEP_MACOS_SETTINGS"
 if ask_yn "$MSG_MACOS_APPLY"; then
   echo ""
@@ -317,7 +365,7 @@ else
   skip_msg
 fi
 
-# --- 7. Terminal settings ---
+# --- 6. Terminal settings ---
 step "$MSG_STEP_TERMINAL"
 select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG_TERMINAL_OPT4"
 
@@ -361,7 +409,7 @@ case "$MENU_RESULT" in
     ;;
 esac
 
-# --- 8. Oh My Zsh ---
+# --- 7. Oh My Zsh ---
 step "$MSG_STEP_OHMYZSH"
 if [ -d "$HOME/.oh-my-zsh" ]; then
   echo "  $MSG_ALREADY_INSTALLED"
@@ -396,7 +444,7 @@ if ask_yn "$MSG_TMUX_ASK"; then
   echo "  $MSG_TMUX_DONE"
 fi
 
-# --- 9. AI Coding Tools ---
+# --- 8. AI Coding Tools ---
 step "$MSG_STEP_AI_TOOLS"
 echo "  $MSG_AI_TOOLS_HINT"
 echo ""
@@ -472,6 +520,14 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "✨ ${color_green}$MSG_SETUP_COMPLETE${color_reset}"
 echo ""
+
+# Show summary of failures (if any)
+if [ "$BREW_INSTALL_FAILED" = true ]; then
+  echo -e "  ${color_yellow}⚠️  Some steps were skipped:${color_reset}"
+  echo "     - Homebrew (manual install: https://brew.sh)"
+  echo ""
+fi
+
 echo "  $MSG_OPEN_NEW_TERMINAL"
 echo ""
 echo "  💡 $MSG_CLAUDE_EXTRA_SETUP"

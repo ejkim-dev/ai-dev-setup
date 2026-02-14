@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 $STEP = 0
-$TOTAL = 8
+$TOTAL = 7
 
 function Write-Step($msg) {
     $script:STEP++
@@ -77,22 +77,11 @@ if (Get-Command winget -ErrorAction SilentlyContinue) {
 }
 Write-Done
 
-# --- 2. Git ---
-Write-Step "$MSG_STEP_GIT"
-if (Get-Command git -ErrorAction SilentlyContinue) {
-    Write-Host "  $MSG_ALREADY_INSTALLED"
-} else {
-    Write-Host "  $MSG_INSTALLING"
-    winget install --id Git.Git -e --accept-source-agreements --accept-package-agreements
-}
-Write-Done
-
-# --- 3. Packages ---
+# --- 2. Packages ---
 Write-Step "$MSG_STEP_PACKAGES_WIN"
 
 $packages = @(
     @{ id = "OpenJS.NodeJS.LTS"; name = "Node.js" },
-    @{ id = "GitHub.cli"; name = "GitHub CLI" },
     @{ id = "BurntSushi.ripgrep.MSVC"; name = "ripgrep" }
 )
 
@@ -107,7 +96,7 @@ foreach ($pkg in $packages) {
 }
 Write-Done
 
-# --- 4. D2Coding font ---
+# --- 3. D2Coding font ---
 Write-Step "$MSG_STEP_D2CODING"
 $fontInstalled = winget list --id "Naver.D2Coding" 2>$null | Select-String "D2Coding"
 if ($fontInstalled) {
@@ -122,32 +111,7 @@ if ($fontInstalled) {
 }
 Write-Done
 
-# --- 5. SSH key ---
-Write-Step "$MSG_STEP_SSH"
-if (Test-Path "$env:USERPROFILE\.ssh\id_ed25519") {
-    Write-Host "  $MSG_SSH_EXISTS"
-    if (Ask-YN "$MSG_SSH_REGISTER") {
-        Get-Content "$env:USERPROFILE\.ssh\id_ed25519.pub" | Set-Clipboard
-        Write-Host ""
-        Write-Host "  📋 $MSG_SSH_COPIED"
-        Write-Host "  $MSG_SSH_GITHUB_URL"
-        Read-Host "  $MSG_SSH_ENTER"
-    }
-    Write-Done
-} elseif (Ask-YN "$MSG_SSH_GENERATE") {
-    $sshEmail = Read-Host "  $MSG_SSH_EMAIL"
-    ssh-keygen -t ed25519 -C $sshEmail -f "$env:USERPROFILE\.ssh\id_ed25519"
-    Get-Content "$env:USERPROFILE\.ssh\id_ed25519.pub" | Set-Clipboard
-    Write-Host ""
-    Write-Host "  📋 $MSG_SSH_COPIED"
-    Write-Host "  $MSG_SSH_GITHUB_URL"
-    Read-Host "  $MSG_SSH_ENTER"
-    Write-Done
-} else {
-    Write-Skip
-}
-
-# --- 6. Windows Terminal settings ---
+# --- 4. Windows Terminal settings ---
 Write-Step "$MSG_STEP_WINTERMINAL"
 $wtSettingsDir = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
 $wtSettingsFile = "$wtSettingsDir\settings.json"
@@ -234,7 +198,7 @@ if (Test-Path $wtSettingsFile) {
     }
 }
 
-# --- 7. Oh My Posh ---
+# --- 5. Oh My Posh ---
 Write-Step "$MSG_STEP_OHMYPOSH"
 if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
     Write-Host "  $MSG_ALREADY_INSTALLED"
@@ -248,7 +212,7 @@ if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
     Write-Skip
 }
 
-# --- 8. AI Coding Tools ---
+# --- 6. AI Coding Tools ---
 Write-Step "$MSG_STEP_AI_TOOLS"
 Write-Host "  $MSG_AI_TOOLS_HINT"
 Write-Host "  1. Claude Code"

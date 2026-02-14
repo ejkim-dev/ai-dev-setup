@@ -165,8 +165,30 @@ fi
 if ! command -v claude &>/dev/null; then
   echo "  $MSG_CLAUDE_NOT_INSTALLED"
   if ask_yn "$MSG_INSTALL_NOW"; then
-    npm install -g @anthropic-ai/claude-code || echo "  ⚠️  Installation failed."
-    done_msg
+    if npm install -g @anthropic-ai/claude-code; then
+      # Verify installation succeeded
+      if command -v claude &>/dev/null; then
+        done_msg
+      else
+        echo ""
+        echo "  ❌ Claude Code installed but not in PATH"
+        echo ""
+        echo "  Please restart your terminal and re-run this script."
+        exit 1
+      fi
+    else
+      echo ""
+      echo "  ❌ Installation failed"
+      echo ""
+      echo "  Claude Code is required for this setup."
+      echo "  Please check:"
+      echo "    1. npm is working: npm --version"
+      echo "    2. Internet connection"
+      echo "    3. Permissions (may need sudo on some systems)"
+      echo ""
+      echo "  Try manually: npm install -g @anthropic-ai/claude-code"
+      exit 1
+    fi
   else
     echo "  $MSG_CLAUDE_REQUIRED"
     echo "$MSG_CLAUDE_INSTALL_CMD"
@@ -408,6 +430,82 @@ if [ "$OPT_WORKSPACE" = true ]; then
   "projects": $CONNECTED_PROJECTS
 }
 EOF
+fi
+
+# === 5. Git + SSH (Optional) ===
+echo ""
+echo -e "${color_cyan}[5/5] $MSG_GIT_TITLE${color_reset}"
+echo ""
+echo "  $MSG_GIT_DESC_1"
+echo "  $MSG_GIT_DESC_2"
+echo "  $MSG_GIT_DESC_3"
+echo "  $MSG_GIT_DESC_4"
+echo "  $MSG_GIT_DESC_5"
+echo ""
+echo "  $MSG_GIT_DESC_NOTE"
+echo ""
+
+if command -v git &>/dev/null; then
+  echo "  $MSG_ALREADY_INSTALLED"
+  done_msg
+else
+  if ask_yn "$MSG_GIT_INSTALL_ASK"; then
+    echo "  $MSG_INSTALLING"
+    if command -v brew &>/dev/null; then
+      # macOS - use Homebrew
+      if brew install git && brew install gh; then
+        done_msg
+      else
+        echo "  ⚠️  Installation failed. Install manually: brew install git gh"
+        skip_msg
+      fi
+    else
+      echo "  ⚠️  Homebrew not found. Install Git manually: https://git-scm.com"
+      skip_msg
+    fi
+  else
+    skip_msg
+  fi
+fi
+
+# Git config (if Git is available)
+if command -v git &>/dev/null; then
+  if ask_yn "$MSG_GIT_CONFIG_ASK"; then
+    read -p "  $MSG_GIT_NAME" git_name
+    read -p "  $MSG_GIT_EMAIL" git_email
+    git config --global user.name "$git_name"
+    git config --global user.email "$git_email"
+    echo "  $MSG_GIT_CONFIG_DONE"
+    done_msg
+  fi
+
+  # SSH key (if Git is configured)
+  if [ -f "$HOME/.ssh/id_ed25519" ]; then
+    echo ""
+    echo "  $MSG_SSH_EXISTS"
+    if ask_yn "$MSG_SSH_REGISTER"; then
+      cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
+      echo ""
+      echo "  📋 $MSG_SSH_COPIED"
+      echo "  $MSG_SSH_GITHUB_URL"
+      echo ""
+      read -p "  $MSG_SSH_ENTER "
+    fi
+  elif ask_yn "$MSG_SSH_GENERATE"; then
+    read -p "  $MSG_SSH_EMAIL" ssh_email
+    if ssh-keygen -t ed25519 -C "$ssh_email" -f "$HOME/.ssh/id_ed25519"; then
+      eval "$(ssh-agent -s)" &>/dev/null || true
+      ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
+      cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
+      echo ""
+      echo "  📋 $MSG_SSH_COPIED"
+      echo "  $MSG_SSH_GITHUB_URL"
+      echo ""
+      read -p "  $MSG_SSH_ENTER "
+    else
+      echo "  ⚠️  SSH key generation cancelled."
+    fi
+  fi
 fi
 
 echo ""
