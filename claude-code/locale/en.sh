@@ -156,9 +156,10 @@ MSG_SSH_EMAIL="Enter your GitHub email: "
 
 # macOS settings
 MSG_MACOS_APPLY="Apply macOS developer settings?"
-MSG_MACOS_HIDDEN="Show hidden files in Finder"
-MSG_MACOS_KEYBOARD="Faster keyboard repeat (key repeat on hold)"
-MSG_MACOS_SCREENSHOT="Change screenshot location to ~/Screenshots"
+MSG_MACOS_KEYBOARD="Faster keyboard repeat? (for Vim/terminal: jjjj, llll)"
+MSG_MACOS_KEYBOARD_DESC="Makes key repeat much faster than system settings allow. Useful for Vim and terminal navigation."
+MSG_MACOS_SCREENSHOT="Save screenshots to ~/Screenshots? (keeps Desktop clean)"
+MSG_MACOS_SCREENSHOT_DESC="Default: saves to Desktop. Changed to: ~/Screenshots folder."
 
 # Terminal
 MSG_TERMINAL_OPT1="Terminal.app only (apply dark theme)"

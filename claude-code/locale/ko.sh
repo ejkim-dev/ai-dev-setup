@@ -156,9 +156,10 @@ MSG_SSH_EMAIL="GitHub 이메일을 입력하세요: "
 
 # macOS settings
 MSG_MACOS_APPLY="macOS 개발자 설정을 적용하시겠습니까?"
-MSG_MACOS_HIDDEN="Finder에서 숨김파일 표시"
-MSG_MACOS_KEYBOARD="키보드 반복 속도 빠르게 (길게 누르면 문자 반복)"
-MSG_MACOS_SCREENSHOT="스크린샷 저장 폴더를 ~/Screenshots로 변경"
+MSG_MACOS_KEYBOARD="키보드 반복 속도 빠르게? (Vim/터미널용: jjjj, llll)"
+MSG_MACOS_KEYBOARD_DESC="시스템 설정보다 훨씬 빠른 키 반복 속도. Vim과 터미널 작업에 유용."
+MSG_MACOS_SCREENSHOT="스크린샷을 ~/Screenshots에 저장? (바탕화면 깔끔)"
+MSG_MACOS_SCREENSHOT_DESC="기본: 바탕화면에 저장. 변경: ~/Screenshots 폴더로."
 
 # Terminal
 MSG_TERMINAL_OPT1="Terminal.app만 (다크 테마 적용)"

@@ -1,5 +1,7 @@
 # ai-dev-setup
 
+**[English]** | [한국어](README.ko.md)
+
 Set up a new development environment in one step. Supports macOS and Windows.
 
 Includes optional [Claude Code](https://claude.ai/code) setup with central workspace management, MCP servers, and global agents.
@@ -24,23 +26,27 @@ Supports **English**, **Korean**, and **Japanese** (selected at startup).
 
 ## What It Installs
 
+### Phase 1: Basic Environment
+
+Essential tools and terminal setup. All steps are optional.
+
 | Tool | Description | macOS | Windows |
 |------|-------------|:-----:|:-------:|
-| Package manager | Homebrew / winget | O | O |
-| git, gh, node, ripgrep | Essential dev tools | O | O |
-| D2Coding | Dev font with Korean support | O | O |
-| SSH key | GitHub connection | O | O |
-| OS dev settings | Show hidden files, key repeat, etc. | O | - |
-| Terminal.app theme | Dark theme profile | O | - |
-| Windows Terminal theme | Dark theme + font | - | O |
-| iTerm2 | Advanced terminal | O | - |
-| Oh My Zsh / Oh My Posh | Shell theme + plugins | O | O |
-| tmux | Terminal multiplexer | O | - |
-| AI coding tools | Claude Code, Gemini CLI, GitHub Copilot CLI | O | O |
+| Package manager | Homebrew / winget | ✅ | ✅ |
+| Node.js | JavaScript runtime (for Claude Code) | ✅ | ✅ |
+| ripgrep | Fast code search tool | ✅ | ✅ |
+| D2Coding | Dev font with Korean support | ✅ | ✅ |
+| OS dev settings | Show hidden files, key repeat, etc. | ✅ | - |
+| Terminal.app theme | Dark theme profile | ✅ | - |
+| Windows Terminal | Dark theme + font config | - | ✅ |
+| iTerm2 | Advanced terminal (optional) | ✅ | - |
+| Oh My Zsh / Oh My Posh | Shell theme + plugins | ✅ | ✅ |
+| tmux | Terminal multiplexer | ✅ | - |
+| AI coding tools | Claude Code, Gemini CLI, GitHub Copilot CLI | ✅ | ✅ |
 
-## Claude Code Setup (optional)
+### Phase 2: Claude Code Setup (Optional)
 
-After the main setup completes, you can run the Claude Code setup separately:
+Run separately after Phase 1:
 
 ```bash
 # macOS
@@ -52,9 +58,26 @@ After the main setup completes, you can run the Claude Code setup separately:
 
 This sets up:
 
-### 1. claude-workspace — Central Management
+| Feature | Description | macOS | Windows |
+|---------|-------------|:-----:|:-------:|
+| **Git + GitHub CLI** | Version control (recommended for Claude features) | ✅ | ✅ |
+| **SSH key** | GitHub authentication | ✅ | ✅ |
+| **claude-workspace** | Central management via symlinks | ✅ | ✅ |
+| **Global agents** | workspace-manager, translate, doc-writer | ✅ | ✅ |
+| **MCP: local-rag** | Document search (PDFs, markdown) | ✅ | ✅ |
+| **Obsidian** | Note-taking app (optional) | ✅ | ✅ |
 
-Manage all Claude Code settings from one place via symlinks.
+#### Why Git in Phase 2?
+
+Git is **recommended** for Claude Code to use version control features:
+- Track code changes (`git status`, `git diff`)
+- Auto-generate commits (AI writes commit messages)
+- GitHub integration (create PRs, manage issues)
+- Collaborate with version control
+
+**Claude Code works without Git**, but you'll miss out on version control features.
+
+## Claude Code Workspace Structure
 
 ```
 ~/claude-workspace/
@@ -62,7 +85,7 @@ Manage all Claude Code settings from one place via symlinks.
 │   ├── workspace-manager.md
 │   ├── translate.md
 │   └── doc-writer.md
-├── projects/         ← Per-project CLAUDE.md, agents
+├── projects/         ← Per-project settings
 │   └── my-app/
 │       ├── .claude/
 │       ├── CLAUDE.md
@@ -72,7 +95,7 @@ Manage all Claude Code settings from one place via symlinks.
 
 Connect projects and the workspace-manager agent handles symlinks, `.gitignore`, and configuration.
 
-### 2. Global Agents
+### Global Agents
 
 | Agent | Description |
 |-------|-------------|
@@ -80,29 +103,25 @@ Connect projects and the workspace-manager agent handles symlinks, `.gitignore`,
 | **translate** | Translate documents between languages, preserving markdown and code blocks |
 | **doc-writer** | Generate README, CLAUDE.md, API docs, architecture docs from code |
 
-### 3. MCP Servers
+### MCP Servers
 
 | Server | Description |
 |--------|-------------|
 | **local-rag** | Search PDFs, markdown, and documents with Claude |
-
-### 4. Obsidian
-
-Optional markdown note-taking app, searchable via local-rag.
 
 ## File Structure
 
 ```
 ai-dev-setup/
 ├── install.sh / install.ps1        # One-line installer (downloads + runs setup)
-├── setup.sh / setup.ps1            # Main setup script (macOS / Windows)
+├── setup.sh / setup.ps1            # Phase 1: Basic environment
 ├── Brewfile                        # Homebrew packages (macOS)
 ├── configs/
 │   ├── mac/Dev.terminal            # Terminal.app dark theme
 │   ├── windows/windows-terminal.json
 │   └── shared/.zshrc, .tmux.conf
 └── claude-code/
-    ├── setup-claude.sh / .ps1      # Claude Code setup script
+    ├── setup-claude.sh / .ps1      # Phase 2: Claude Code setup
     ├── agents/                     # Global agent definitions
     ├── locale/                     # i18n (en, ko, ja)
     ├── templates/                  # MCP config templates
@@ -114,14 +133,14 @@ ai-dev-setup/
 ```
 install.sh
   ↓ download ZIP + extract
-setup.sh
+setup.sh (Phase 1)
   ↓ language selection → install tools → configure
   ↓ copy claude-code/ → ~/claude-code-setup/
   ↓ delete install directory (including .git if cloned)
   Done!
 
-~/claude-code-setup/setup-claude.sh  (run later, optional)
-  ↓ language selection → workspace → agents → MCP → Obsidian
+~/claude-code-setup/setup-claude.sh (Phase 2, optional)
+  ↓ language selection → Git setup → workspace → agents → MCP → Obsidian
   ↓ save config to ~/claude-workspace/config.json
   Done!
 ```

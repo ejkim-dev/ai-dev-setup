@@ -11,7 +11,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 STEP=0
-TOTAL=8
+TOTAL=7
 
 # === Utilities ===
 color_green="\033[0;32m"
@@ -340,32 +340,7 @@ else
 fi
 done_msg
 
-# --- 5. macOS developer settings ---
-step "$MSG_STEP_MACOS_SETTINGS"
-if ask_yn "$MSG_MACOS_APPLY"; then
-  echo ""
-  if ask_yn "$MSG_MACOS_HIDDEN"; then
-    defaults write com.apple.finder AppleShowAllFiles -bool true
-    echo "    $MSG_APPLIED"
-  fi
-  if ask_yn "$MSG_MACOS_KEYBOARD"; then
-    defaults write NSGlobalDomain KeyRepeat -int 2
-    defaults write NSGlobalDomain InitialKeyRepeat -int 15
-    defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-    echo "    $MSG_APPLIED"
-  fi
-  if ask_yn "$MSG_MACOS_SCREENSHOT"; then
-    mkdir -p "$HOME/Screenshots"
-    defaults write com.apple.screencapture location "$HOME/Screenshots"
-    echo "    $MSG_APPLIED"
-  fi
-  killall Finder 2>/dev/null || true
-  done_msg
-else
-  skip_msg
-fi
-
-# --- 6. Terminal settings ---
+# --- 5. Terminal settings ---
 step "$MSG_STEP_TERMINAL"
 select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG_TERMINAL_OPT4"
 
@@ -409,7 +384,7 @@ case "$MENU_RESULT" in
     ;;
 esac
 
-# --- 7. Oh My Zsh ---
+# --- 6. Oh My Zsh ---
 step "$MSG_STEP_OHMYZSH"
 if [ -d "$HOME/.oh-my-zsh" ]; then
   echo "  $MSG_ALREADY_INSTALLED"
@@ -444,7 +419,7 @@ if ask_yn "$MSG_TMUX_ASK"; then
   echo "  $MSG_TMUX_DONE"
 fi
 
-# --- 8. AI Coding Tools ---
+# --- 7. AI Coding Tools ---
 step "$MSG_STEP_AI_TOOLS"
 echo "  $MSG_AI_TOOLS_HINT"
 echo ""
