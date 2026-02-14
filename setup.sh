@@ -221,9 +221,19 @@ done_msg
 # --- 2. Homebrew ---
 step "$MSG_STEP_HOMEBREW"
 
-if command -v brew &>/dev/null; then
+# Check if Homebrew exists (in PATH or direct path)
+if command -v brew &>/dev/null || [ -f "/opt/homebrew/bin/brew" ] || [ -f "/usr/local/bin/brew" ]; then
+  # Homebrew exists - ensure it's in current PATH
+  if ! command -v brew &>/dev/null; then
+    if [ -f "/opt/homebrew/bin/brew" ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -f "/usr/local/bin/brew" ]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+  fi
   echo "  $MSG_ALREADY_INSTALLED"
 else
+  # Homebrew not found - install
   echo "  $MSG_INSTALLING"
 
   # Check sudo permission first
@@ -280,12 +290,6 @@ else
     echo ""
     exit 1
   fi
-fi
-
-# Verify Homebrew is available
-if ! command -v brew &>/dev/null; then
-  echo "  ⚠️  Homebrew installed but not in PATH. Restart terminal and re-run."
-  exit 1
 fi
 
 done_msg
