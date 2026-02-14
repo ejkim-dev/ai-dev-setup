@@ -33,6 +33,64 @@ ask_yn() {
   [[ "$answer" =~ ^[Yy] ]]
 }
 
+# Arrow key menu selector
+# Usage: select_menu "Option 1" "Option 2" "Option 3"
+# Result: MENU_RESULT (0-based index)
+select_menu() {
+  local options=("$@")
+  local count=${#options[@]}
+  local selected=0
+  local key
+
+  tput civis 2>/dev/null
+  trap 'tput cnorm 2>/dev/null' EXIT
+
+  for i in "${!options[@]}"; do
+    if [ "$i" -eq $selected ]; then
+      echo -e "  ${color_cyan}▸ ${options[$i]}${color_reset}"
+    else
+      echo -e "    ${options[$i]}"
+    fi
+  done
+
+  while true; do
+    read -rsn1 key
+    case "$key" in
+      $'\x1b')
+        read -rsn2 key
+        case "$key" in
+          '[A')
+            if [ $selected -gt 0 ]; then
+              selected=$((selected - 1))
+            fi
+            ;;
+          '[B')
+            if [ $selected -lt $((count - 1)) ]; then
+              selected=$((selected + 1))
+            fi
+            ;;
+        esac
+        ;;
+      '')
+        break
+        ;;
+    esac
+
+    tput cuu "$count" 2>/dev/null
+    for i in "${!options[@]}"; do
+      tput el 2>/dev/null
+      if [ "$i" -eq $selected ]; then
+        echo -e "  ${color_cyan}▸ ${options[$i]}${color_reset}"
+      else
+        echo -e "    ${options[$i]}"
+      fi
+    done
+  done
+
+  tput cnorm 2>/dev/null
+  MENU_RESULT=$selected
+}
+
 echo ""
 echo -e "🤖 ${color_cyan}Claude Code Setup${color_reset}"
 echo ""
@@ -40,41 +98,31 @@ echo ""
 # === 0. Language selection (always in English) ===
 echo "  Select your language:"
 echo ""
-echo "  1. English"
-echo "  2. 한국어"
-echo "  3. 日本語"
-echo "  4. Other"
-echo ""
-read -p "  Selection (1-4): " lang_choice
+select_menu "English" "한국어" "日本語" "Other"
 
-case "$lang_choice" in
-  1)
+case "$MENU_RESULT" in
+  0)
     USER_LANG="en"
     LANG_NAME="English"
     LANG_INSTRUCTION="- Respond in English"
     ;;
-  2)
+  1)
     USER_LANG="ko"
     LANG_NAME="한국어"
     LANG_INSTRUCTION="- 한국어로 대답할 것
 - 코드, 명령어, 기술 용어 등 필요한 경우에만 영어 사용"
     ;;
-  3)
+  2)
     USER_LANG="ja"
     LANG_NAME="日本語"
     LANG_INSTRUCTION="- 日本語で回答すること
 - コード、コマンド、技術用語は英語のまま使用"
     ;;
-  4)
+  3)
     read -p "  Language code (e.g., zh, de, fr): " USER_LANG
     read -p "  Language name (e.g., 中文, Deutsch): " LANG_NAME
     read -p "  Instruction for Claude (e.g., Respond in Chinese): " custom_instr
     LANG_INSTRUCTION="- $custom_instr"
-    ;;
-  *)
-    USER_LANG="en"
-    LANG_NAME="English"
-    LANG_INSTRUCTION="- Respond in English"
     ;;
 esac
 

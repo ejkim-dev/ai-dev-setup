@@ -46,21 +46,75 @@ ask_yn() {
   [[ "$answer" =~ ^[Yy] ]]
 }
 
+# Arrow key menu selector
+# Usage: select_menu "Option 1" "Option 2" "Option 3"
+# Result: MENU_RESULT (0-based index)
+select_menu() {
+  local options=("$@")
+  local count=${#options[@]}
+  local selected=0
+  local key
+
+  tput civis 2>/dev/null
+  trap 'tput cnorm 2>/dev/null' EXIT
+
+  for i in "${!options[@]}"; do
+    if [ "$i" -eq $selected ]; then
+      echo -e "  ${color_cyan}▸ ${options[$i]}${color_reset}"
+    else
+      echo -e "    ${options[$i]}"
+    fi
+  done
+
+  while true; do
+    read -rsn1 key
+    case "$key" in
+      $'\x1b')
+        read -rsn2 key
+        case "$key" in
+          '[A')
+            if [ $selected -gt 0 ]; then
+              selected=$((selected - 1))
+            fi
+            ;;
+          '[B')
+            if [ $selected -lt $((count - 1)) ]; then
+              selected=$((selected + 1))
+            fi
+            ;;
+        esac
+        ;;
+      '')
+        break
+        ;;
+    esac
+
+    tput cuu "$count" 2>/dev/null
+    for i in "${!options[@]}"; do
+      tput el 2>/dev/null
+      if [ "$i" -eq $selected ]; then
+        echo -e "  ${color_cyan}▸ ${options[$i]}${color_reset}"
+      else
+        echo -e "    ${options[$i]}"
+      fi
+    done
+  done
+
+  tput cnorm 2>/dev/null
+  MENU_RESULT=$selected
+}
+
 # === Language selection ===
 echo ""
 echo -e "🔧 ${color_cyan}ai-dev-setup${color_reset}"
 echo ""
 echo "  Select your language:"
 echo ""
-echo "  1. English"
-echo "  2. 한국어"
-echo "  3. 日本語"
-echo ""
-read -p "  Selection (1-3): " lang_choice
+select_menu "English" "한국어" "日本語"
 
-case "$lang_choice" in
-  2) USER_LANG="ko" ;;
-  3) USER_LANG="ja" ;;
+case "$MENU_RESULT" in
+  1) USER_LANG="ko" ;;
+  2) USER_LANG="ja" ;;
   *) USER_LANG="en" ;;
 esac
 
