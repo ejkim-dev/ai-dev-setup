@@ -131,7 +131,7 @@ echo "   $MSG_SETUP_EACH_STEP"
 echo ""
 
 # Cache sudo credentials upfront
-sudo -v
+sudo -v || echo "  ⚠️  sudo not available. Some steps may need manual installation."
 
 # --- 1. Xcode Command Line Tools ---
 step "$MSG_STEP_XCODE"
@@ -150,7 +150,7 @@ step "$MSG_STEP_HOMEBREW"
 if command -v brew &>/dev/null; then
   echo "  $MSG_ALREADY_INSTALLED"
   echo "  $MSG_UPDATING"
-  brew update
+  brew update || echo "  ⚠️  brew update failed, continuing..."
 else
   echo "  $MSG_INSTALLING"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -163,7 +163,7 @@ done_msg
 
 # --- 3. Packages ---
 step "$MSG_STEP_PACKAGES"
-brew bundle --file="$SCRIPT_DIR/Brewfile"
+brew bundle --file="$SCRIPT_DIR/Brewfile" || echo "  ⚠️  Some packages may have failed to install."
 done_msg
 
 # --- 4. D2Coding font ---
@@ -289,7 +289,9 @@ else
 fi
 
 # zshrc
-if ask_yn "$MSG_ZSHRC_ASK"; then
+if [ -f "$HOME/.zshrc" ] && grep -q "# === ai-dev-setup ===" "$HOME/.zshrc"; then
+  echo "  .zshrc: $MSG_ALREADY_INSTALLED"
+elif ask_yn "$MSG_ZSHRC_ASK"; then
   if [ -f "$HOME/.zshrc" ]; then
     echo "" >> "$HOME/.zshrc"
     echo "# === ai-dev-setup ===" >> "$HOME/.zshrc"
@@ -302,6 +304,9 @@ fi
 
 # tmux
 if ask_yn "$MSG_TMUX_ASK"; then
+  if [ -f "$HOME/.tmux.conf" ]; then
+    cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup"
+  fi
   cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf"
   echo "  $MSG_TMUX_DONE"
 fi
