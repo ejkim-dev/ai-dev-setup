@@ -352,7 +352,7 @@ case "$MENU_RESULT" in
     defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
     killall cfprefsd 2>/dev/null || true
     echo "  $MSG_TERMINAL_APPLIED"
-    echo "  💡 새 터미널 창을 열면 Dev 테마가 적용됩니다"
+    echo "  💡 $MSG_TERMINAL_RESTART_HINT"
     ;;
   1)
     # iTerm2 only
@@ -364,8 +364,8 @@ case "$MENU_RESULT" in
     # Apply Dev profile
     mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
     cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
-    echo "  ✅ iTerm2 Dev 프로파일 적용됨"
-    echo "  💡 iTerm2 실행 → Preferences → Profiles → Dev 선택"
+    echo "  $MSG_ITERM2_PROFILE_APPLIED"
+    echo "  💡 $MSG_ITERM2_PROFILE_HINT"
     ;;
   2)
     # Both
@@ -384,8 +384,8 @@ case "$MENU_RESULT" in
     # Apply Dev profile to iTerm2
     mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
     cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
-    echo "  iTerm2: Dev 프로파일 적용됨"
-    echo "  💡 새 터미널/iTerm2 창을 열면 Dev 테마가 적용됩니다"
+    echo "  iTerm2: $MSG_ITERM2_PROFILE_APPLIED"
+    echo "  💡 $MSG_BOTH_TERMINAL_HINT"
     ;;
   3)
     skip_msg
@@ -398,26 +398,102 @@ esac
 # Oh My Zsh (if terminal was selected)
 if [ "$MENU_RESULT" -ne 3 ]; then
   echo ""
+  OMZ_INSTALLED=false
   if [ -d "$HOME/.oh-my-zsh" ]; then
     echo "  Oh My Zsh: $MSG_ALREADY_INSTALLED"
+    OMZ_INSTALLED=true
   elif ask_yn "$MSG_OHMYZSH_INSTALL"; then
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended || echo "  ⚠️  Oh My Zsh installation failed."
+    if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
+      OMZ_INSTALLED=true
+    else
+      echo "  ⚠️  Oh My Zsh installation failed."
+    fi
   fi
 
-  # zshrc
+  # zshrc customization
   if [ -f "$HOME/.zshrc" ] && grep -q "# === ai-dev-setup ===" "$HOME/.zshrc"; then
     echo "  .zshrc: $MSG_ALREADY_INSTALLED"
-  elif ask_yn "$MSG_ZSHRC_ASK"; then
-    if [ -f "$HOME/.zshrc" ]; then
-      echo "" >> "$HOME/.zshrc"
-      echo "# === ai-dev-setup ===" >> "$HOME/.zshrc"
-      cat "$SCRIPT_DIR/configs/shared/.zshrc" >> "$HOME/.zshrc"
-      # Change Oh My Zsh theme to agnoster
-      sed -i '' 's/^ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/' "$HOME/.zshrc"
-    else
-      cp "$SCRIPT_DIR/configs/shared/.zshrc" "$HOME/.zshrc"
+  else
+    echo ""
+    echo "  $MSG_ZSHRC_ASK"
+    echo "  $MSG_ZSHRC_HINT"
+    echo ""
+    MULTI_DEFAULTS="" select_multi "$MSG_ZSHRC_OPT_THEME" "$MSG_ZSHRC_OPT_PLUGINS" "$MSG_ZSHRC_OPT_ALIAS"
+
+    if [ ${#MULTI_RESULT[@]} -gt 0 ]; then
+      # Prepare .zshrc
+      if [ -f "$HOME/.zshrc" ]; then
+        echo "" >> "$HOME/.zshrc"
+        echo "# === ai-dev-setup ===" >> "$HOME/.zshrc"
+      else
+        # Create new .zshrc with basic settings
+        cat > "$HOME/.zshrc" << 'EOF'
+# === Basic Settings ===
+export LANG=en_US.UTF-8
+export EDITOR=vim
+
+# === History ===
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.zsh_history
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+
+# === ai-dev-setup ===
+EOF
+      fi
+
+      # Apply selected features
+      for idx in "${MULTI_RESULT[@]}"; do
+        case "$idx" in
+          0) # agnoster theme + emoji prompt
+            if [ "$OMZ_INSTALLED" = true ]; then
+              # Set agnoster theme
+              if grep -q "^ZSH_THEME=" "$HOME/.zshrc"; then
+                sed -i '' 's/^ZSH_THEME=.*/ZSH_THEME="agnoster"/' "$HOME/.zshrc"
+              else
+                echo 'ZSH_THEME="agnoster"' >> "$HOME/.zshrc"
+              fi
+              # Add emoji prompt customization
+              cat >> "$HOME/.zshrc" << 'EOF'
+
+# === agnoster emoji prompt ===
+prompt_context() {
+  emojis=("🔥" "👑" "😎" "🍺" "🐵" "🦄" "🌈" "🚀" "🐧" "🎉" "🐱" "🐶" "🦋" "🔅")
+  RAND_EMOJI_N=$(( $RANDOM % ${#emojis[@]} + 1))
+  prompt_segment black default "%(!.%{%F{yellow}%}.) $USER ${emojis[$RAND_EMOJI_N]} "
+}
+EOF
+            else
+              echo "  ⚠️  agnoster theme requires Oh My Zsh (skipped)"
+            fi
+            ;;
+          1) # plugins
+            cat >> "$HOME/.zshrc" << 'EOF'
+
+# === zsh plugins ===
+if [ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+if [ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+  source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+EOF
+            ;;
+          2) # alias
+            cat >> "$HOME/.zshrc" << 'EOF'
+
+# === Useful aliases ===
+alias ll="ls -la"
+alias gs="git status"
+alias gl="git log --oneline -20"
+EOF
+            ;;
+        esac
+      done
+
+      echo "  $MSG_ZSHRC_DONE"
     fi
-    echo "  $MSG_ZSHRC_DONE"
   fi
 
   # tmux

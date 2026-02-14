@@ -177,7 +177,11 @@ MSG_BOTH_TERMINAL_HINT="新しいターミナル/iTerm2ウィンドウを開く�
 
 # Oh My Zsh
 MSG_OHMYZSH_INSTALL="Oh My Zshをインストールしますか？"
-MSG_ZSHRC_ASK=".zshrcにデフォルト設定を追加しますか？"
+MSG_ZSHRC_ASK=".zshrcをカスタマイズしますか？（機能選択）"
+MSG_ZSHRC_HINT="↑↓ 移動、Space 選択、Enter 確定"
+MSG_ZSHRC_OPT_THEME="agnoster テーマ + 絵文字プロンプト (username 🚀)"
+MSG_ZSHRC_OPT_PLUGINS="自動補完 + 構文強調"
+MSG_ZSHRC_OPT_ALIAS="便利なエイリアス (ll, gs, gl)"
 MSG_ZSHRC_DONE=".zshrc 設定追加完了"
 MSG_TMUX_ASK="tmux設定を適用しますか？"
 MSG_TMUX_DONE=".tmux.conf コピー完了"

@@ -177,7 +177,11 @@ MSG_BOTH_TERMINAL_HINT="Dev theme will be applied when you open a new Terminal/i
 
 # Oh My Zsh
 MSG_OHMYZSH_INSTALL="Install Oh My Zsh?"
-MSG_ZSHRC_ASK="Add default settings to .zshrc?"
+MSG_ZSHRC_ASK="Customize .zshrc? (Select features to add)"
+MSG_ZSHRC_HINT="↑↓ move, Space toggle, Enter confirm"
+MSG_ZSHRC_OPT_THEME="agnoster theme + emoji prompt (username 🚀)"
+MSG_ZSHRC_OPT_PLUGINS="Auto-complete + Syntax highlighting"
+MSG_ZSHRC_OPT_ALIAS="Useful aliases (ll, gs, gl)"
 MSG_ZSHRC_DONE=".zshrc settings added"
 MSG_TMUX_ASK="Apply tmux settings?"
 MSG_TMUX_DONE=".tmux.conf copied"

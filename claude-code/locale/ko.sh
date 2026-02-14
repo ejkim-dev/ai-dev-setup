@@ -177,7 +177,11 @@ MSG_BOTH_TERMINAL_HINT="새 터미널/iTerm2 창을 열면 Dev 테마가 적용�
 
 # Oh My Zsh
 MSG_OHMYZSH_INSTALL="Oh My Zsh를 설치하시겠습니까?"
-MSG_ZSHRC_ASK=".zshrc에 기본 설정을 추가하시겠습니까?"
+MSG_ZSHRC_ASK=".zshrc 커스터마이징? (원하는 기능 선택)"
+MSG_ZSHRC_HINT="↑↓ 이동, Space 선택, Enter 확정"
+MSG_ZSHRC_OPT_THEME="agnoster 테마 + 이모지 프롬프트 (username 🚀)"
+MSG_ZSHRC_OPT_PLUGINS="자동완성 + 구문강조"
+MSG_ZSHRC_OPT_ALIAS="유용한 alias (ll, gs, gl)"
 MSG_ZSHRC_DONE=".zshrc 설정 추가 완료"
 MSG_TMUX_ASK="tmux 설정을 적용하시겠습니까?"
 MSG_TMUX_DONE=".tmux.conf 복사 완료"
