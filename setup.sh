@@ -322,12 +322,12 @@ select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG
 
 case "$MENU_RESULT" in
   0)
-    # Terminal.app only - import Dev theme without opening new window
-    defaults import com.apple.Terminal "$SCRIPT_DIR/configs/mac/Dev.terminal"
+    # Terminal.app - import Dev theme and set as default
+    open "$SCRIPT_DIR/configs/mac/Dev.terminal"
+    sleep 1
     defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
     defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
     echo "  $MSG_TERMINAL_APPLIED"
-    echo "  💡 새 터미널 창을 열면 Dev 테마가 적용됩니다"
     ;;
   1)
     # iTerm2 only
@@ -340,7 +340,8 @@ case "$MENU_RESULT" in
     ;;
   2)
     # Both
-    defaults import com.apple.Terminal "$SCRIPT_DIR/configs/mac/Dev.terminal"
+    open "$SCRIPT_DIR/configs/mac/Dev.terminal"
+    sleep 1
     defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
     defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
     echo "  Terminal.app: $MSG_TERMINAL_APPLIED"
