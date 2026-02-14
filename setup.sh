@@ -349,12 +349,12 @@ if command -v brew &>/dev/null; then
   # Verify Node.js (critical for AI tools)
   if ! command -v node &>/dev/null; then
     echo ""
-    echo "❌ Node.js installation failed"
+    echo "❌ $MSG_NODE_INSTALL_FAILED"
     echo ""
     echo "$MSG_NODE_REQUIRED"
     echo ""
     echo "$MSG_NODE_MANUAL_INSTALL"
-    echo "  brew install node"
+    echo "  $MSG_NPM_INSTALL_CMD"
     echo ""
     echo "$MSG_NODE_VERIFY"
     echo "  node --version"
@@ -585,9 +585,9 @@ for idx in "${MULTI_RESULT[@]}"; do
     0) # Claude Code
       # Check npm prerequisite
       if ! command -v npm &>/dev/null; then
-        echo "  ❌ Claude Code requires Node.js/npm"
-        echo "     npm not found. Please install Node.js first:"
-        echo "     brew install node"
+        echo "  ❌ Claude Code $MSG_AI_TOOL_NEEDS_NPM"
+        echo "     $MSG_NPM_NOT_FOUND_INSTALL"
+        echo "     $MSG_NPM_INSTALL_CMD"
         continue
       fi
 
@@ -606,9 +606,9 @@ for idx in "${MULTI_RESULT[@]}"; do
     1) # Gemini CLI
       # Check npm prerequisite
       if ! command -v npm &>/dev/null; then
-        echo "  ❌ Gemini CLI requires Node.js/npm"
-        echo "     npm not found. Please install Node.js first:"
-        echo "     brew install node"
+        echo "  ❌ Gemini CLI $MSG_AI_TOOL_NEEDS_NPM"
+        echo "     $MSG_NPM_NOT_FOUND_INSTALL"
+        echo "     $MSG_NPM_INSTALL_CMD"
         continue
       fi
 
@@ -622,9 +622,9 @@ for idx in "${MULTI_RESULT[@]}"; do
     2) # Codex CLI
       # Check npm prerequisite
       if ! command -v npm &>/dev/null; then
-        echo "  ❌ Codex CLI requires Node.js/npm"
-        echo "     npm not found. Please install Node.js first:"
-        echo "     brew install node"
+        echo "  ❌ Codex CLI $MSG_AI_TOOL_NEEDS_NPM"
+        echo "     $MSG_NPM_NOT_FOUND_INSTALL"
+        echo "     $MSG_NPM_INSTALL_CMD"
         continue
       fi
 
@@ -638,9 +638,9 @@ for idx in "${MULTI_RESULT[@]}"; do
     3) # GitHub Copilot CLI
       # Check gh prerequisite
       if ! command -v gh &>/dev/null; then
-        echo "  ❌ GitHub Copilot CLI requires GitHub CLI (gh)"
-        echo "     gh not found. Please install it first:"
-        echo "     brew install gh"
+        echo "  ❌ GitHub Copilot CLI $MSG_AI_TOOL_NEEDS_GH"
+        echo "     $MSG_GH_NOT_FOUND_INSTALL"
+        echo "     $MSG_GH_INSTALL_CMD"
         continue
       fi
 
