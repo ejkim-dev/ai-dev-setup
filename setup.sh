@@ -403,11 +403,11 @@ for idx in "${MULTI_RESULT[@]}"; do
         echo "  Claude Code: $MSG_ALREADY_INSTALLED"
         if ask_yn "$MSG_CLAUDE_UPDATE_ASK"; then
           echo "  $MSG_UPDATING"
-          npm update -g @anthropic-ai/claude-code
+          npm update -g @anthropic-ai/claude-code || echo "  ⚠️  Update failed."
         fi
       else
         echo "  $MSG_INSTALLING Claude Code..."
-        npm install -g @anthropic-ai/claude-code
+        npm install -g @anthropic-ai/claude-code || echo "  ⚠️  Installation failed."
       fi
       ;;
     1) # Gemini CLI
@@ -415,7 +415,7 @@ for idx in "${MULTI_RESULT[@]}"; do
         echo "  Gemini CLI: $MSG_ALREADY_INSTALLED"
       else
         echo "  $MSG_INSTALLING Gemini CLI..."
-        npm install -g @google/gemini-cli
+        npm install -g @google/gemini-cli || echo "  ⚠️  Installation failed."
       fi
       ;;
     2) # GitHub Copilot CLI
@@ -423,7 +423,7 @@ for idx in "${MULTI_RESULT[@]}"; do
         echo "  GitHub Copilot CLI: $MSG_ALREADY_INSTALLED"
       else
         echo "  $MSG_INSTALLING GitHub Copilot CLI..."
-        gh extension install github/gh-copilot
+        gh extension install github/gh-copilot || echo "  ⚠️  Installation failed."
       fi
       ;;
   esac

@@ -236,7 +236,10 @@ if (Test-Path $wtSettingsFile) {
 
 # --- 7. Oh My Posh ---
 Write-Step "$MSG_STEP_OHMYPOSH"
-if (Ask-YN "$MSG_OHMYPOSH_INSTALL") {
+if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+    Write-Host "  $MSG_ALREADY_INSTALLED"
+    Write-Done
+} elseif (Ask-YN "$MSG_OHMYPOSH_INSTALL") {
     winget install --id JanDeDobbeleer.OhMyPosh -e --accept-source-agreements --accept-package-agreements
     Write-Host "  $MSG_OHMYPOSH_PROFILE"
     Write-Host '  oh-my-posh init pwsh | Invoke-Expression'
@@ -245,16 +248,59 @@ if (Ask-YN "$MSG_OHMYPOSH_INSTALL") {
     Write-Skip
 }
 
-# --- 8. Claude Code ---
-Write-Step "$MSG_STEP_CLAUDE"
-if (Ask-YN "$MSG_CLAUDE_INSTALL") {
-    npm install -g @anthropic-ai/claude-code
-    Write-Done
+# --- 8. AI Coding Tools ---
+Write-Step "$MSG_STEP_AI_TOOLS"
+Write-Host "  $MSG_AI_TOOLS_HINT"
+Write-Host ""
+Write-Host "  1. Claude Code"
+Write-Host "  2. Gemini CLI"
+Write-Host "  3. GitHub Copilot CLI"
+Write-Host ""
+$aiChoice = Read-Host "  Select tools (comma-separated, e.g., 1,2) [1]"
+if ([string]::IsNullOrWhiteSpace($aiChoice)) { $aiChoice = "1" }
+$choices = $aiChoice -split "," | ForEach-Object { $_.Trim() }
+
+$installedClaude = $false
+foreach ($choice in $choices) {
+    switch ($choice) {
+        "1" {
+            $installedClaude = $true
+            if (Get-Command claude -ErrorAction SilentlyContinue) {
+                Write-Host "  Claude Code: $MSG_ALREADY_INSTALLED"
+                if (Ask-YN "$MSG_CLAUDE_UPDATE_ASK") {
+                    Write-Host "  $MSG_UPDATING"
+                    try { npm update -g @anthropic-ai/claude-code } catch { Write-Host "  ⚠️  Update failed." -ForegroundColor Yellow }
+                }
+            } else {
+                Write-Host "  $MSG_INSTALLING Claude Code..."
+                try { npm install -g @anthropic-ai/claude-code } catch { Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow }
+            }
+        }
+        "2" {
+            if (Get-Command gemini -ErrorAction SilentlyContinue) {
+                Write-Host "  Gemini CLI: $MSG_ALREADY_INSTALLED"
+            } else {
+                Write-Host "  $MSG_INSTALLING Gemini CLI..."
+                try { npm install -g @google/gemini-cli } catch { Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow }
+            }
+        }
+        "3" {
+            if (gh extension list 2>$null | Select-String "gh-copilot") {
+                Write-Host "  GitHub Copilot CLI: $MSG_ALREADY_INSTALLED"
+            } else {
+                Write-Host "  $MSG_INSTALLING GitHub Copilot CLI..."
+                try { gh extension install github/gh-copilot } catch { Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow }
+            }
+        }
+    }
+}
+
+if ($choices.Count -eq 0) { Write-Skip } else { Write-Done }
+
+if ($installedClaude) {
     Write-Host ""
     Write-Host "  💡 $MSG_CLAUDE_EXTRA" -ForegroundColor White
     Write-Host "     ~\claude-code-setup\setup-claude.ps1" -ForegroundColor Cyan
-} else {
-    Write-Skip
 }
 
 # === Cleanup ===
