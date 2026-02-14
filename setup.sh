@@ -18,6 +18,9 @@ color_green="\033[0;32m"
 color_yellow="\033[0;33m"
 color_cyan="\033[0;36m"
 color_gray="\033[0;90m"
+color_bold="\033[1m"
+color_bold_cyan="\033[1;36m"
+color_bold_gray="\033[1;90m"
 color_reset="\033[0m"
 
 step() {
@@ -61,7 +64,7 @@ select_menu() {
 
   for i in "${!options[@]}"; do
     if [ "$i" -eq $selected ]; then
-      echo -e "  ${color_cyan}▸ ${options[$i]}${color_reset}"
+      echo -e "  ${color_bold_cyan}▸ ${options[$i]}${color_reset}"
     else
       echo -e "    ${options[$i]}"
     fi
@@ -94,7 +97,7 @@ select_menu() {
     for i in "${!options[@]}"; do
       tput el 2>/dev/null
       if [ "$i" -eq $selected ]; then
-        echo -e "  ${color_cyan}▸ ${options[$i]}${color_reset}"
+        echo -e "  ${color_bold_cyan}▸ ${options[$i]}${color_reset}"
       else
         echo -e "    ${options[$i]}"
       fi
@@ -134,9 +137,11 @@ select_multi() {
 
     if [ "$i" -eq $selected ]; then
       if [ "${disabled[$i]}" -eq 1 ]; then
-        echo -e "  ${color_gray}▸ [$mark] ${options[$i]}${color_reset}"
+        echo -e "  ${color_bold_gray}▸ [$mark] ${options[$i]}${color_reset}"
+      elif [ "${checked[$i]}" -eq 1 ]; then
+        echo -e "  ${color_bold_cyan}▸ [$mark] ${options[$i]}${color_reset}"
       else
-        echo -e "  ${color_cyan}▸ [$mark] ${options[$i]}${color_reset}"
+        echo -e "  ${color_bold}▸ [$mark] ${options[$i]}${color_reset}"
       fi
     else
       if [ "${disabled[$i]}" -eq 1 ]; then
@@ -194,9 +199,11 @@ select_multi() {
 
       if [ "$i" -eq $selected ]; then
         if [ "${disabled[$i]}" -eq 1 ]; then
-          echo -e "  ${color_gray}▸ [$mark] ${options[$i]}${color_reset}"
+          echo -e "  ${color_bold_gray}▸ [$mark] ${options[$i]}${color_reset}"
+        elif [ "${checked[$i]}" -eq 1 ]; then
+          echo -e "  ${color_bold_cyan}▸ [$mark] ${options[$i]}${color_reset}"
         else
-          echo -e "  ${color_cyan}▸ [$mark] ${options[$i]}${color_reset}"
+          echo -e "  ${color_bold}▸ [$mark] ${options[$i]}${color_reset}"
         fi
       else
         if [ "${disabled[$i]}" -eq 1 ]; then
