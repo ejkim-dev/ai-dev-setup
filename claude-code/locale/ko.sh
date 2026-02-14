@@ -18,6 +18,7 @@ MSG_SKIP="건너뛰기"
 MSG_LANG_SET="언어:"
 MSG_ALREADY_INSTALLED="이미 설치되어 있습니다."
 MSG_INSTALLING="설치 중..."
+MSG_UPDATING="업데이트 중..."
 MSG_APPLIED="적용됨"
 
 # Workspace
@@ -155,6 +156,7 @@ MSG_TMUX_DONE=".tmux.conf 복사 완료"
 
 # Claude Code (parent)
 MSG_CLAUDE_INSTALL="Claude Code를 설치하시겠습니까?"
+MSG_CLAUDE_UPDATE_ASK="Claude Code를 업데이트하시겠습니까?"
 MSG_CLAUDE_EXTRA="Claude Code 추가 설정 (MCP, RAG 등)은 나중에 실행하세요:"
 
 # Completion (parent)

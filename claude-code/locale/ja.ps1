@@ -15,6 +15,7 @@ $MSG_SKIP = "スキップ"
 $MSG_LANG_SET = "言語："
 $MSG_ALREADY_INSTALLED = "既にインストールされています。"
 $MSG_INSTALLING = "インストール中..."
+$MSG_UPDATING = "更新中..."
 $MSG_APPLIED = "適用済み"
 
 # Workspace
@@ -145,6 +146,7 @@ $MSG_D2CODING_MANUAL_URL = "→ https://github.com/naver/d2codingfont/releases"
 
 # Claude Code (parent)
 $MSG_CLAUDE_INSTALL = "Claude Codeをインストールしますか？"
+$MSG_CLAUDE_UPDATE_ASK = "Claude Codeを更新しますか？"
 $MSG_CLAUDE_EXTRA = "Claude Code追加設定（MCP、RAGなど）は後で実行してください："
 
 # Completion (parent)

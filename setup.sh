@@ -149,6 +149,8 @@ done_msg
 step "$MSG_STEP_HOMEBREW"
 if command -v brew &>/dev/null; then
   echo "  $MSG_ALREADY_INSTALLED"
+  echo "  $MSG_UPDATING"
+  brew update
 else
   echo "  $MSG_INSTALLING"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -246,7 +248,11 @@ case "$terminal_choice" in
     done_msg
     ;;
   2)
-    brew install --cask iterm2
+    if [ -d "/Applications/iTerm.app" ]; then
+      echo "  iTerm2: $MSG_ALREADY_INSTALLED"
+    else
+      brew install --cask iterm2
+    fi
     done_msg
     ;;
   3)
@@ -255,7 +261,11 @@ case "$terminal_choice" in
     defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
     defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
     echo "  $MSG_TERMINAL_APPLIED"
-    brew install --cask iterm2
+    if [ -d "/Applications/iTerm.app" ]; then
+      echo "  iTerm2: $MSG_ALREADY_INSTALLED"
+    else
+      brew install --cask iterm2
+    fi
     done_msg
     ;;
   4)
@@ -298,15 +308,24 @@ fi
 
 # --- 9. Claude Code ---
 step "$MSG_STEP_CLAUDE"
-if ask_yn "$MSG_CLAUDE_INSTALL"; then
+if command -v claude &>/dev/null; then
+  echo "  $MSG_ALREADY_INSTALLED"
+  if ask_yn "$MSG_CLAUDE_UPDATE_ASK"; then
+    echo "  $MSG_UPDATING"
+    npm update -g @anthropic-ai/claude-code
+    done_msg
+  else
+    skip_msg
+  fi
+elif ask_yn "$MSG_CLAUDE_INSTALL"; then
   npm install -g @anthropic-ai/claude-code
   done_msg
-  echo ""
-  echo -e "  💡 $MSG_CLAUDE_EXTRA"
-  echo -e "     ${color_cyan}~/claude-code-setup/setup-claude.sh${color_reset}"
 else
   skip_msg
 fi
+echo ""
+echo -e "  💡 $MSG_CLAUDE_EXTRA"
+echo -e "     ${color_cyan}~/claude-code-setup/setup-claude.sh${color_reset}"
 
 # === Cleanup ===
 # Copy claude-code/ for later setup, then remove entire install directory

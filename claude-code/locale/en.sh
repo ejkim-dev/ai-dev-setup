@@ -18,6 +18,7 @@ MSG_SKIP="Skipped"
 MSG_LANG_SET="Language:"
 MSG_ALREADY_INSTALLED="Already installed."
 MSG_INSTALLING="Installing..."
+MSG_UPDATING="Updating..."
 MSG_APPLIED="Applied"
 
 # Workspace
@@ -155,6 +156,7 @@ MSG_TMUX_DONE=".tmux.conf copied"
 
 # Claude Code (parent)
 MSG_CLAUDE_INSTALL="Install Claude Code?"
+MSG_CLAUDE_UPDATE_ASK="Update Claude Code?"
 MSG_CLAUDE_EXTRA="Claude Code additional setup (MCP, RAG, etc.) can be run later:"
 
 # Completion (parent)
