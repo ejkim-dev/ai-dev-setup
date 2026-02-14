@@ -223,8 +223,6 @@ step "$MSG_STEP_HOMEBREW"
 
 if command -v brew &>/dev/null; then
   echo "  $MSG_ALREADY_INSTALLED"
-  echo "  $MSG_UPDATING"
-  brew update || echo "  ⚠️  brew update failed, continuing..."
 else
   echo "  $MSG_INSTALLING"
 
