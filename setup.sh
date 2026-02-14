@@ -206,29 +206,6 @@ echo -e "🔧 $MSG_SETUP_WELCOME_MAC"
 echo "   $MSG_SETUP_EACH_STEP"
 echo ""
 
-# === Check sudo availability ===
-SUDO_AVAILABLE=false
-if sudo -n true 2>/dev/null; then
-  # Already has sudo (passwordless or cached)
-  SUDO_AVAILABLE=true
-elif sudo -v 2>/dev/null; then
-  # Prompted for password and succeeded
-  SUDO_AVAILABLE=true
-else
-  echo ""
-  echo "⚠️  $MSG_SUDO_UNAVAILABLE"
-  echo ""
-  echo "$MSG_SUDO_REQUIRED"
-  echo ""
-  if ask_yn "$MSG_SUDO_CONTINUE_ASK"; then
-    SUDO_AVAILABLE=false
-  else
-    echo ""
-    echo "$MSG_SUDO_EXIT"
-    exit 0
-  fi
-fi
-
 # --- 1. Xcode Command Line Tools ---
 step "$MSG_STEP_XCODE"
 if xcode-select -p &>/dev/null; then
@@ -243,7 +220,6 @@ done_msg
 
 # --- 2. Homebrew ---
 step "$MSG_STEP_HOMEBREW"
-BREW_INSTALL_FAILED=false
 
 if command -v brew &>/dev/null; then
   echo "  $MSG_ALREADY_INSTALLED"
@@ -261,59 +237,28 @@ else
       eval "$(/usr/local/bin/brew shellenv)"
     fi
   else
-    BREW_INSTALL_FAILED=true
-
+    # Failed - show manual install command and exit
     echo ""
-    echo "❌ $MSG_BREW_FAILED"
+    echo "❌ Homebrew installation failed"
     echo ""
-    echo "Possible causes:"
+    echo "Please install Homebrew manually, then re-run this script."
     echo ""
-
-    # Diagnose the issue
-    if [ "$SUDO_AVAILABLE" = false ]; then
-      echo "  $MSG_BREW_DIAGNOSE_SUDO"
-      echo "     $MSG_BREW_SOLUTION_SUDO"
-      echo ""
-    fi
-
-    if ! xcode-select -p &>/dev/null; then
-      echo "  $MSG_BREW_DIAGNOSE_XCODE"
-      echo "     $MSG_BREW_SOLUTION_XCODE"
-      echo ""
-    fi
-
-    if ! curl -fsSL https://brew.sh &>/dev/null; then
-      echo "  $MSG_BREW_DIAGNOSE_NETWORK"
-      echo "     $MSG_BREW_SOLUTION_NETWORK"
-      echo ""
-    fi
-
-    # Check disk space (macOS)
-    AVAILABLE_GB=$(df -H / | awk 'NR==2 {print $4}' | sed 's/G//' | sed 's/T.*/999/')
-    if [ -n "$AVAILABLE_GB" ] && [ "$AVAILABLE_GB" -lt 5 ] 2>/dev/null; then
-      echo "  $MSG_BREW_DIAGNOSE_DISK (${AVAILABLE_GB}GB remaining)"
-      echo "     $MSG_BREW_SOLUTION_DISK"
-      echo ""
-    fi
-
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Copy and paste this command:"
+    echo ""
+    echo "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+    echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-
-    # Offer alternatives
-    if ask_yn "$MSG_BREW_SKIP_ASK"; then
-      echo "  ℹ️  $MSG_BREW_SKIP_INFO"
-      skip_msg
-    else
-      echo ""
-      echo "$MSG_BREW_EXIT_RETRY"
-      echo "$MSG_BREW_EXIT_SUDO"
-      exit 1
-    fi
+    echo "After Homebrew is installed, re-run:"
+    echo "  ./setup.sh"
+    echo ""
+    exit 1
   fi
 fi
 
 # Verify Homebrew is available
-if ! command -v brew &>/dev/null && [ "$BREW_INSTALL_FAILED" = false ]; then
+if ! command -v brew &>/dev/null; then
   echo "  ⚠️  Homebrew installed but not in PATH. Restart terminal and re-run."
   exit 1
 fi
@@ -495,14 +440,6 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "✨ ${color_green}Phase 1 Complete!${color_reset}"
 echo ""
-
-# Show summary of failures (if any)
-if [ "$BREW_INSTALL_FAILED" = true ]; then
-  echo -e "  ${color_yellow}⚠️  Some steps were skipped:${color_reset}"
-  echo "     - Homebrew (manual install: https://brew.sh)"
-  echo ""
-fi
-
 echo "  Next: Phase 2 - Claude Code Setup (optional)"
 echo ""
 echo "  • Workspace management (central config)"
