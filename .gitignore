@@ -1,0 +1,18 @@
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/
+CLAUDE.local.md
+.claude-data/
+
+# Local properties
+local.properties
+*.local
+
+# Node
+node_modules/
+
+# OS
+*.swp
+*~

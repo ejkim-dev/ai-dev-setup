@@ -1,0 +1,41 @@
+{
+  "profiles": {
+    "defaults": {
+      "font": {
+        "face": "D2Coding",
+        "size": 11
+      },
+      "colorScheme": "Dev",
+      "opacity": 95,
+      "useAcrylic": false,
+      "cursorShape": "bar",
+      "scrollbarState": "visible",
+      "padding": "8"
+    }
+  },
+  "schemes": [
+    {
+      "name": "Dev",
+      "background": "#282A36",
+      "foreground": "#F1F1F0",
+      "cursorColor": "#F7F8F8",
+      "selectionBackground": "#9BBBDC",
+      "black": "#000000",
+      "brightBlack": "#686868",
+      "red": "#EC6768",
+      "brightRed": "#ED6A5E",
+      "green": "#89F38E",
+      "brightGreen": "#89F38E",
+      "yellow": "#F4F99D",
+      "brightYellow": "#F4F99D",
+      "blue": "#76C3FA",
+      "brightBlue": "#76C3FA",
+      "purple": "#ED6ABD",
+      "brightPurple": "#EE73B3",
+      "cyan": "#ABECED",
+      "brightCyan": "#ABECED",
+      "white": "#F1F1F0",
+      "brightWhite": "#F1F1F0"
+    }
+  ]
+}
