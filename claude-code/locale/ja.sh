@@ -174,9 +174,15 @@ MSG_TERMINAL_RESTART_HINT="新しいターミナルウィンドウを開くとDe
 MSG_ITERM2_PROFILE_APPLIED="iTerm2 Dev プロファイル適用済み"
 MSG_ITERM2_PROFILE_HINT="iTerm2を起動 → Preferences → Profiles → Dev を選択"
 MSG_BOTH_TERMINAL_HINT="新しいターミナル/iTerm2ウィンドウを開くとDevテーマが適用されます"
+MSG_ITERM2_INSTALLED="iTerm2 インストール完了"
+MSG_ITERM2_INSTALL_FAILED="iTerm2 インストール失敗（オプション、プロファイル設定をスキップ）"
 
 # Oh My Zsh
 MSG_OHMYZSH_INSTALL="Oh My Zshをインストールしますか？"
+MSG_OHMYZSH_INSTALL_HINT="後で次のコマンドでインストールできます："
+MSG_OHMYZSH_INSTALL_CMD="sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""
+MSG_OHMYZSH_NOT_INSTALLED="Oh My Zshがインストールされていません"
+MSG_OHMYZSH_THEME_SKIP="'agnoster テーマ'オプションは選択してもスキップされます"
 MSG_ZSHRC_ASK=".zshrcをカスタマイズしますか？（機能選択）"
 MSG_ZSHRC_HINT="↑↓ 移動、Space 選択、Enter 確定"
 MSG_ZSHRC_OPT_THEME="agnoster テーマ + 絵文字プロンプト (username 🚀)"

@@ -359,13 +359,19 @@ case "$MENU_RESULT" in
     if [ -d "/Applications/iTerm.app" ]; then
       echo "  iTerm2: $MSG_ALREADY_INSTALLED"
     else
-      brew install --cask iterm2
+      if brew install --cask iterm2; then
+        echo "  $MSG_ITERM2_INSTALLED"
+      else
+        echo "  ⚠️  $MSG_ITERM2_INSTALL_FAILED"
+      fi
     fi
-    # Apply Dev profile
-    mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-    cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
-    echo "  $MSG_ITERM2_PROFILE_APPLIED"
-    echo "  💡 $MSG_ITERM2_PROFILE_HINT"
+    # Apply Dev profile (only if iTerm2 exists)
+    if [ -d "/Applications/iTerm.app" ]; then
+      mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+      cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
+      echo "  $MSG_ITERM2_PROFILE_APPLIED"
+      echo "  💡 $MSG_ITERM2_PROFILE_HINT"
+    fi
     ;;
   2)
     # Both
@@ -379,13 +385,19 @@ case "$MENU_RESULT" in
     if [ -d "/Applications/iTerm.app" ]; then
       echo "  iTerm2: $MSG_ALREADY_INSTALLED"
     else
-      brew install --cask iterm2
+      if brew install --cask iterm2; then
+        echo "  $MSG_ITERM2_INSTALLED"
+      else
+        echo "  ⚠️  $MSG_ITERM2_INSTALL_FAILED"
+      fi
     fi
-    # Apply Dev profile to iTerm2
-    mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-    cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
-    echo "  iTerm2: $MSG_ITERM2_PROFILE_APPLIED"
-    echo "  💡 $MSG_BOTH_TERMINAL_HINT"
+    # Apply Dev profile to iTerm2 (only if iTerm2 exists)
+    if [ -d "/Applications/iTerm.app" ]; then
+      mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+      cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
+      echo "  iTerm2: $MSG_ITERM2_PROFILE_APPLIED"
+      echo "  💡 $MSG_BOTH_TERMINAL_HINT"
+    fi
     ;;
   3)
     skip_msg
@@ -407,6 +419,8 @@ if [ "$MENU_RESULT" -ne 3 ]; then
       OMZ_INSTALLED=true
     else
       echo "  ⚠️  Oh My Zsh installation failed."
+      echo "     $MSG_OHMYZSH_INSTALL_HINT"
+      echo "     $MSG_OHMYZSH_INSTALL_CMD"
     fi
   fi
 
@@ -417,6 +431,11 @@ if [ "$MENU_RESULT" -ne 3 ]; then
     echo ""
     echo "  $MSG_ZSHRC_ASK"
     echo "  $MSG_ZSHRC_HINT"
+    if [ "$OMZ_INSTALLED" = false ]; then
+      echo ""
+      echo "  ⚠️  $MSG_OHMYZSH_NOT_INSTALLED"
+      echo "     $MSG_OHMYZSH_THEME_SKIP"
+    fi
     echo ""
     MULTI_DEFAULTS="" select_multi "$MSG_ZSHRC_OPT_THEME" "$MSG_ZSHRC_OPT_PLUGINS" "$MSG_ZSHRC_OPT_ALIAS"
 
