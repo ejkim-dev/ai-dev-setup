@@ -298,8 +298,31 @@ done_msg
 step "$MSG_STEP_PACKAGES"
 if command -v brew &>/dev/null; then
   echo ""
-  brew bundle --file="$SCRIPT_DIR/Brewfile" --verbose || echo "  ⚠️  Some packages may have failed to install."
-  echo ""
+
+  # Install packages
+  if brew bundle --file="$SCRIPT_DIR/Brewfile" --verbose; then
+    echo ""
+  else
+    echo ""
+    echo "  ⚠️  Some packages may have failed to install."
+  fi
+
+  # Verify Node.js (critical for AI tools)
+  if ! command -v node &>/dev/null; then
+    echo ""
+    echo "❌ Node.js installation failed"
+    echo ""
+    echo "$MSG_NODE_REQUIRED"
+    echo ""
+    echo "$MSG_NODE_MANUAL_INSTALL"
+    echo "  brew install node"
+    echo ""
+    echo "$MSG_NODE_VERIFY"
+    echo "  node --version"
+    echo ""
+    exit 1
+  fi
+
   done_msg
 else
   echo "  ⚠️  Homebrew not available. Skipping package installation."
@@ -389,6 +412,8 @@ if [ "$MENU_RESULT" -ne 3 ]; then
       echo "" >> "$HOME/.zshrc"
       echo "# === ai-dev-setup ===" >> "$HOME/.zshrc"
       cat "$SCRIPT_DIR/configs/shared/.zshrc" >> "$HOME/.zshrc"
+      # Change Oh My Zsh theme to agnoster
+      sed -i '' 's/^ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/' "$HOME/.zshrc"
     else
       cp "$SCRIPT_DIR/configs/shared/.zshrc" "$HOME/.zshrc"
     fi
@@ -417,6 +442,14 @@ INSTALLED_CLAUDE=false
 for idx in "${MULTI_RESULT[@]}"; do
   case "$idx" in
     0) # Claude Code
+      # Check npm prerequisite
+      if ! command -v npm &>/dev/null; then
+        echo "  ❌ Claude Code requires Node.js/npm"
+        echo "     npm not found. Please install Node.js first:"
+        echo "     brew install node"
+        continue
+      fi
+
       INSTALLED_CLAUDE=true
       if command -v claude &>/dev/null; then
         echo "  Claude Code: $MSG_ALREADY_INSTALLED"
@@ -430,6 +463,14 @@ for idx in "${MULTI_RESULT[@]}"; do
       fi
       ;;
     1) # Gemini CLI
+      # Check npm prerequisite
+      if ! command -v npm &>/dev/null; then
+        echo "  ❌ Gemini CLI requires Node.js/npm"
+        echo "     npm not found. Please install Node.js first:"
+        echo "     brew install node"
+        continue
+      fi
+
       if command -v gemini &>/dev/null; then
         echo "  Gemini CLI: $MSG_ALREADY_INSTALLED"
       else
@@ -438,6 +479,14 @@ for idx in "${MULTI_RESULT[@]}"; do
       fi
       ;;
     2) # GitHub Copilot CLI
+      # Check gh prerequisite
+      if ! command -v gh &>/dev/null; then
+        echo "  ❌ GitHub Copilot CLI requires GitHub CLI (gh)"
+        echo "     gh not found. Please install it first:"
+        echo "     brew install gh"
+        continue
+      fi
+
       if gh extension list 2>/dev/null | grep -q "gh-copilot"; then
         echo "  GitHub Copilot CLI: $MSG_ALREADY_INSTALLED"
       else

@@ -18,6 +18,13 @@ if [ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.
   source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
+# === 프롬프트 커스터마이징 (agnoster 테마) ===
+prompt_context() {
+  emojis=("🔥" "👑" "😎" "🍺" "🐵" "🦄" "🌈" "🚀" "🐧" "🎉" "🐱" "🐶" "🦋" "🔅")
+  RAND_EMOJI_N=$(( $RANDOM % ${#emojis[@]} + 1))
+  prompt_segment black default "%(!.%{%F{yellow}%}.) $USER ${emojis[$RAND_EMOJI_N]} "
+}
+
 # === 유용한 alias ===
 alias ll="ls -la"
 alias gs="git status"

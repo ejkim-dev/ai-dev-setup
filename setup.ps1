@@ -94,6 +94,23 @@ foreach ($pkg in $packages) {
         winget install --id $pkg.id -e --accept-source-agreements --accept-package-agreements
     }
 }
+
+# Verify Node.js (critical for AI tools)
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+    Write-Host ""
+    Write-Host "❌ Node.js installation failed" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "$MSG_NODE_REQUIRED"
+    Write-Host ""
+    Write-Host "$MSG_NODE_MANUAL_INSTALL"
+    Write-Host "  winget install --id OpenJS.NodeJS.LTS"
+    Write-Host ""
+    Write-Host "$MSG_NODE_VERIFY"
+    Write-Host "  node --version"
+    Write-Host ""
+    exit 1
+}
+
 Write-Done
 
 # --- 3. D2Coding font ---
@@ -227,6 +244,14 @@ $installedClaude = $false
 foreach ($choice in $choices) {
     switch ($choice) {
         "1" {
+            # Check npm prerequisite
+            if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
+                Write-Host "  ❌ Claude Code requires Node.js/npm" -ForegroundColor Red
+                Write-Host "     npm not found. Please install Node.js first:"
+                Write-Host "     winget install --id OpenJS.NodeJS.LTS"
+                continue
+            }
+
             $installedClaude = $true
             if (Get-Command claude -ErrorAction SilentlyContinue) {
                 Write-Host "  Claude Code: $MSG_ALREADY_INSTALLED"
@@ -240,6 +265,14 @@ foreach ($choice in $choices) {
             }
         }
         "2" {
+            # Check npm prerequisite
+            if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
+                Write-Host "  ❌ Gemini CLI requires Node.js/npm" -ForegroundColor Red
+                Write-Host "     npm not found. Please install Node.js first:"
+                Write-Host "     winget install --id OpenJS.NodeJS.LTS"
+                continue
+            }
+
             if (Get-Command gemini -ErrorAction SilentlyContinue) {
                 Write-Host "  Gemini CLI: $MSG_ALREADY_INSTALLED"
             } else {
@@ -248,6 +281,14 @@ foreach ($choice in $choices) {
             }
         }
         "3" {
+            # Check gh prerequisite
+            if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+                Write-Host "  ❌ GitHub Copilot CLI requires GitHub CLI (gh)" -ForegroundColor Red
+                Write-Host "     gh not found. Please install it first:"
+                Write-Host "     winget install --id GitHub.cli"
+                continue
+            }
+
             if (gh extension list 2>$null | Select-String "gh-copilot") {
                 Write-Host "  GitHub Copilot CLI: $MSG_ALREADY_INSTALLED"
             } else {
