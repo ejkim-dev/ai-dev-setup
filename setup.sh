@@ -215,7 +215,7 @@ if xcode-select -p &>/dev/null; then
   echo "  $MSG_ALREADY_INSTALLED"
 else
   echo "  $MSG_XCODE_INSTALLING"
-  xcode-select --install
+  xcode-select --install 2>/dev/null || true
   echo "  $MSG_XCODE_ENTER"
   read -r
 fi
@@ -229,7 +229,9 @@ if command -v brew &>/dev/null; then
   brew update || echo "  ⚠️  brew update failed, continuing..."
 else
   echo "  $MSG_INSTALLING"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || {
+    echo "  ⚠️  Homebrew installation failed. Some steps may not work."
+  }
   # Apple Silicon path
   if [ -f "/opt/homebrew/bin/brew" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -239,8 +241,13 @@ done_msg
 
 # --- 3. Packages ---
 step "$MSG_STEP_PACKAGES"
-brew bundle --file="$SCRIPT_DIR/Brewfile" || echo "  ⚠️  Some packages may have failed to install."
-done_msg
+if command -v brew &>/dev/null; then
+  brew bundle --file="$SCRIPT_DIR/Brewfile" || echo "  ⚠️  Some packages may have failed to install."
+  done_msg
+else
+  echo "  ⚠️  Homebrew not available. Skipping package installation."
+  skip_msg
+fi
 
 # --- 4. D2Coding font ---
 step "$MSG_STEP_D2CODING"
@@ -267,16 +274,20 @@ if [ -f "$HOME/.ssh/id_ed25519" ]; then
   done_msg
 elif ask_yn "$MSG_SSH_GENERATE"; then
   read -p "  $MSG_SSH_EMAIL" ssh_email
-  ssh-keygen -t ed25519 -C "$ssh_email" -f "$HOME/.ssh/id_ed25519"
-  eval "$(ssh-agent -s)" &>/dev/null
-  ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null
-  cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
-  echo ""
-  echo "  📋 $MSG_SSH_COPIED"
-  echo "  $MSG_SSH_GITHUB_URL"
-  echo ""
-  read -p "  $MSG_SSH_ENTER "
-  done_msg
+  if ssh-keygen -t ed25519 -C "$ssh_email" -f "$HOME/.ssh/id_ed25519"; then
+    eval "$(ssh-agent -s)" &>/dev/null || true
+    ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
+    cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
+    echo ""
+    echo "  📋 $MSG_SSH_COPIED"
+    echo "  $MSG_SSH_GITHUB_URL"
+    echo ""
+    read -p "  $MSG_SSH_ENTER "
+    done_msg
+  else
+    echo "  ⚠️  SSH key generation cancelled."
+    skip_msg
+  fi
 else
   skip_msg
 fi
@@ -356,7 +367,7 @@ if [ -d "$HOME/.oh-my-zsh" ]; then
   echo "  $MSG_ALREADY_INSTALLED"
   done_msg
 elif ask_yn "$MSG_OHMYZSH_INSTALL"; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended || echo "  ⚠️  Oh My Zsh installation failed."
   done_msg
 else
   skip_msg
