@@ -251,7 +251,7 @@ else
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
     echo "$MSG_BREW_AFTER_INSTALL"
-    echo "  ./setup.sh"
+    echo "  cd $SCRIPT_DIR && ./setup.sh"
     echo ""
     exit 1
   fi
