@@ -79,7 +79,7 @@ workspace-manager 에이전트로 프로젝트 연결:
 
 ## 다음 단계
 
-- [Claude 가이드](./claude-guide.ko.md)를 읽고 CLAUDE.md, 에이전트, MCP 등 이해하기
+- [Claude 가이드](./claude-guide.md)를 읽고 CLAUDE.md, 에이전트, MCP 등 이해하기
 - 공유 에이전트 탐색: workspace-manager, translate, doc-writer
 - 프로젝트용 MCP 서버 설정
 

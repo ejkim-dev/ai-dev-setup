@@ -44,7 +44,7 @@ Install Claude Code, then configure manually using the documentation below.
 Centralize all Claude configurations in one place using symlinks.
 No more scattered `.claude/` folders across projects.
 
-**Learn more:** [`doc/workspace-philosophy.md`](doc/workspace-philosophy.md)
+**Learn more:** [`doc/en/workspace-philosophy.md`](doc/en/workspace-philosophy.md)
 
 ### 🤖 Agents
 Specialized AI assistants for specific tasks.
@@ -52,24 +52,24 @@ Specialized AI assistants for specific tasks.
 - **translate** — Translate documents
 - **doc-writer** — Generate documentation
 
-**Learn more:** [`doc/claude-guide.md#agents`](doc/claude-guide.md#agents)
+**Learn more:** [`doc/en/claude-guide.md#agents`](doc/en/claude-guide.md#agents)
 
 ### 📝 CLAUDE.md
 Project instructions that Claude reads automatically.
 Define your architecture, coding rules, and workflows once.
 
-**Learn more:** [`doc/claude-guide.md#claudemd`](doc/claude-guide.md#claudemd)
+**Learn more:** [`doc/en/claude-guide.md#claudemd`](doc/en/claude-guide.md#claudemd)
 
 ### 🔌 MCP Servers
 Connect Claude to external tools and data sources.
 Search documents, browse web, access databases, and more.
 
-**Learn more:** [`doc/claude-guide.md#mcp`](doc/claude-guide.md#mcp-model-context-protocol)
+**Learn more:** [`doc/en/claude-guide.md#mcp`](doc/en/claude-guide.md#mcp-model-context-protocol)
 
 ### 💬 Slash Commands
 Built-in commands: `/help`, `/agents`, `/model`, `/compact`, `/exit`
 
-**Learn more:** [`doc/claude-guide.md#slash-commands`](doc/claude-guide.md#slash-commands)
+**Learn more:** [`doc/en/claude-guide.md#slash-commands`](doc/en/claude-guide.md#slash-commands)
 
 ---
 
@@ -77,20 +77,20 @@ Built-in commands: `/help`, `/agents`, `/model`, `/compact`, `/exit`
 
 Reference documentation in `doc/` directory:
 
-| File | Description |
-|------|-------------|
-| [`getting-started.md`](doc/getting-started.md) / [`.ko.md`](doc/getting-started.ko.md) | Quick start guide |
-| [`claude-guide.md`](doc/claude-guide.md) / [`.ko.md`](doc/claude-guide.ko.md) | Complete concepts reference (CLAUDE.md, agents, MCP, etc.) |
-| [`workspace-philosophy.md`](doc/workspace-philosophy.md) / [`.ko.md`](doc/workspace-philosophy.ko.md) | Why workspace? Design philosophy |
+| File | EN | KO |
+|------|----|----|
+| Getting Started | [`doc/en/getting-started.md`](doc/en/getting-started.md) | [`doc/ko/getting-started.md`](doc/ko/getting-started.md) |
+| Claude Guide | [`doc/en/claude-guide.md`](doc/en/claude-guide.md) | [`doc/ko/claude-guide.md`](doc/ko/claude-guide.md) |
+| Workspace Philosophy | [`doc/en/workspace-philosophy.md`](doc/en/workspace-philosophy.md) | [`doc/ko/workspace-philosophy.md`](doc/ko/workspace-philosophy.md) |
 
-**Start here:** [`doc/getting-started.md`](doc/getting-started.md)
+**Start here:** [`doc/en/getting-started.md`](doc/en/getting-started.md)
 
 ---
 
 ## Next Steps
 
 1. **Run setup:** `./setup-claude.sh`
-2. **Read getting-started:** `doc/getting-started.md`
+2. **Read getting-started:** `doc/en/getting-started.md`
 3. **Start coding:** `cd ~/my-project && claude`
 
 ---
