@@ -7,6 +7,14 @@
 # Set up tmux (install + configure)
 setup_tmux() {
   echo ""
+
+  # Check if tmux is installed AND configured
+  if command -v tmux >/dev/null 2>&1 && [ -f "$HOME/.tmux.conf" ]; then
+    echo "  tmux: $MSG_ALREADY_INSTALLED"
+    return 0
+  fi
+
+  # Show menu only if not installed or not configured
   echo "  💡 $MSG_TMUX_DESC"
   echo ""
   echo "$MSG_TMUX_ASK"
