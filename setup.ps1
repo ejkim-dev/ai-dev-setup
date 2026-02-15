@@ -250,6 +250,20 @@ if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
     Write-Skip
 }
 
+# Terminal theme verification guide
+Write-Host ""
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+Write-Host "📋 $MSG_WINTERMINAL_VERIFY_HEADER" -ForegroundColor Cyan
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  💡 $MSG_WINTERMINAL_VERIFY_DESC"
+Write-Host ""
+Write-Host "  $MSG_WINTERMINAL_MANUAL_SETUP"
+Write-Host "     $MSG_WINTERMINAL_MANUAL" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+Write-Host ""
+
 # --- 6. AI Coding Tools ---
 Write-Step "$MSG_STEP_AI_TOOLS"
 Write-Host "  $MSG_AI_TOOLS_HINT"

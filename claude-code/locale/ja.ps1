@@ -129,6 +129,10 @@ $MSG_WINTERMINAL_APPLY = "Windows Terminalに 'Dev' テーマを適用します�
 $MSG_WINTERMINAL_BACKUP = "既存設定をバックアップ："
 $MSG_WINTERMINAL_DONE = "Dev テーマ + D2Coding フォント適用完了"
 $MSG_WINTERMINAL_RESTORE = "元の設定に戻すには："
+$MSG_WINTERMINAL_VERIFY_HEADER = "ターミナルテーマ確認"
+$MSG_WINTERMINAL_VERIFY_DESC = "Windows Terminalを再起動してDevテーマを確認してください"
+$MSG_WINTERMINAL_MANUAL_SETUP = "テーマが適用されていない場合は手動設定："
+$MSG_WINTERMINAL_MANUAL = "Settings(Ctrl+,) → Color schemes → Dev確認 → Profiles → Defaults → Appearance → Color scheme: Dev"
 
 # Oh My Posh
 $MSG_OHMYPOSH_INSTALL = "Oh My Poshをインストールしますか？"
