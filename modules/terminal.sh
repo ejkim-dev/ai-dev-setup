@@ -93,10 +93,9 @@ install_and_setup_iterm2() {
 setup_terminal() {
   local font_name="${1:-d2coding}"
 
-  # Check if font is installed
+  # Check if font is installed (use brew instead of filesystem check for reliability)
   local font_installed=0
-  if ls "$HOME/Library/Fonts/"*[Dd]2[Cc]oding*.ttc 2>/dev/null | grep -q . || \
-     ls "/Library/Fonts/"*[Dd]2[Cc]oding*.ttc 2>/dev/null | grep -q .; then
+  if command -v brew &>/dev/null && brew list --cask font-d2coding &>/dev/null; then
     font_installed=1
   fi
 

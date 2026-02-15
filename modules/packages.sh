@@ -22,10 +22,7 @@ install_essential_packages() {
 
     command -v node >/dev/null 2>&1 && node_installed=1
     command -v rg >/dev/null 2>&1 && ripgrep_installed=1
-    if ls "$HOME/Library/Fonts/"*[Dd]2[Cc]oding*.ttc 2>/dev/null | grep -q . || \
-       ls "/Library/Fonts/"*[Dd]2[Cc]oding*.ttc 2>/dev/null | grep -q .; then
-      font_installed=1
-    fi
+    brew list --cask font-d2coding >/dev/null 2>&1 && font_installed=1
     brew list zsh-autosuggestions >/dev/null 2>&1 && zsh_auto_installed=1
     brew list zsh-syntax-highlighting >/dev/null 2>&1 && zsh_syntax_installed=1
 
