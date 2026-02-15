@@ -82,6 +82,7 @@ MSG_PROJ_USE_EXISTING="기존 워크스페이스 설정을 사용하시겠습니
 MSG_PROJ_USE_EXISTING_YES="기존 설정 사용"
 MSG_PROJ_NEW="새로 만들기"
 MSG_PROJ_AUTO_NAMED="자동 이름 지정:"
+MSG_PROJ_ALREADY_CONNECTED="이미 연결된 프로젝트입니다."
 
 # Obsidian
 MSG_OBS_TITLE="Obsidian"

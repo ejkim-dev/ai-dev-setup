@@ -82,6 +82,7 @@ MSG_PROJ_USE_EXISTING="Use existing workspace settings?"
 MSG_PROJ_USE_EXISTING_YES="Use existing"
 MSG_PROJ_NEW="Create new"
 MSG_PROJ_AUTO_NAMED="Auto-named as"
+MSG_PROJ_ALREADY_CONNECTED="This project is already connected."
 
 # Obsidian
 MSG_OBS_TITLE="Obsidian"

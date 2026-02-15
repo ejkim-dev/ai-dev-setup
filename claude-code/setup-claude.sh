@@ -468,6 +468,33 @@ EOF
       continue
     fi
 
+    # Resolve to absolute path for duplicate check
+    project_path="$(cd "$project_path" && pwd)"
+
+    # Check duplicate: already connected in this session
+    local is_dup=false
+    for connected in "${CONNECTED_PATHS[@]}"; do
+      if [ "$connected" = "$project_path" ]; then
+        is_dup=true
+        break
+      fi
+    done
+
+    # Check duplicate: already linked from previous session
+    if [ "$is_dup" = false ] && [ -L "$project_path/.claude" ]; then
+      local link_target
+      link_target="$(readlink "$project_path/.claude")"
+      if [[ "$link_target" == *"$WORKSPACE/projects/"* ]]; then
+        is_dup=true
+      fi
+    fi
+
+    if [ "$is_dup" = true ]; then
+      echo "  ⚠️  $MSG_PROJ_ALREADY_CONNECTED"
+      echo ""
+      continue
+    fi
+
     # Extract short name: com.sample.myproject → myproject
     raw_name=$(basename "$project_path")
     project_name="${raw_name##*.}"
