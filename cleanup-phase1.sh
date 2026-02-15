@@ -6,12 +6,67 @@
 
 set -e
 
-# Get script directory
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# Color codes
+color_bold_cyan="\033[1;36m"
+color_reset="\033[0m"
 
-# Load dependencies
-source "$SCRIPT_DIR/lib/colors.sh"
-source "$SCRIPT_DIR/lib/ui.sh"
+# Arrow key menu selector
+# Usage: select_menu "Option 1" "Option 2" "Option 3"
+# Result: MENU_RESULT (0-based index)
+select_menu() {
+  local options=("$@")
+  local count=${#options[@]}
+  local selected=0
+  local key
+
+  tput civis 2>/dev/null
+  trap 'tput cnorm 2>/dev/null' EXIT
+
+  for i in "${!options[@]}"; do
+    if [ "$i" -eq $selected ]; then
+      echo -e "  ${color_bold_cyan}▸ ${options[$i]}${color_reset}"
+    else
+      echo -e "    ${options[$i]}"
+    fi
+  done
+
+  while true; do
+    IFS= read -rsn1 key
+    case "$key" in
+      $'\x1b')
+        IFS= read -rsn2 key
+        case "$key" in
+          '[A')
+            if [ $selected -gt 0 ]; then
+              selected=$((selected - 1))
+            fi
+            ;;
+          '[B')
+            if [ $selected -lt $((count - 1)) ]; then
+              selected=$((selected + 1))
+            fi
+            ;;
+        esac
+        ;;
+      ''|$'\n'|$'\r')
+        break
+        ;;
+    esac
+
+    tput cuu "$count" 2>/dev/null
+    for i in "${!options[@]}"; do
+      tput el 2>/dev/null
+      if [ "$i" -eq $selected ]; then
+        echo -e "  ${color_bold_cyan}▸ ${options[$i]}${color_reset}"
+      else
+        echo -e "    ${options[$i]}"
+      fi
+    done
+  done
+
+  tput cnorm 2>/dev/null
+  MENU_RESULT=$selected
+}
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
