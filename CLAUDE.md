@@ -75,6 +75,41 @@ CLAUDE.local.md       — (gitignored) Personal local settings and notes
 - Common: Locale files sourced after language selection for all UI strings
 - Modules: Each module = single responsibility, clear dependencies, independently testable
 
+## Code Quality & UI/UX Consistency
+
+**IMPORTANT**: Before making any changes, review `.claude/notes/ui-ux-checklist.md` for complete guidelines.
+
+**Critical Rules**:
+1. **No hardcoding**: All user-facing text must use `$MSG_*` variables from locale files (en.sh, ko.sh, ja.sh)
+2. **Pattern consistency**: Menu options follow `"name - description (status)"` format
+3. **Locale completeness**: Add messages to all 3 locale files simultaneously
+4. **Single responsibility**: Functions < 50 lines, one purpose per function
+5. **Module separation**: lib/ (utilities) + modules/ (domain logic), no cross-contamination
+
+**Menu Option Pattern** (unified across all menus):
+```bash
+# Build option with locale messages and status
+local opt_item="$MSG_ITEM"
+[ $installed -eq 1 ] && opt_item="$opt_item - $MSG_ALREADY_INSTALLED"
+[ $required -eq 1 ] && opt_item="$opt_item ($MSG_REQUIRED)"
+[ $recommended -eq 1 ] && opt_item="$opt_item ($MSG_RECOMMENDED)"
+
+# Result: "Node.js - Already installed" or "local-rag - Search docs/code (recommended)"
+```
+
+**Auto-check tools** (use before committing):
+```bash
+.claude/tools/check-hardcoding.sh   # Find hardcoded strings
+.claude/tools/check-patterns.sh     # Verify UI/UX patterns
+.claude/tools/check-locale.sh       # Check locale completeness
+```
+
+**When adding new features**:
+1. Check existing patterns in `.claude/notes/ui-ux-checklist.md`
+2. Add locale messages first (en, ko, ja)
+3. Use variables for all options
+4. Run check scripts before committing
+
 ## Project-specific Claude Settings
 
 **Use `.claude/` for all project-local Claude Code resources:**
