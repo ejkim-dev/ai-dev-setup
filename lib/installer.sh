@@ -17,11 +17,14 @@ install_brew_package() {
   fi
 
   run_with_spinner "$MSG_INSTALLING $display_name..." "brew install $package"
-  if [ $? -eq 0 ]; then
+  local result=$?
+
+  if [ $result -eq 0 ]; then
     echo "  ✅ $display_name"
     return 0
   else
     echo "  ❌ $display_name installation failed"
+    echo "     Try manually: brew install $package"
     return 1
   fi
 }
@@ -39,11 +42,14 @@ install_brew_cask() {
   fi
 
   run_with_spinner "$MSG_INSTALLING $display_name..." "brew install --cask $cask"
-  if [ $? -eq 0 ]; then
+  local result=$?
+
+  if [ $result -eq 0 ]; then
     echo "  ✅ $display_name"
     return 0
   else
     echo "  ❌ $display_name installation failed"
+    echo "     Try manually: brew install --cask $cask"
     return 1
   fi
 }
@@ -61,11 +67,14 @@ install_npm_global() {
   fi
 
   run_with_spinner "$MSG_INSTALLING $display_name..." "npm install -g $package"
-  if [ $? -eq 0 ]; then
+  local result=$?
+
+  if [ $result -eq 0 ]; then
     echo "  ✅ $display_name"
     return 0
   else
     echo "  ❌ $display_name installation failed"
+    echo "     Try manually: npm install -g $package"
     return 1
   fi
 }

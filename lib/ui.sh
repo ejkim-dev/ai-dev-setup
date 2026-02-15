@@ -20,6 +20,7 @@ spinner() {
 
 # Run command with spinner
 # Usage: run_with_spinner "Installing..." "command to run"
+# Note: Temporarily disables set -e to allow caller to handle errors
 run_with_spinner() {
   local message="$1"
   local command="$2"
@@ -27,8 +28,11 @@ run_with_spinner() {
   spinner "$message" &
   local spinner_pid=$!
 
+  # Temporarily disable exit on error for proper error handling
+  set +e
   eval "$command" > /tmp/spinner_output_$$ 2>&1
   local result=$?
+  set -e
 
   kill $spinner_pid 2>/dev/null
   wait $spinner_pid 2>/dev/null
