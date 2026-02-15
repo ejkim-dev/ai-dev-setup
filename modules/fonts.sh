@@ -21,8 +21,12 @@ install_fonts() {
       case "$idx" in
         0)
           # D2Coding
+          set +e  # Temporarily disable exit on error
           run_with_spinner "Installing D2Coding..." "brew install font-d2coding"
-          if [ $? -eq 0 ]; then
+          install_result=$?
+          set -e  # Re-enable exit on error
+
+          if [ $install_result -eq 0 ]; then
             echo "  ✅ D2Coding"
             SELECTED_FONT="d2coding"
           else

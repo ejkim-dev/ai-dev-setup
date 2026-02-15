@@ -16,8 +16,12 @@ install_brew_package() {
     return 0
   fi
 
+  set +e  # Temporarily disable exit on error
   run_with_spinner "$MSG_INSTALLING $display_name..." "brew install $package"
-  if [ $? -eq 0 ]; then
+  local result=$?
+  set -e  # Re-enable exit on error
+
+  if [ $result -eq 0 ]; then
     echo "  ✅ $display_name"
     return 0
   else
@@ -38,8 +42,12 @@ install_brew_cask() {
     return 0
   fi
 
+  set +e  # Temporarily disable exit on error
   run_with_spinner "$MSG_INSTALLING $display_name..." "brew install --cask $cask"
-  if [ $? -eq 0 ]; then
+  local result=$?
+  set -e  # Re-enable exit on error
+
+  if [ $result -eq 0 ]; then
     echo "  ✅ $display_name"
     return 0
   else
@@ -60,8 +68,12 @@ install_npm_global() {
     return 0
   fi
 
+  set +e  # Temporarily disable exit on error
   run_with_spinner "$MSG_INSTALLING $display_name..." "npm install -g $package"
-  if [ $? -eq 0 ]; then
+  local result=$?
+  set -e  # Re-enable exit on error
+
+  if [ $result -eq 0 ]; then
     echo "  ✅ $display_name"
     return 0
   else
