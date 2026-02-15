@@ -77,7 +77,10 @@ MSG_PROJ_LINK_CLAUDEMD="CLAUDE.md 심링크 연결"
 MSG_PROJ_LINK_LOCALMD="CLAUDE.local.md 심링크 연결"
 MSG_PROJ_GITIGNORE=".gitignore 업데이트"
 MSG_PROJ_DONE="연결 완료"
-MSG_PROJ_NAME_CONFLICT="이름이 워크스페이스에 이미 존재합니다. 다른 이름을 입력하세요 (빈 값이면 건너뜁니다):"
+MSG_PROJ_NAME_CONFLICT="이름이 워크스페이스에 이미 존재합니다."
+MSG_PROJ_USE_EXISTING="기존 워크스페이스 설정을 사용하시겠습니까?"
+MSG_PROJ_USE_EXISTING_YES="기존 설정 사용"
+MSG_PROJ_RENAME="이름 변경"
 
 # Obsidian
 MSG_OBS_TITLE="Obsidian"

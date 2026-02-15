@@ -474,12 +474,17 @@ EOF
     ws_project="$WORKSPACE/projects/$project_name"
     if [ -d "$ws_project" ]; then
       echo "  ⚠️  '$project_name' $MSG_PROJ_NAME_CONFLICT"
-      read -p "  → " alt_name
-      if [ -z "$alt_name" ]; then
-        continue
+      echo "  $MSG_PROJ_USE_EXISTING"
+      select_menu "$MSG_PROJ_USE_EXISTING_YES" "$MSG_PROJ_RENAME"
+
+      if [ "$MENU_RESULT" -eq 1 ]; then
+        read -p "  → " alt_name
+        if [ -z "$alt_name" ]; then
+          continue
+        fi
+        project_name="$alt_name"
+        ws_project="$WORKSPACE/projects/$project_name"
       fi
-      project_name="$alt_name"
-      ws_project="$WORKSPACE/projects/$project_name"
     fi
 
     mkdir -p "$ws_project/.claude/agents"

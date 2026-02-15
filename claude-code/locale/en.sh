@@ -77,7 +77,10 @@ MSG_PROJ_LINK_CLAUDEMD="CLAUDE.md symlink created"
 MSG_PROJ_LINK_LOCALMD="CLAUDE.local.md symlink created"
 MSG_PROJ_GITIGNORE=".gitignore updated"
 MSG_PROJ_DONE="connected"
-MSG_PROJ_NAME_CONFLICT="already exists in workspace. Enter a different name (or leave blank to skip):"
+MSG_PROJ_NAME_CONFLICT="already exists in workspace."
+MSG_PROJ_USE_EXISTING="Use existing workspace settings?"
+MSG_PROJ_USE_EXISTING_YES="Use existing"
+MSG_PROJ_RENAME="Rename"
 
 # Obsidian
 MSG_OBS_TITLE="Obsidian"

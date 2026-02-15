@@ -77,7 +77,10 @@ MSG_PROJ_LINK_CLAUDEMD="CLAUDE.md シンボリックリンク作成"
 MSG_PROJ_LINK_LOCALMD="CLAUDE.local.md シンボリックリンク作成"
 MSG_PROJ_GITIGNORE=".gitignore 更新"
 MSG_PROJ_DONE="接続完了"
-MSG_PROJ_NAME_CONFLICT="がワークスペースに既に存在します。別の名前を入力してください（空欄でスキップ）："
+MSG_PROJ_NAME_CONFLICT="がワークスペースに既に存在します。"
+MSG_PROJ_USE_EXISTING="既存のワークスペース設定を使用しますか？"
+MSG_PROJ_USE_EXISTING_YES="既存を使用"
+MSG_PROJ_RENAME="名前変更"
 
 # Obsidian
 MSG_OBS_TITLE="Obsidian"
