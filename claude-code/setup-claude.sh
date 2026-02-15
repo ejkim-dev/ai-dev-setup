@@ -431,14 +431,42 @@ EOF
     select_menu "$MSG_YES" "$MSG_NO"
     [ "$MENU_RESULT" -ne 0 ] && break
 
-    read -p "  $MSG_PROJ_PATH" project_path
-    project_path="${project_path/#\~/$HOME}"
-    project_name=$(basename "$project_path")
+    # Get and validate project path
+    while true; do
+      read -p "  $MSG_PROJ_PATH" project_path
 
-    if [ ! -d "$project_path" ]; then
-      echo "  ❌ $MSG_PROJ_NOT_FOUND $project_path"
+      # Trim whitespace
+      project_path="${project_path#"${project_path%%[![:space:]]*}"}"
+      project_path="${project_path%"${project_path##*[![:space:]]}"}"
+
+      # Check if empty (user wants to skip)
+      if [ -z "$project_path" ]; then
+        echo "  → $MSG_PROJ_SKIP"
+        echo ""
+        break  # Exit inner loop, return to Y/N menu
+      fi
+
+      # Expand tilde
+      project_path="${project_path/#\~/$HOME}"
+
+      # Check if directory exists
+      if [ ! -d "$project_path" ]; then
+        echo "  ❌ $MSG_PROJ_NOT_FOUND: $project_path"
+        echo "  → $MSG_PROJ_TRY_AGAIN"
+        echo ""
+        continue
+      fi
+
+      # Valid path, exit inner loop
+      break
+    done
+
+    # If user skipped (empty path), continue outer loop
+    if [ -z "$project_path" ]; then
       continue
     fi
+
+    project_name=$(basename "$project_path")
 
     # Handle name collision
     ws_project="$WORKSPACE/projects/$project_name"
