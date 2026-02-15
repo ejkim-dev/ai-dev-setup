@@ -108,63 +108,32 @@ select_menu() {
   MENU_RESULT=$selected
 }
 
-# Import Terminal.app profile using PlistBuddy
+# Import Terminal.app profile using open + defaults
 # Usage: import_terminal_profile "/path/to/profile.terminal"
 # Returns: 0 on success, 1 on failure
+#
+# Implementation note:
+# - Uses 'open' command to import profile (immediate reflection)
+# - Uses 'defaults write' to set as default (applied after restart)
+# - Does NOT quit Terminal.app (user can see installation progress)
+# - See .claude/notes/terminal-profile-installation-investigation.md for details
 import_terminal_profile() {
   local dev_terminal="$1"
-  local terminal_plist="$HOME/Library/Preferences/com.apple.Terminal.plist"
 
-  # Backup
-  cp "$terminal_plist" "${terminal_plist}.backup" 2>/dev/null || true
-
-  # Convert to XML (PlistBuddy can read binary but safer to convert)
-  plutil -convert xml1 "$terminal_plist" 2>/dev/null || true
-
-  # Ensure Window Settings dictionary exists
-  if ! /usr/libexec/PlistBuddy -c "Print :Window\ Settings" "$terminal_plist" >/dev/null 2>&1; then
-    /usr/libexec/PlistBuddy -c "Add :Window\ Settings dict" "$terminal_plist" 2>/dev/null || true
-  fi
-
-  # Delete existing Dev profile if any
-  /usr/libexec/PlistBuddy -c "Delete :Window\ Settings:Dev" "$terminal_plist" 2>/dev/null || true
-
-  # Convert Dev.terminal to XML
-  local temp_dev="/tmp/dev-profile-$$.xml"
-  plutil -convert xml1 "$dev_terminal" -o "$temp_dev" 2>/dev/null
-
-  if [ ! -f "$temp_dev" ]; then
-    rm -f "$temp_dev"
+  # 1. Import profile using open (Terminal.app recognizes it immediately)
+  if ! open "$dev_terminal" 2>/dev/null; then
     return 1
   fi
 
-  # Add Dev profile and merge
-  /usr/libexec/PlistBuddy -c "Add :Window\ Settings:Dev dict" "$terminal_plist" 2>/dev/null
-  /usr/libexec/PlistBuddy -c "Merge $temp_dev :Window\ Settings:Dev" "$terminal_plist" 2>/dev/null
+  # Wait for Terminal.app to process the import
+  sleep 1
 
-  # Set as default profile
-  /usr/libexec/PlistBuddy -c "Set :Default\ Window\ Settings Dev" "$terminal_plist" 2>/dev/null || \
-    /usr/libexec/PlistBuddy -c "Add :Default\ Window\ Settings string Dev" "$terminal_plist" 2>/dev/null
+  # 2. Set as default profile using defaults write (applied after restart)
+  defaults write com.apple.Terminal "Default Window Settings" -string "Dev" 2>/dev/null || return 1
+  defaults write com.apple.Terminal "Startup Window Settings" -string "Dev" 2>/dev/null || return 1
 
-  /usr/libexec/PlistBuddy -c "Set :Startup\ Window\ Settings Dev" "$terminal_plist" 2>/dev/null || \
-    /usr/libexec/PlistBuddy -c "Add :Startup\ Window\ Settings string Dev" "$terminal_plist" 2>/dev/null
-
-  # Convert back to binary
-  plutil -convert binary1 "$terminal_plist" 2>/dev/null
-
-  # Restart cfprefsd to reload preferences
-  killall cfprefsd 2>/dev/null || true
-
-  # Force sync settings (reads plist and updates cache)
-  defaults read com.apple.Terminal >/dev/null 2>&1
-
-  # Cleanup
-  rm -f "$temp_dev"
-
-  # Verify: Check both profile exists AND is set as default
-  sleep 2
-  if /usr/libexec/PlistBuddy -c "Print :Window\ Settings:Dev" "$terminal_plist" >/dev/null 2>&1 && \
-     defaults read com.apple.Terminal "Default Window Settings" 2>/dev/null | grep -q "Dev"; then
+  # 3. Verify settings were written to plist
+  if defaults read com.apple.Terminal "Default Window Settings" 2>/dev/null | grep -q "Dev"; then
     return 0
   else
     return 1
