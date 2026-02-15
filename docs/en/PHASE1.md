@@ -301,14 +301,13 @@ Terminal multiplexer for split panes and session management.
   Next: Phase 2 - Claude Code Setup (optional)
 
   • Workspace management (central config)
-  • Global agents (workspace-manager, translate, doc-writer)
+  • Shared agents (workspace-manager, translate, doc-writer)
   • MCP servers (document search)
   • Git + GitHub (recommended for Claude features)
 
 Continue to Phase 2 now?
 
   ▸ Yes, open new terminal
-    Yes, continue in current terminal
     No, run manually later
 ```
 
@@ -317,11 +316,7 @@ Continue to Phase 2 now?
 - Automatically runs Phase 2 setup
 - Ensures new PATH and shell configs are loaded
 
-**Option 2: Yes, continue in current terminal**
-- Runs Phase 2 immediately
-- ⚠️ Warning: Terminal restart recommended for config changes
-
-**Option 3: No, run manually later**
+**Option 2: No, run manually later**
 - Shows command to run later: `~/claude-code-setup/setup-claude.sh`
 
 ---
@@ -433,9 +428,8 @@ Then re-run this script.
 After Phase 1, you can:
 
 1. **Proceed to Phase 2** (recommended for Claude Code users)
-   - Git + GitHub setup
    - Claude Code CLI installation
-   - Global agents installation
+   - Shared agents installation
    - MCP servers configuration
 
 2. **Skip Phase 2 and start coding**

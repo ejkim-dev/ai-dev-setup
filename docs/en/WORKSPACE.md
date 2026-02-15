@@ -5,7 +5,7 @@ Centralized management for Claude Code resources across all projects.
 ## Overview
 
 The `claude-workspace` provides a single location to manage:
-- Global agents (available in all projects)
+- Shared agents (available in all projects)
 - MCP server configurations
 - Project templates (CLAUDE.md, .mcp.json)
 - Project backups and settings
@@ -14,11 +14,16 @@ The `claude-workspace` provides a single location to manage:
 
 ```
 ~/claude-workspace/
-├── global/
-│   └── agents/                    # Global agents
-│       ├── workspace-manager.md   # Project structure management
-│       ├── translate.md           # Multi-language translation
-│       └── doc-writer.md          # Documentation generation
+├── shared/
+│   ├── agents/                    # Shared agents
+│   │   ├── workspace-manager.md   # Project structure management
+│   │   ├── translate.md           # Multi-language translation
+│   │   └── doc-writer.md          # Documentation generation
+│   ├── templates/                 # Templates for new projects
+│   │   ├── CLAUDE.md              # Template project rules
+│   │   ├── CLAUDE.local.md        # Template local settings
+│   │   └── .mcp.json              # Template MCP configuration
+│   └── mcp/                       # MCP configurations
 │
 ├── projects/                      # Per-project configurations
 │   └── my-app/                    # Example project
@@ -26,19 +31,16 @@ The `claude-workspace` provides a single location to manage:
 │       ├── CLAUDE.md              # Project rules
 │       └── CLAUDE.local.md        # Local-only settings
 │
-└── templates/                     # Templates for new projects
-    ├── CLAUDE.md                  # Template project rules
-    ├── CLAUDE.local.md            # Template local settings
-    └── .mcp.json                  # Template MCP configuration
+└── .gitignore
 ```
 
 ---
 
-## Global Agents
+## Shared Agents
 
-### What Are Global Agents?
+### What Are Shared Agents?
 
-Agents are reusable AI assistants with specific capabilities. Global agents are available in **all projects** without copying files.
+Agents are reusable AI assistants with specific capabilities. Shared agents are available in **all projects** without copying files.
 
 ### Installed Agents
 
@@ -96,7 +98,7 @@ Generates: `README.md` based on project structure and code
 
 ---
 
-## Using Global Agents in Projects
+## Using Shared Agents in Projects
 
 ### Method 1: Reference in CLAUDE.md
 
@@ -105,7 +107,7 @@ In your project's `CLAUDE.md`:
 ```markdown
 # My Project
 
-## Available Global Agents
+## Available Shared Agents
 
 - **workspace-manager**: Project structure management
 - **translate**: Multi-language support
@@ -116,7 +118,7 @@ In your project's `CLAUDE.md`:
 [Your project-specific rules here]
 ```
 
-Claude Code automatically loads agents from `~/claude-workspace/global/agents/`.
+Claude Code automatically loads agents from `~/claude-workspace/shared/agents/`.
 
 ### Method 2: Direct Invocation
 
@@ -126,7 +128,7 @@ In Claude Code chat:
 Use the workspace-manager agent to check status
 ```
 
-Claude will use the global agent without any additional setup.
+Claude will use the shared agent without any additional setup.
 
 ---
 
@@ -178,7 +180,7 @@ my-project/
 - Prefer named exports
 - Max line length: 100
 
-## Available Global Agents
+## Available Shared Agents
 - workspace-manager
 - translate
 - doc-writer
@@ -199,7 +201,7 @@ my-project/
 - Focus on TypeScript best practices
 
 ## Local MCP Servers
-- None (using global only)
+- None (using shared only)
 
 ## Notes
 - Remember to run tests before committing
@@ -210,19 +212,19 @@ my-project/
 
 ## MCP Server Configuration
 
-### Global vs Project-Specific MCP
+### Shared vs Project-Specific MCP
 
-**Global MCP** (`~/.claude/.mcp.json`):
+**Shared MCP** (`~/.claude/.mcp.json`):
 - Servers available in all projects
 - Configured during Phase 2 setup
 - Examples: local-rag, filesystem, serena
 
 **Project MCP** (`my-project/.claude/.mcp.json`):
 - Servers specific to one project
-- Overrides/extends global configuration
+- Overrides/extends shared configuration
 - Examples: project-specific databases, APIs
 
-### Global .mcp.json Example
+### Shared .mcp.json Example
 
 ```json
 {
@@ -268,7 +270,7 @@ my-project/
 
 **Configuration precedence**:
 1. Project `.mcp.json` (highest priority)
-2. Global `.mcp.json` (fallback)
+2. Shared `.mcp.json` (fallback)
 
 ---
 
@@ -291,14 +293,14 @@ The `workspace-manager` agent handles symlinks automatically:
 ```
 
 Creates symlinks:
-- `my-app/.claude/agents` → `~/claude-workspace/global/agents`
+- `my-app/.claude/agents` → `~/claude-workspace/shared/agents`
 - `my-app/CLAUDE.md` → `~/claude-workspace/projects/my-app/CLAUDE.md`
 
 ### Manual Symlink Creation (macOS/Linux)
 
 ```bash
-# Link global agents to project
-ln -s ~/claude-workspace/global/agents ~/projects/my-app/.claude/agents
+# Link shared agents to project
+ln -s ~/claude-workspace/shared/agents ~/projects/my-app/.claude/agents
 
 # Link project CLAUDE.md to workspace
 ln -s ~/claude-workspace/projects/my-app/CLAUDE.md ~/projects/my-app/CLAUDE.md
@@ -312,7 +314,7 @@ ln -s ~/claude-workspace/projects/my-app/CLAUDE.md ~/projects/my-app/CLAUDE.md
 # Enable Developer Mode: Settings → Update & Security → For developers
 
 # Create symlinks
-New-Item -ItemType SymbolicLink -Path "C:\projects\my-app\.claude\agents" -Target "$env:USERPROFILE\claude-workspace\global\agents"
+New-Item -ItemType SymbolicLink -Path "C:\projects\my-app\.claude\agents" -Target "$env:USERPROFILE\claude-workspace\shared\agents"
 ```
 
 ### .gitignore Integration
@@ -348,17 +350,17 @@ Templates provide starting points for new projects.
 
 ```bash
 # Copy CLAUDE.md template
-cp ~/claude-workspace/templates/CLAUDE.md ~/projects/new-app/
+cp ~/claude-workspace/shared/templates/CLAUDE.md ~/projects/new-app/
 
 # Copy MCP template
-cp ~/claude-workspace/templates/.mcp.json ~/projects/new-app/.claude/
+cp ~/claude-workspace/shared/templates/.mcp.json ~/projects/new-app/.claude/
 ```
 
 ### Template Variables
 
 Templates use `__PLACEHOLDER__` syntax for substitution:
 
-**Template** (`templates/CLAUDE.md`):
+**Template** (`shared/templates/CLAUDE.md`):
 ```markdown
 # __PROJECT_NAME__
 
@@ -391,8 +393,8 @@ Tech stack: React, TypeScript, Node.js
 
 3. **Copy templates**:
    ```bash
-   cp ~/claude-workspace/templates/CLAUDE.md ./
-   cp ~/claude-workspace/templates/.mcp.json ./.claude/
+   cp ~/claude-workspace/shared/templates/CLAUDE.md ./
+   cp ~/claude-workspace/shared/templates/.mcp.json ./.claude/
    ```
 
 4. **Edit CLAUDE.md** for your project
@@ -402,11 +404,11 @@ Tech stack: React, TypeScript, Node.js
    claude chat
    ```
 
-### Adding a Global Agent
+### Adding a Shared Agent
 
 1. **Create agent file**:
    ```bash
-   nano ~/claude-workspace/global/agents/my-agent.md
+   nano ~/claude-workspace/shared/agents/my-agent.md
    ```
 
 2. **Write agent definition**:
@@ -453,14 +455,14 @@ cp ~/claude-workspace/projects/my-app/CLAUDE.md ~/projects/my-app/
 
 ### Do's
 
-✅ **Use global agents for common tasks**
+✅ **Use shared agents for common tasks**
 - workspace-manager for all projects
 - translate for multi-language docs
 - doc-writer for README generation
 
 ✅ **Keep CLAUDE.md focused**
 - Project-specific rules only
-- Reference global agents, don't duplicate
+- Reference shared agents, don't duplicate
 - Update when architecture changes
 
 ✅ **Use CLAUDE.local.md for personal settings**
@@ -479,7 +481,7 @@ cp -r ~/claude-workspace ~/Dropbox/backups/claude-workspace-$(date +%F)
 - Let .gitignore handle it
 - Prevents duplication and conflicts
 
-❌ **Don't duplicate global agents in projects**
+❌ **Don't duplicate shared agents in projects**
 - Reference them, don't copy
 - Updates propagate automatically
 
@@ -504,11 +506,11 @@ cp -r ~/claude-workspace ~/Dropbox/backups/claude-workspace-$(date +%F)
 # Check symlink
 ls -la ~/projects/my-app/.claude/agents
 
-# Should show: agents -> /Users/you/claude-workspace/global/agents
+# Should show: agents -> /Users/you/claude-workspace/shared/agents
 
 # If broken, recreate:
 rm ~/projects/my-app/.claude/agents
-ln -s ~/claude-workspace/global/agents ~/projects/my-app/.claude/agents
+ln -s ~/claude-workspace/shared/agents ~/projects/my-app/.claude/agents
 ```
 
 ### MCP Server Not Loading
@@ -529,13 +531,13 @@ npm list -g | grep local-rag-mcp
 
 If not found: Reinstall server
 
-### Global Agent Not Available
+### Shared Agent Not Available
 
 **Symptom**: Claude Code doesn't recognize agent
 
 **Check agent file exists**:
 ```bash
-ls ~/claude-workspace/global/agents/workspace-manager.md
+ls ~/claude-workspace/shared/agents/workspace-manager.md
 ```
 
 **Check CLAUDE.md references agent**:
@@ -545,7 +547,7 @@ grep "workspace-manager" ~/projects/my-app/CLAUDE.md
 
 Add if missing:
 ```markdown
-## Available Global Agents
+## Available Shared Agents
 - workspace-manager
 ```
 
@@ -578,7 +580,7 @@ Share workspace structure (not content) with team:
    ```bash
    git init ~/claude-workspace
    cd ~/claude-workspace
-   git add templates/
+   git add shared/
    git commit -m "Add project templates"
    ```
 
@@ -589,7 +591,7 @@ Share workspace structure (not content) with team:
 
 3. **Each member adds own agents**:
    ```bash
-   cp custom-agent.md ~/claude-workspace/global/agents/
+   cp custom-agent.md ~/claude-workspace/shared/agents/
    ```
 
 ### Custom MCP Servers

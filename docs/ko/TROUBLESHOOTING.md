@@ -828,9 +828,9 @@ bash /tmp/uninstall-tools.sh
 cp -r ~/claude-workspace ~/claude-workspace-backup-$(date +%F)
 
 # 또는 특정 항목만 백업
-cp -r ~/claude-workspace/global/agents ~/agents-backup
+cp -r ~/claude-workspace/shared/agents ~/agents-backup
 cp -r ~/claude-workspace/projects ~/projects-backup
-cp -r ~/claude-workspace/templates ~/templates-backup
+cp -r ~/claude-workspace/shared/templates ~/templates-backup
 ```
 
 **2단계: 워크스페이스 제거**
@@ -840,10 +840,10 @@ cp -r ~/claude-workspace/templates ~/templates-backup
 rm -rf ~/claude-workspace
 ```
 
-**3단계: 전역 심볼릭 링크 제거**
+**3단계: 공유 에이전트 심볼릭 링크 제거**
 
 ```bash
-# 전역 에이전트로의 심볼릭 링크 제거
+# 공유 에이전트로의 심볼릭 링크 제거
 rm ~/.claude/agents
 ```
 
@@ -921,9 +921,9 @@ npm list -g --depth=0 | grep mcp
 # 워크스페이스 복원
 mv ~/claude-workspace-backup-YYYY-MM-DD ~/claude-workspace
 
-# 전역 심볼릭 링크 재생성
+# 공유 에이전트 심볼릭 링크 재생성
 mkdir -p ~/.claude
-ln -s ~/claude-workspace/global/agents ~/.claude/agents
+ln -s ~/claude-workspace/shared/agents ~/.claude/agents
 
 # Claude Code 재설치
 npm install -g @anthropic-ai/claude-code

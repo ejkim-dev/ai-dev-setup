@@ -13,6 +13,9 @@ local.properties
 # Node
 node_modules/
 
+# Obsidian
+.obsidian/
+
 # OS
 *.swp
 *~

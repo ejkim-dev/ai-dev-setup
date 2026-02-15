@@ -300,15 +300,14 @@ Select your language:
 
   다음: Phase 2 - Claude Code 설정 (선택 사항)
 
-  • Workspace 관리 (중앙 설정)
-  • Global agents (workspace-manager, translate, doc-writer)
+  • 워크스페이스 관리 (중앙 설정)
+  • 공유 에이전트 (workspace-manager, translate, doc-writer)
   • MCP 서버 (문서 검색)
-  • Git + GitHub (Claude 기능에 권장)
+  • Git + GitHub (Claude 기능 활용 권장)
 
 Phase 2를 지금 진행하시겠습니까?
 
   ▸ 예, 새 터미널 열기
-    예, 현재 터미널에서 계속
     아니오, 나중에 수동 실행
 ```
 
@@ -317,11 +316,7 @@ Phase 2를 지금 진행하시겠습니까?
 - 자동으로 Phase 2 설정을 실행합니다
 - 새로운 PATH와 쉘 설정이 로드됩니다
 
-**옵션 2: 예, 현재 터미널에서 계속**
-- 즉시 Phase 2를 실행합니다
-- ⚠️ 경고: 설정 변경을 위해 터미널 재시작 권장
-
-**옵션 3: 아니오, 나중에 수동 실행**
+**옵션 2: 아니오, 나중에 수동 실행**
 - 나중에 실행할 명령어 표시: `~/claude-code-setup/setup-claude.sh`
 
 ---
@@ -433,9 +428,8 @@ Node.js는 AI 코딩 도구에 필요합니다.
 Phase 1 이후 다음을 수행할 수 있습니다:
 
 1. **Phase 2로 진행** (Claude Code 사용자에게 권장)
-   - Git + GitHub 설정
    - Claude Code CLI 설치
-   - Global agents 설치
+   - Shared agents 설치
    - MCP 서버 설정
 
 2. **Phase 2를 건너뛰고 코딩 시작**

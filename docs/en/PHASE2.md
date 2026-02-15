@@ -1,6 +1,6 @@
 # Phase 2: Claude Code Setup
 
-Set up Claude Code CLI, workspace management, global agents, and MCP servers.
+Set up Claude Code workspace, shared agents, and MCP servers.
 
 ## Overview
 
@@ -21,13 +21,8 @@ Set up Claude Code CLI, workspace management, global agents, and MCP servers.
 
 | Component | Description | macOS | Windows |
 |-----------|-------------|:-----:|:-------:|
-| **Git** | Version control system | ✅ | ✅ |
-| **GitHub CLI** | GitHub command-line tool | ✅ | ✅ |
-| **SSH Key** | GitHub authentication | ✅ | ✅ |
-| **Node.js** | Verification (installed in Phase 1) | ✅ | ✅ |
-| **Claude Code CLI** | Anthropic's AI coding assistant | ✅ | ✅ |
 | **claude-workspace** | Central configuration structure | ✅ | ✅ |
-| **Global Agents** | Reusable agents (multi-select) | ✅ | ✅ |
+| **Shared Agents** | Reusable agents (multi-select) | ✅ | ✅ |
 | **MCP Servers** | 5 servers (multi-select) | ✅ | ✅ |
 | **Obsidian** | Note-taking app (optional) | ✅ | ✅ |
 
@@ -43,114 +38,15 @@ If not found, prompts for language selection.
 
 ---
 
-### Step 1: Git Installation
-
-**Auto-detection**: If Git is already installed, skips this step
-
-```
-[1/8] Git
-
-  ✅ Already installed: git version 2.39.0
-```
-
-**If not installed**:
-- macOS: Installs via Homebrew (`brew install git`)
-- Windows: Installs via winget
-
----
-
-### Step 2: GitHub CLI Installation
-
-**Auto-detection**: If GitHub CLI is already installed, skips this step
-
-```
-[2/8] GitHub CLI
-
-  ⏭️ Already installed: gh version 2.40.0
-```
-
-**If not installed**:
-- Installs `gh` via package manager
-- Prompts for authentication:
-
-```
-GitHub CLI requires authentication.
-
-  ▸ Authenticate now
-    Skip (can authenticate later)
-```
-
-**Authentication process**:
-1. Opens browser for OAuth login
-2. Or provides code for manual authentication
-3. Verifies authentication succeeded
-
-**Why authenticate?**
-- Create pull requests from Claude Code
-- Manage issues and repositories
-- Push code with proper credentials
-
----
-
-### Step 3: Node.js Verification
-
-**Auto-detection**: Verifies Node.js from Phase 1
-
-```
-[3/8] Node.js
-
-  ✅ Already installed: v20.10.0
-```
-
-**If not found**:
-- Offers to install via package manager
-- Required for Claude Code CLI and MCP servers
-
----
-
-### Step 4: Claude Code CLI Installation
-
-**Auto-detection**: Checks if Claude Code is already installed
-
-```
-[4/8] Claude Code CLI
-
-  ⏭️ Already installed: claude version 1.2.3
-```
-
-**If not installed**:
-```
-[4/8] Claude Code CLI
-
-  Installing Claude Code...
-  ✅ Claude Code installed
-```
-
-**Installation**: `npm install -g @anthropic-ai/claude-code`
-
-**First-time setup** (if no API key configured):
-```
-Claude Code needs initial setup.
-
-Run setup now?
-
-  ▸ Yes, run setup
-    No, skip (run manually later)
-```
-
-If "Yes": Runs `claude init` (prompts for API key in Claude's own interface)
-
----
-
-### Step 5: claude-workspace Structure
+### Step 1 [1/3]: claude-workspace
 
 Creates centralized workspace for managing Claude Code resources.
 
 **Directory structure**:
 ```
 ~/claude-workspace/
-├── global/
-│   └── agents/           # Global agents (all projects)
+├── shared/
+│   └── agents/           # Shared agents (all projects)
 ├── projects/             # Per-project settings
 └── templates/            # MCP, CLAUDE.md templates
 ```
@@ -158,22 +54,22 @@ Creates centralized workspace for managing Claude Code resources.
 **What it does**:
 1. Creates directory structure
 2. Generates README.md with usage instructions
-3. Skips if workspace already exists (preserves existing config)
+3. Installs selected agents
+4. Copies templates and connects projects
+5. Skips if workspace already exists (preserves existing config)
 
 **Benefits**:
-- **Centralized management**: One place for all global resources
+- **Centralized management**: One place for all shared resources
 - **Reusable agents**: Available across all projects
 - **Template library**: Quick project initialization
 - **Backup location**: Project-specific configs
 
----
+#### Shared Agents
 
-### Step 6: Global Agents Installation
-
-**Multi-select menu** for choosing agents:
+As part of workspace creation, you can select agents to install via a **multi-select menu**:
 
 ```
-[6/8] Global Agents
+[1/3] Workspace
 
   Select agents to install:
 
@@ -188,7 +84,7 @@ Creates centralized workspace for managing Claude Code resources.
 
 **Agent descriptions**:
 
-#### workspace-manager (recommended)
+##### workspace-manager (recommended)
 **What it does**:
 - Connect/disconnect projects to workspace
 - Manage symlinks automatically
@@ -200,7 +96,7 @@ Creates centralized workspace for managing Claude Code resources.
 - Link existing project to workspace
 - Sync CLAUDE.md across projects
 
-#### translate (recommended)
+##### translate (recommended)
 **What it does**:
 - Translate documents between languages (en/ko/ja)
 - Preserve markdown formatting
@@ -212,7 +108,7 @@ Creates centralized workspace for managing Claude Code resources.
 - Localize documentation
 - Create multi-language guides
 
-#### doc-writer (recommended)
+##### doc-writer (recommended)
 **What it does**:
 - Generate README from code
 - Create CLAUDE.md for projects
@@ -224,11 +120,11 @@ Creates centralized workspace for managing Claude Code resources.
 - Update docs after code changes
 - Standardize documentation format
 
-**Installation**: Copies selected agents to `~/claude-workspace/global/agents/`
+**Installation**: Copies selected agents to `~/claude-workspace/shared/agents/`
 
 **Usage in projects**: Reference in CLAUDE.md:
 ```markdown
-# Available Global Agents
+# Available Shared Agents
 - workspace-manager
 - translate
 - doc-writer
@@ -236,12 +132,12 @@ Creates centralized workspace for managing Claude Code resources.
 
 ---
 
-### Step 7: MCP Servers Installation
+### Step 2 [2/3]: MCP Servers
 
 **Multi-select menu** for choosing MCP servers (5 total):
 
 ```
-[7/8] MCP Servers
+[2/3] MCP Servers
 
   Select servers to install:
 
@@ -385,12 +281,12 @@ Creates centralized workspace for managing Claude Code resources.
 
 ---
 
-### Step 8: Obsidian Installation (Optional)
+### Step 3 [3/3]: Obsidian (Optional)
 
 Markdown-based note-taking app with Claude Code integration.
 
 ```
-[8/8] Obsidian
+[3/3] Obsidian
 
   A markdown-based note-taking and documentation app.
   Your documents can be searched by Claude Code via local-rag.
@@ -438,7 +334,7 @@ Next steps:
      touch CLAUDE.md CLAUDE.local.md
 
   3. Check installed agents:
-     ls ~/claude-workspace/global/agents/
+     ls ~/claude-workspace/shared/agents/
 
   4. Verify MCP servers:
      cat ~/.claude/.mcp.json
@@ -496,33 +392,6 @@ Continue anyway?
     No, exit
 ```
 
-### GitHub Authentication Failed
-
-```
-⚠️ GitHub authentication failed
-
-You can authenticate later:
-  gh auth login
-
-Continue without authentication?
-
-  ▸ Yes
-    No
-```
-
-### API Key Not Configured
-
-```
-Claude Code needs an API key.
-
-Get your key at: https://console.anthropic.com/
-
-Run setup now?
-
-  ▸ Yes, run setup
-    No, skip (configure later)
-```
-
 ---
 
 ## Configuration Files
@@ -543,7 +412,7 @@ MCP server configuration:
 Central workspace structure:
 ```
 claude-workspace/
-├── global/agents/        # Global agents
+├── shared/agents/        # Shared agents
 │   ├── workspace-manager.md
 │   ├── translate.md
 │   └── doc-writer.md

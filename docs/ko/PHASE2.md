@@ -1,6 +1,6 @@
 # Phase 2: Claude Code 설정
 
-Claude Code CLI, 워크스페이스 관리, 전역 에이전트, MCP 서버를 설정합니다.
+Claude Code 워크스페이스, 공유 에이전트, MCP 서버를 설정합니다.
 
 ## 개요
 
@@ -21,13 +21,8 @@ Claude Code CLI, 워크스페이스 관리, 전역 에이전트, MCP 서버를 �
 
 | 구성 요소 | 설명 | macOS | Windows |
 |-----------|------|:-----:|:-------:|
-| **Git** | 버전 관리 시스템 | ✅ | ✅ |
-| **GitHub CLI** | GitHub 명령줄 도구 | ✅ | ✅ |
-| **SSH 키** | GitHub 인증 | ✅ | ✅ |
-| **Node.js** | 확인 (Phase 1에서 설치됨) | ✅ | ✅ |
-| **Claude Code CLI** | Anthropic의 AI 코딩 어시스턴트 | ✅ | ✅ |
 | **claude-workspace** | 중앙 설정 구조 | ✅ | ✅ |
-| **전역 에이전트** | 재사용 가능한 에이전트 (다중 선택) | ✅ | ✅ |
+| **공유 에이전트** | 재사용 가능한 에이전트 (다중 선택) | ✅ | ✅ |
 | **MCP 서버** | 5개 서버 (다중 선택) | ✅ | ✅ |
 | **Obsidian** | 노트 앱 (선택사항) | ✅ | ✅ |
 
@@ -43,114 +38,15 @@ Claude Code CLI, 워크스페이스 관리, 전역 에이전트, MCP 서버를 �
 
 ---
 
-### Step 1: Git 설치
-
-**자동 감지**: Git이 이미 설치되어 있으면 이 단계를 건너뜁니다
-
-```
-[1/8] Git
-
-  ✅ 이미 설치되어 있습니다: git version 2.39.0
-```
-
-**설치되지 않은 경우**:
-- macOS: Homebrew를 통해 설치 (`brew install git`)
-- Windows: winget을 통해 설치
-
----
-
-### Step 2: GitHub CLI 설치
-
-**자동 감지**: GitHub CLI가 이미 설치되어 있으면 이 단계를 건너뜁니다
-
-```
-[2/8] GitHub CLI
-
-  ⏭️ 이미 설치되어 있습니다: gh version 2.40.0
-```
-
-**설치되지 않은 경우**:
-- 패키지 관리자를 통해 `gh` 설치
-- 인증 프롬프트:
-
-```
-GitHub CLI에 인증이 필요합니다.
-
-  ▸ 지금 인증하기
-    건너뛰기 (나중에 인증 가능)
-```
-
-**인증 과정**:
-1. OAuth 로그인을 위해 브라우저 열기
-2. 또는 수동 인증을 위한 코드 제공
-3. 인증 성공 확인
-
-**왜 인증이 필요한가요?**
-- Claude Code에서 풀 리퀘스트 생성
-- 이슈 및 저장소 관리
-- 적절한 자격 증명으로 코드 푸시
-
----
-
-### Step 3: Node.js 확인
-
-**자동 감지**: Phase 1의 Node.js 확인
-
-```
-[3/8] Node.js
-
-  ✅ 이미 설치되어 있습니다: v20.10.0
-```
-
-**찾을 수 없는 경우**:
-- 패키지 관리자를 통해 설치 제안
-- Claude Code CLI 및 MCP 서버에 필요
-
----
-
-### Step 4: Claude Code CLI 설치
-
-**자동 감지**: Claude Code가 이미 설치되어 있는지 확인
-
-```
-[4/8] Claude Code CLI
-
-  ⏭️ 이미 설치되어 있습니다: claude version 1.2.3
-```
-
-**설치되지 않은 경우**:
-```
-[4/8] Claude Code CLI
-
-  Claude Code 설치 중...
-  ✅ Claude Code 설치 완료
-```
-
-**설치**: `npm install -g @anthropic-ai/claude-code`
-
-**처음 설정** (API 키가 구성되지 않은 경우):
-```
-Claude Code 초기 설정이 필요합니다.
-
-지금 설정을 실행하시겠습니까?
-
-  ▸ 예, 설정 실행
-    아니오, 건너뛰기 (나중에 수동으로 실행)
-```
-
-"예"를 선택하면: `claude init` 실행 (Claude의 자체 인터페이스에서 API 키 입력 프롬프트)
-
----
-
-### Step 5: claude-workspace 구조
+### Step 1 [1/3]: claude-workspace
 
 Claude Code 리소스 관리를 위한 중앙 집중식 워크스페이스를 생성합니다.
 
 **디렉토리 구조**:
 ```
 ~/claude-workspace/
-├── global/
-│   └── agents/           # 전역 에이전트 (모든 프로젝트)
+├── shared/
+│   └── agents/           # 공유 에이전트 (모든 프로젝트)
 ├── projects/             # 프로젝트별 설정
 └── templates/            # MCP, CLAUDE.md 템플릿
 ```
@@ -158,22 +54,22 @@ Claude Code 리소스 관리를 위한 중앙 집중식 워크스페이스를 �
 **수행 작업**:
 1. 디렉토리 구조 생성
 2. 사용 지침이 포함된 README.md 생성
-3. 워크스페이스가 이미 존재하면 건너뜀 (기존 설정 유지)
+3. 선택한 에이전트 설치
+4. 템플릿 복사 및 프로젝트 연결
+5. 워크스페이스가 이미 존재하면 건너뜀 (기존 설정 유지)
 
 **이점**:
-- **중앙 집중식 관리**: 모든 전역 리소스를 한 곳에서 관리
+- **중앙 집중식 관리**: 모든 공유 리소스를 한 곳에서 관리
 - **재사용 가능한 에이전트**: 모든 프로젝트에서 사용 가능
 - **템플릿 라이브러리**: 빠른 프로젝트 초기화
 - **백업 위치**: 프로젝트별 설정
 
----
+#### 공유 에이전트
 
-### Step 6: 전역 에이전트 설치
-
-에이전트 선택을 위한 **다중 선택 메뉴**:
+워크스페이스 생성의 일부로, **다중 선택 메뉴**를 통해 설치할 에이전트를 선택할 수 있습니다:
 
 ```
-[6/8] 전역 에이전트
+[1/3] 워크스페이스
 
   설치할 에이전트를 선택하세요:
 
@@ -188,7 +84,7 @@ Claude Code 리소스 관리를 위한 중앙 집중식 워크스페이스를 �
 
 **에이전트 설명**:
 
-#### workspace-manager (권장)
+##### workspace-manager (권장)
 **역할**:
 - 워크스페이스에 프로젝트 연결/연결 해제
 - 심볼릭 링크 자동 관리
@@ -200,7 +96,7 @@ Claude Code 리소스 관리를 위한 중앙 집중식 워크스페이스를 �
 - 기존 프로젝트를 워크스페이스에 연결
 - 프로젝트 간 CLAUDE.md 동기화
 
-#### translate (권장)
+##### translate (권장)
 **역할**:
 - 언어 간 문서 번역 (en/ko/ja)
 - 마크다운 형식 유지
@@ -212,7 +108,7 @@ Claude Code 리소스 관리를 위한 중앙 집중식 워크스페이스를 �
 - 문서 현지화
 - 다국어 가이드 생성
 
-#### doc-writer (권장)
+##### doc-writer (권장)
 **역할**:
 - 코드에서 README 생성
 - 프로젝트용 CLAUDE.md 생성
@@ -224,11 +120,11 @@ Claude Code 리소스 관리를 위한 중앙 집중식 워크스페이스를 �
 - 코드 변경 후 문서 업데이트
 - 문서 형식 표준화
 
-**설치**: 선택한 에이전트를 `~/claude-workspace/global/agents/`에 복사
+**설치**: 선택한 에이전트를 `~/claude-workspace/shared/agents/`에 복사
 
 **프로젝트에서 사용**: CLAUDE.md에서 참조:
 ```markdown
-# 사용 가능한 전역 에이전트
+# 사용 가능한 공유 에이전트
 - workspace-manager
 - translate
 - doc-writer
@@ -236,12 +132,12 @@ Claude Code 리소스 관리를 위한 중앙 집중식 워크스페이스를 �
 
 ---
 
-### Step 7: MCP 서버 설치
+### Step 2 [2/3]: MCP 서버
 
 MCP 서버 선택을 위한 **다중 선택 메뉴** (총 5개):
 
 ```
-[7/8] MCP 서버
+[2/3] MCP 서버
 
   설치할 서버를 선택하세요:
 
@@ -385,12 +281,12 @@ MCP 서버 선택을 위한 **다중 선택 메뉴** (총 5개):
 
 ---
 
-### Step 8: Obsidian 설치 (선택사항)
+### Step 3 [3/3]: Obsidian (선택사항)
 
 Claude Code 통합이 가능한 마크다운 기반 노트 앱.
 
 ```
-[8/8] Obsidian
+[3/3] Obsidian
 
   마크다운 기반 노트 및 문서 앱입니다.
   문서는 local-rag를 통해 Claude Code에서 검색할 수 있습니다.
@@ -438,7 +334,7 @@ Phase 2가 완료되면 다음이 표시됩니다:
      touch CLAUDE.md CLAUDE.local.md
 
   3. 설치된 에이전트 확인:
-     ls ~/claude-workspace/global/agents/
+     ls ~/claude-workspace/shared/agents/
 
   4. MCP 서버 확인:
      cat ~/.claude/.mcp.json
@@ -496,33 +392,6 @@ Phase 1과 동일 - 모든 메뉴가 화살표 키 사용:
     아니오, 종료
 ```
 
-### GitHub 인증 실패
-
-```
-⚠️ GitHub 인증 실패
-
-나중에 인증할 수 있습니다:
-  gh auth login
-
-인증 없이 계속하시겠습니까?
-
-  ▸ 예
-    아니오
-```
-
-### API 키가 구성되지 않음
-
-```
-Claude Code에 API 키가 필요합니다.
-
-키 받기: https://console.anthropic.com/
-
-지금 설정을 실행하시겠습니까?
-
-  ▸ 예, 설정 실행
-    아니오, 건너뛰기 (나중에 구성)
-```
-
 ---
 
 ## 설정 파일
@@ -543,7 +412,7 @@ MCP 서버 설정:
 중앙 워크스페이스 구조:
 ```
 claude-workspace/
-├── global/agents/        # 전역 에이전트
+├── shared/agents/        # 공유 에이전트
 │   ├── workspace-manager.md
 │   ├── translate.md
 │   └── doc-writer.md

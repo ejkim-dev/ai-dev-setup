@@ -5,7 +5,7 @@
 ## 개요
 
 `claude-workspace`는 다음을 관리하기 위한 단일 위치를 제공합니다:
-- 전역 에이전트 (모든 프로젝트에서 사용 가능)
+- 공유 에이전트 (모든 프로젝트에서 사용 가능)
 - MCP 서버 설정
 - 프로젝트 템플릿 (CLAUDE.md, .mcp.json)
 - 프로젝트 백업 및 설정
@@ -14,11 +14,16 @@
 
 ```
 ~/claude-workspace/
-├── global/
-│   └── agents/                    # 전역 에이전트
-│       ├── workspace-manager.md   # 프로젝트 구조 관리
-│       ├── translate.md           # 다국어 번역
-│       └── doc-writer.md          # 문서 생성
+├── shared/
+│   ├── agents/                    # 공유 에이전트
+│   │   ├── workspace-manager.md   # 프로젝트 구조 관리
+│   │   ├── translate.md           # 다국어 번역
+│   │   └── doc-writer.md          # 문서 생성
+│   ├── templates/                 # 새 프로젝트용 템플릿
+│   │   ├── CLAUDE.md              # 템플릿 프로젝트 규칙
+│   │   ├── CLAUDE.local.md        # 템플릿 로컬 설정
+│   │   └── .mcp.json              # 템플릿 MCP 설정
+│   └── mcp/                       # MCP 설정
 │
 ├── projects/                      # 프로젝트별 설정
 │   └── my-app/                    # 예시 프로젝트
@@ -26,19 +31,16 @@
 │       ├── CLAUDE.md              # 프로젝트 규칙
 │       └── CLAUDE.local.md        # 로컬 전용 설정
 │
-└── templates/                     # 새 프로젝트용 템플릿
-    ├── CLAUDE.md                  # 템플릿 프로젝트 규칙
-    ├── CLAUDE.local.md            # 템플릿 로컬 설정
-    └── .mcp.json                  # 템플릿 MCP 설정
+└── .gitignore
 ```
 
 ---
 
-## 전역 에이전트
+## 공유 에이전트
 
-### 전역 에이전트란?
+### 공유 에이전트란?
 
-에이전트는 특정 기능을 가진 재사용 가능한 AI 어시스턴트입니다. 전역 에이전트는 파일을 복사하지 않고 **모든 프로젝트**에서 사용할 수 있습니다.
+에이전트는 특정 기능을 가진 재사용 가능한 AI 어시스턴트입니다. 공유 에이전트는 파일을 복사하지 않고 **모든 프로젝트**에서 사용할 수 있습니다.
 
 ### 설치된 에이전트
 
@@ -96,7 +98,7 @@
 
 ---
 
-## 프로젝트에서 전역 에이전트 사용
+## 프로젝트에서 공유 에이전트 사용
 
 ### 방법 1: CLAUDE.md에서 참조
 
@@ -105,7 +107,7 @@
 ```markdown
 # 내 프로젝트
 
-## 사용 가능한 전역 에이전트
+## 사용 가능한 공유 에이전트
 
 - **workspace-manager**: 프로젝트 구조 관리
 - **translate**: 다국어 지원
@@ -116,7 +118,7 @@
 [여기에 프로젝트별 규칙]
 ```
 
-Claude Code는 `~/claude-workspace/global/agents/`에서 자동으로 에이전트를 로드합니다.
+Claude Code는 `~/claude-workspace/shared/agents/`에서 자동으로 에이전트를 로드합니다.
 
 ### 방법 2: 직접 호출
 
@@ -126,7 +128,7 @@ Claude Code 채팅에서:
 workspace-manager 에이전트를 사용하여 상태 확인
 ```
 
-Claude는 추가 설정 없이 전역 에이전트를 사용합니다.
+Claude는 추가 설정 없이 공유 에이전트를 사용합니다.
 
 ---
 
@@ -178,7 +180,7 @@ my-project/
 - 명명된 내보내기 선호
 - 최대 줄 길이: 100
 
-## 사용 가능한 전역 에이전트
+## 사용 가능한 공유 에이전트
 - workspace-manager
 - translate
 - doc-writer
@@ -199,7 +201,7 @@ my-project/
 - TypeScript 모범 사례에 집중
 
 ## 로컬 MCP 서버
-- 없음 (전역만 사용)
+- 없음 (공유만 사용)
 
 ## 노트
 - 커밋 전 테스트 실행 기억
@@ -210,19 +212,19 @@ my-project/
 
 ## MCP 서버 설정
 
-### 전역 vs 프로젝트별 MCP
+### 공유 vs 프로젝트별 MCP
 
-**전역 MCP** (`~/.claude/.mcp.json`):
+**공유 MCP** (`~/.claude/.mcp.json`):
 - 모든 프로젝트에서 사용 가능한 서버
 - Phase 2 설정 중 구성됨
 - 예시: local-rag, filesystem, serena
 
 **프로젝트 MCP** (`my-project/.claude/.mcp.json`):
 - 한 프로젝트에만 특정된 서버
-- 전역 설정을 재정의/확장
+- 공유 설정을 재정의/확장
 - 예시: 프로젝트별 데이터베이스, API
 
-### 전역 .mcp.json 예시
+### 공유 .mcp.json 예시
 
 ```json
 {
@@ -268,7 +270,7 @@ my-project/
 
 **설정 우선순위**:
 1. 프로젝트 `.mcp.json` (최우선)
-2. 전역 `.mcp.json` (폴백)
+2. 공유 `.mcp.json` (폴백)
 
 ---
 
@@ -291,14 +293,14 @@ my-project/
 ```
 
 심볼릭 링크 생성:
-- `my-app/.claude/agents` → `~/claude-workspace/global/agents`
+- `my-app/.claude/agents` → `~/claude-workspace/shared/agents`
 - `my-app/CLAUDE.md` → `~/claude-workspace/projects/my-app/CLAUDE.md`
 
 ### 수동 심볼릭 링크 생성 (macOS/Linux)
 
 ```bash
-# 전역 에이전트를 프로젝트에 연결
-ln -s ~/claude-workspace/global/agents ~/projects/my-app/.claude/agents
+# 공유 에이전트를 프로젝트에 연결
+ln -s ~/claude-workspace/shared/agents ~/projects/my-app/.claude/agents
 
 # 프로젝트 CLAUDE.md를 워크스페이스에 연결
 ln -s ~/claude-workspace/projects/my-app/CLAUDE.md ~/projects/my-app/CLAUDE.md
@@ -312,7 +314,7 @@ ln -s ~/claude-workspace/projects/my-app/CLAUDE.md ~/projects/my-app/CLAUDE.md
 # 개발자 모드 활성화: 설정 → 업데이트 및 보안 → 개발자용
 
 # 심볼릭 링크 생성
-New-Item -ItemType SymbolicLink -Path "C:\projects\my-app\.claude\agents" -Target "$env:USERPROFILE\claude-workspace\global\agents"
+New-Item -ItemType SymbolicLink -Path "C:\projects\my-app\.claude\agents" -Target "$env:USERPROFILE\claude-workspace\shared\agents"
 ```
 
 ### .gitignore 통합
@@ -348,17 +350,17 @@ CLAUDE.local.md
 
 ```bash
 # CLAUDE.md 템플릿 복사
-cp ~/claude-workspace/templates/CLAUDE.md ~/projects/new-app/
+cp ~/claude-workspace/shared/templates/CLAUDE.md ~/projects/new-app/
 
 # MCP 템플릿 복사
-cp ~/claude-workspace/templates/.mcp.json ~/projects/new-app/.claude/
+cp ~/claude-workspace/shared/templates/.mcp.json ~/projects/new-app/.claude/
 ```
 
 ### 템플릿 변수
 
 템플릿은 치환을 위해 `__PLACEHOLDER__` 구문을 사용합니다:
 
-**템플릿** (`templates/CLAUDE.md`):
+**템플릿** (`shared/templates/CLAUDE.md`):
 ```markdown
 # __PROJECT_NAME__
 
@@ -391,8 +393,8 @@ cp ~/claude-workspace/templates/.mcp.json ~/projects/new-app/.claude/
 
 3. **템플릿 복사**:
    ```bash
-   cp ~/claude-workspace/templates/CLAUDE.md ./
-   cp ~/claude-workspace/templates/.mcp.json ./.claude/
+   cp ~/claude-workspace/shared/templates/CLAUDE.md ./
+   cp ~/claude-workspace/shared/templates/.mcp.json ./.claude/
    ```
 
 4. **프로젝트에 맞게 CLAUDE.md 편집**
@@ -402,11 +404,11 @@ cp ~/claude-workspace/templates/.mcp.json ~/projects/new-app/.claude/
    claude chat
    ```
 
-### 전역 에이전트 추가
+### 공유 에이전트 추가
 
 1. **에이전트 파일 생성**:
    ```bash
-   nano ~/claude-workspace/global/agents/my-agent.md
+   nano ~/claude-workspace/shared/agents/my-agent.md
    ```
 
 2. **에이전트 정의 작성**:
@@ -453,14 +455,14 @@ cp ~/claude-workspace/projects/my-app/CLAUDE.md ~/projects/my-app/
 
 ### 해야 할 일
 
-✅ **공통 작업에는 전역 에이전트 사용**
+✅ **공통 작업에는 공유 에이전트 사용**
 - 모든 프로젝트에 workspace-manager
 - 다국어 문서에 translate
 - README 생성에 doc-writer
 
 ✅ **CLAUDE.md를 집중적으로 유지**
 - 프로젝트별 규칙만
-- 전역 에이전트 참조, 복제하지 않기
+- 공유 에이전트 참조, 복제하지 않기
 - 아키텍처 변경 시 업데이트
 
 ✅ **개인 설정에는 CLAUDE.local.md 사용**
@@ -479,7 +481,7 @@ cp -r ~/claude-workspace ~/Dropbox/backups/claude-workspace-$(date +%F)
 - .gitignore가 처리하도록 두기
 - 중복 및 충돌 방지
 
-❌ **프로젝트에서 전역 에이전트 복제하지 않기**
+❌ **프로젝트에서 공유 에이전트 복제하지 않기**
 - 참조만 하기, 복사하지 않기
 - 업데이트가 자동으로 전파됨
 
@@ -504,11 +506,11 @@ cp -r ~/claude-workspace ~/Dropbox/backups/claude-workspace-$(date +%F)
 # 심볼릭 링크 확인
 ls -la ~/projects/my-app/.claude/agents
 
-# 다음이 표시되어야 함: agents -> /Users/you/claude-workspace/global/agents
+# 다음이 표시되어야 함: agents -> /Users/you/claude-workspace/shared/agents
 
 # 손상된 경우 재생성:
 rm ~/projects/my-app/.claude/agents
-ln -s ~/claude-workspace/global/agents ~/projects/my-app/.claude/agents
+ln -s ~/claude-workspace/shared/agents ~/projects/my-app/.claude/agents
 ```
 
 ### MCP 서버가 로드되지 않음
@@ -529,13 +531,13 @@ npm list -g | grep local-rag-mcp
 
 찾을 수 없는 경우: 서버 재설치
 
-### 전역 에이전트를 사용할 수 없음
+### 공유 에이전트를 사용할 수 없음
 
 **증상**: Claude Code가 에이전트를 인식하지 못함
 
 **에이전트 파일 존재 확인**:
 ```bash
-ls ~/claude-workspace/global/agents/workspace-manager.md
+ls ~/claude-workspace/shared/agents/workspace-manager.md
 ```
 
 **CLAUDE.md가 에이전트를 참조하는지 확인**:
@@ -545,7 +547,7 @@ grep "workspace-manager" ~/projects/my-app/CLAUDE.md
 
 없는 경우 추가:
 ```markdown
-## 사용 가능한 전역 에이전트
+## 사용 가능한 공유 에이전트
 - workspace-manager
 ```
 
@@ -578,7 +580,7 @@ export CLAUDE_WORKSPACE=~/claude-workspace-personal
    ```bash
    git init ~/claude-workspace
    cd ~/claude-workspace
-   git add templates/
+   git add shared/
    git commit -m "Add project templates"
    ```
 
@@ -589,7 +591,7 @@ export CLAUDE_WORKSPACE=~/claude-workspace-personal
 
 3. **각 멤버가 자신의 에이전트 추가**:
    ```bash
-   cp custom-agent.md ~/claude-workspace/global/agents/
+   cp custom-agent.md ~/claude-workspace/shared/agents/
    ```
 
 ### 커스텀 MCP 서버

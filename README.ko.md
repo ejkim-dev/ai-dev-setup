@@ -4,7 +4,7 @@
 
 개발 환경을 한 번에 설정하세요. macOS와 Windows를 지원합니다.
 
-선택적으로 [Claude Code](https://claude.ai/code) 설정을 포함하여 워크스페이스 관리, MCP 서버, 글로벌 에이전트를 제공합니다.
+선택적으로 [Claude Code](https://claude.ai/code) 설정을 포함하여 워크스페이스 관리, MCP 서버, 공유 에이전트를 제공합니다.
 
 ---
 
@@ -31,11 +31,10 @@
 
 ### Phase 2: Claude Code 설정 (선택 사항)
 
-Claude Code 워크스페이스를 설정하는 4단계:
-- 글로벌 에이전트 (workspace-manager, translate, doc-writer)
+Claude Code 워크스페이스를 설정하는 3단계:
+- 공유 에이전트 (workspace-manager, translate, doc-writer)
 - MCP 서버 (local-rag, filesystem, serena 등)
 - Obsidian 연동
-- Git + GitHub 설정
 
 **[→ Phase 2 상세 가이드](docs/ko/PHASE2.md)**
 
@@ -65,9 +64,9 @@ Phase 2 이후 완전한 Claude Code 워크스페이스가 구성됩니다:
 
 ```
 ~/claude-workspace/
-├── global/agents/          # 모든 프로젝트에서 사용 가능
-├── projects/               # 프로젝트별 설정
-└── templates/              # CLAUDE.md, .mcp.json 예시
+├── shared/agents/          # 모든 프로젝트에서 사용 가능
+├── shared/templates/       # CLAUDE.md, .mcp.json 예시
+└── projects/               # 프로젝트별 설정
 ```
 
 **[→ Workspace 가이드](docs/ko/WORKSPACE.md)**

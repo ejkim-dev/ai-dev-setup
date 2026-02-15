@@ -828,9 +828,9 @@ bash /tmp/uninstall-tools.sh
 cp -r ~/claude-workspace ~/claude-workspace-backup-$(date +%F)
 
 # Or backup specific items only
-cp -r ~/claude-workspace/global/agents ~/agents-backup
+cp -r ~/claude-workspace/shared/agents ~/agents-backup
 cp -r ~/claude-workspace/projects ~/projects-backup
-cp -r ~/claude-workspace/templates ~/templates-backup
+cp -r ~/claude-workspace/shared/templates ~/templates-backup
 ```
 
 **Step 2: Remove Workspace**
@@ -840,10 +840,10 @@ cp -r ~/claude-workspace/templates ~/templates-backup
 rm -rf ~/claude-workspace
 ```
 
-**Step 3: Remove Global Symlink**
+**Step 3: Remove Shared Agents Symlink**
 
 ```bash
-# Remove symlink to global agents
+# Remove symlink to shared agents
 rm ~/.claude/agents
 ```
 
@@ -921,9 +921,9 @@ If you change your mind:
 # Restore workspace
 mv ~/claude-workspace-backup-YYYY-MM-DD ~/claude-workspace
 
-# Recreate global symlink
+# Recreate shared agents symlink
 mkdir -p ~/.claude
-ln -s ~/claude-workspace/global/agents ~/.claude/agents
+ln -s ~/claude-workspace/shared/agents ~/.claude/agents
 
 # Reinstall Claude Code
 npm install -g @anthropic-ai/claude-code

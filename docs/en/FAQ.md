@@ -40,9 +40,8 @@ ai-dev-setup is a one-line installer for development environments on macOS and W
 - Time: ~15-30 minutes
 
 **Phase 2: Claude Code Setup** (optional)
-- Git + GitHub CLI
 - Claude Code installation
-- Global agents (workspace-manager, translate, doc-writer)
+- Shared agents (workspace-manager, translate, doc-writer)
 - MCP servers (local-rag, filesystem, serena, etc.)
 - Workspace management structure
 - Time: ~10-20 minutes
@@ -403,7 +402,7 @@ omz update
 **With Claude Code** (Phase 2), you additionally get:
 - AI coding assistant
 - Workspace management
-- Global agents
+- Shared agents
 - MCP servers
 
 Phase 1 is useful for anyone, not just Claude Code users.
@@ -417,7 +416,7 @@ Phase 1 is useful for anyone, not just Claude Code users.
 **Location**: `~/claude-workspace/`
 
 **Purpose**:
-- Store global agents (available in all projects)
+- Store shared agents (available in all projects)
 - Manage project templates (CLAUDE.md, .mcp.json)
 - Back up project-specific settings
 - Organize documentation
@@ -432,9 +431,9 @@ See [WORKSPACE.md](WORKSPACE.md) for details.
 
 ---
 
-### What are global agents?
+### What are shared agents?
 
-**Global agents** are reusable AI assistants available in all projects.
+**Shared agents** are reusable AI assistants available in all projects.
 
 **Included agents**:
 
@@ -460,7 +459,7 @@ See [WORKSPACE.md](WORKSPACE.md) for details.
 /doc-writer create-readme
 ```
 
-**Location**: `~/claude-workspace/global/agents/`
+**Location**: `~/claude-workspace/shared/agents/`
 
 ---
 
@@ -637,7 +636,7 @@ bash /tmp/uninstall-tools.sh
 cp -r ~/claude-workspace ~/claude-workspace-backup
 
 # Backup specific items only
-cp -r ~/claude-workspace/global/agents ~/agents-backup
+cp -r ~/claude-workspace/shared/agents ~/agents-backup
 cp -r ~/claude-workspace/projects ~/projects-backup
 ```
 
@@ -647,7 +646,7 @@ cp -r ~/claude-workspace/projects ~/projects-backup
 rm -rf ~/claude-workspace
 ```
 
-**Step 3: Remove Global Symlink**
+**Step 3: Remove Shared Agents Symlink**
 
 ```bash
 rm ~/.claude/agents
@@ -690,7 +689,7 @@ rm -rf ~/.claude
 If you change your mind:
 ```bash
 mv ~/claude-workspace-backup ~/claude-workspace
-ln -s ~/claude-workspace/global/agents ~/.claude/agents
+ln -s ~/claude-workspace/shared/agents ~/.claude/agents
 ```
 
 **Optional: Remove Homebrew and Node.js**
@@ -795,7 +794,7 @@ See [TROUBLESHOOTING.md - Shell and Plugin Issues](TROUBLESHOOTING.md#shell-and-
 2. **Suggest features**: Discussions or Issues
 3. **Improve documentation**: Submit PR for docs
 4. **Add translations**: New locale files (locale/*.sh)
-5. **Create agents**: Share useful global agents
+5. **Create agents**: Share useful shared agents
 6. **Test on different systems**: Report compatibility
 
 **Contributing guidelines**: See `CONTRIBUTING.md` in repository.

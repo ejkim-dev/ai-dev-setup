@@ -4,7 +4,7 @@
 
 Set up a complete development environment in one step. Supports macOS and Windows.
 
-Includes optional [Claude Code](https://claude.ai/code) setup with workspace management, MCP servers, and global agents.
+Includes optional [Claude Code](https://claude.ai/code) setup with workspace management, MCP servers, and shared agents.
 
 ---
 
@@ -31,11 +31,10 @@ Includes optional [Claude Code](https://claude.ai/code) setup with workspace man
 
 ### Phase 2: Claude Code Setup (Optional)
 
-4 steps to set up Claude Code workspace:
-- Global agents (workspace-manager, translate, doc-writer)
+3 steps to set up Claude Code workspace:
+- Shared agents (workspace-manager, translate, doc-writer)
 - MCP servers (local-rag, filesystem, serena, etc.)
 - Obsidian integration
-- Git + GitHub setup
 
 **[→ Phase 2 Details](docs/en/PHASE2.md)**
 
@@ -65,9 +64,9 @@ After Phase 2, you'll have a complete Claude Code workspace:
 
 ```
 ~/claude-workspace/
-├── global/agents/          # Available in all projects
-├── projects/               # Per-project settings
-└── templates/              # CLAUDE.md, .mcp.json examples
+├── shared/agents/          # Available in all projects
+├── shared/templates/       # CLAUDE.md, .mcp.json examples
+└── projects/               # Per-project settings
 ```
 
 **[→ Workspace Guide](docs/en/WORKSPACE.md)**

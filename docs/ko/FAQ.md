@@ -40,9 +40,8 @@ ai-dev-setup은 macOS 및 Windows에서 개발 환경을 한 줄로 설치하는
 - 소요 시간: 약 15-30분
 
 **Phase 2: Claude Code 설정** (선택사항)
-- Git + GitHub CLI
 - Claude Code 설치
-- 전역 에이전트 (workspace-manager, translate, doc-writer)
+- 공유 에이전트 (workspace-manager, translate, doc-writer)
 - MCP 서버 (local-rag, filesystem, serena 등)
 - 워크스페이스 관리 구조
 - 소요 시간: 약 10-20분
@@ -403,7 +402,7 @@ omz update
 **Claude Code 포함** (Phase 2)하면 추가로:
 - AI 코딩 어시스턴트
 - 워크스페이스 관리
-- 전역 에이전트
+- 공유 에이전트
 - MCP 서버
 
 Phase 1은 Claude Code 사용자뿐만 아니라 누구에게나 유용합니다.
@@ -417,7 +416,7 @@ Phase 1은 Claude Code 사용자뿐만 아니라 누구에게나 유용합니다
 **위치**: `~/claude-workspace/`
 
 **목적**:
-- 전역 에이전트 저장 (모든 프로젝트에서 사용 가능)
+- 공유 에이전트 저장 (모든 프로젝트에서 사용 가능)
 - 프로젝트 템플릿 관리 (CLAUDE.md, .mcp.json)
 - 프로젝트별 설정 백업
 - 문서 정리
@@ -432,9 +431,9 @@ Phase 1은 Claude Code 사용자뿐만 아니라 누구에게나 유용합니다
 
 ---
 
-### 전역 에이전트란?
+### 공유 에이전트란?
 
-**전역 에이전트**는 모든 프로젝트에서 사용할 수 있는 재사용 가능한 AI 어시스턴트입니다.
+**공유 에이전트**는 모든 프로젝트에서 사용할 수 있는 재사용 가능한 AI 어시스턴트입니다.
 
 **포함된 에이전트**:
 
@@ -460,7 +459,7 @@ Phase 1은 Claude Code 사용자뿐만 아니라 누구에게나 유용합니다
 /doc-writer create-readme
 ```
 
-**위치**: `~/claude-workspace/global/agents/`
+**위치**: `~/claude-workspace/shared/agents/`
 
 ---
 
@@ -637,7 +636,7 @@ bash /tmp/uninstall-tools.sh
 cp -r ~/claude-workspace ~/claude-workspace-backup
 
 # 특정 항목만 백업
-cp -r ~/claude-workspace/global/agents ~/agents-backup
+cp -r ~/claude-workspace/shared/agents ~/agents-backup
 cp -r ~/claude-workspace/projects ~/projects-backup
 ```
 
@@ -647,7 +646,7 @@ cp -r ~/claude-workspace/projects ~/projects-backup
 rm -rf ~/claude-workspace
 ```
 
-**3단계: 전역 심볼릭 링크 제거**
+**3단계: 공유 에이전트 심볼릭 링크 제거**
 
 ```bash
 rm ~/.claude/agents
@@ -690,7 +689,7 @@ rm -rf ~/.claude
 마음이 바뀐 경우:
 ```bash
 mv ~/claude-workspace-backup ~/claude-workspace
-ln -s ~/claude-workspace/global/agents ~/.claude/agents
+ln -s ~/claude-workspace/shared/agents ~/.claude/agents
 ```
 
 **선택사항: Homebrew 및 Node.js 제거**
@@ -795,7 +794,7 @@ brew uninstall node
 2. **기능 제안**: Discussions 또는 Issues
 3. **문서 개선**: 문서에 대한 PR 제출
 4. **번역 추가**: 새 로케일 파일 (locale/*.sh)
-5. **에이전트 생성**: 유용한 전역 에이전트 공유
+5. **에이전트 생성**: 유용한 공유 에이전트 공유
 6. **다른 시스템에서 테스트**: 호환성 보고
 
 **기여 가이드라인**: 저장소의 `CONTRIBUTING.md`를 참조하세요.

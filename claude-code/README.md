@@ -31,7 +31,6 @@ This sets up:
 - **MCP servers** — Per-project external tool integrations (local-rag, filesystem, etc.)
 - **Obsidian** — Markdown note-taking app (optional, integrates with local-rag)
 - **Templates** — CLAUDE.md and .mcp.json templates
-- **Documentation** — Comprehensive guides
 
 ### Manual
 
@@ -45,7 +44,7 @@ Install Claude Code, then configure manually using the documentation below.
 Centralize all Claude configurations in one place using symlinks.
 No more scattered `.claude/` folders across projects.
 
-**Learn more:** [`~/claude-workspace/doc/workspace-philosophy.md`](doc/workspace-philosophy.md)
+**Learn more:** [`doc/workspace-philosophy.md`](doc/workspace-philosophy.md)
 
 ### 🤖 Agents
 Specialized AI assistants for specific tasks.
@@ -53,30 +52,30 @@ Specialized AI assistants for specific tasks.
 - **translate** — Translate documents
 - **doc-writer** — Generate documentation
 
-**Learn more:** [`~/claude-workspace/doc/claude-guide.md#agents`](doc/claude-guide.md#agents)
+**Learn more:** [`doc/claude-guide.md#agents`](doc/claude-guide.md#agents)
 
 ### 📝 CLAUDE.md
 Project instructions that Claude reads automatically.
 Define your architecture, coding rules, and workflows once.
 
-**Learn more:** [`~/claude-workspace/doc/claude-guide.md#claudemd`](doc/claude-guide.md#claudemd)
+**Learn more:** [`doc/claude-guide.md#claudemd`](doc/claude-guide.md#claudemd)
 
 ### 🔌 MCP Servers
 Connect Claude to external tools and data sources.
 Search documents, browse web, access databases, and more.
 
-**Learn more:** [`~/claude-workspace/doc/claude-guide.md#mcp`](doc/claude-guide.md#mcp-model-context-protocol)
+**Learn more:** [`doc/claude-guide.md#mcp`](doc/claude-guide.md#mcp-model-context-protocol)
 
 ### 💬 Slash Commands
 Built-in commands: `/help`, `/agents`, `/model`, `/compact`, `/exit`
 
-**Learn more:** [`~/claude-workspace/doc/claude-guide.md#slash-commands`](doc/claude-guide.md#slash-commands)
+**Learn more:** [`doc/claude-guide.md#slash-commands`](doc/claude-guide.md#slash-commands)
 
 ---
 
 ## Documentation
 
-After setup, find comprehensive guides at `~/claude-workspace/doc/`:
+Reference documentation in `doc/` directory:
 
 | File | Description |
 |------|-------------|
@@ -84,14 +83,14 @@ After setup, find comprehensive guides at `~/claude-workspace/doc/`:
 | [`claude-guide.md`](doc/claude-guide.md) / [`.ko.md`](doc/claude-guide.ko.md) | Complete concepts reference (CLAUDE.md, agents, MCP, etc.) |
 | [`workspace-philosophy.md`](doc/workspace-philosophy.md) / [`.ko.md`](doc/workspace-philosophy.ko.md) | Why workspace? Design philosophy |
 
-**Start here:** [`~/claude-workspace/doc/getting-started.md`](doc/getting-started.md)
+**Start here:** [`doc/getting-started.md`](doc/getting-started.md)
 
 ---
 
 ## Next Steps
 
 1. **Run setup:** `./setup-claude.sh`
-2. **Read getting-started:** `~/claude-workspace/doc/getting-started.md`
+2. **Read getting-started:** `doc/getting-started.md`
 3. **Start coding:** `cd ~/my-project && claude`
 
 ---
