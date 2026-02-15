@@ -56,7 +56,7 @@ select_menu() {
 
   for i in "${!options[@]}"; do
     if [ "$i" -eq $selected ]; then
-      echo -e "  ${color_bold_cyan}▸ ${options[$i]}${color_reset}"
+      echo -e "  ${color_bold}▸ ${options[$i]}${color_reset}"
     else
       echo -e "    ${options[$i]}"
     fi
@@ -89,7 +89,7 @@ select_menu() {
     for i in "${!options[@]}"; do
       tput el 2>/dev/null
       if [ "$i" -eq $selected ]; then
-        echo -e "  ${color_bold_cyan}▸ ${options[$i]}${color_reset}"
+        echo -e "  ${color_bold}▸ ${options[$i]}${color_reset}"
       else
         echo -e "    ${options[$i]}"
       fi

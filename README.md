@@ -109,6 +109,31 @@ The script downloads, extracts, and starts an interactive setup. Each step uses 
 
 ---
 
+## 🗂️ Claude Workspace Structure
+
+After Phase 2:
+
+```
+~/claude-workspace/
+├── global/
+│   └── agents/              # Available in all projects
+│       ├── workspace-manager.md
+│       ├── translate.md
+│       └── doc-writer.md
+├── projects/                # Per-project settings
+│   └── my-app/
+│       ├── .claude/
+│       ├── CLAUDE.md
+│       └── CLAUDE.local.md
+└── templates/               # MCP, CLAUDE.md templates
+```
+
+The `workspace-manager` agent handles symlinks, `.gitignore`, and configuration automatically.
+
+**Learn more**: [Workspace Guide](docs/en/WORKSPACE.md)
+
+---
+
 ## 📚 Documentation
 
 ### Quick Links
@@ -182,31 +207,6 @@ Git is **recommended** (not required) for Claude Code version control features:
 **Without Git**, Claude Code still works but you'll miss version control integration.
 
 Phase 1 doesn't require Git. Phase 2 installs it automatically if needed.
-
----
-
-## 🗂️ Claude Workspace Structure
-
-After Phase 2:
-
-```
-~/claude-workspace/
-├── global/
-│   └── agents/              # Available in all projects
-│       ├── workspace-manager.md
-│       ├── translate.md
-│       └── doc-writer.md
-├── projects/                # Per-project settings
-│   └── my-app/
-│       ├── .claude/
-│       ├── CLAUDE.md
-│       └── CLAUDE.local.md
-└── templates/               # MCP, CLAUDE.md templates
-```
-
-The `workspace-manager` agent handles symlinks, `.gitignore`, and configuration automatically.
-
-**Learn more**: [Workspace Guide](docs/en/WORKSPACE.md)
 
 ---
 

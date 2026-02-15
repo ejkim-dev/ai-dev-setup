@@ -109,6 +109,31 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | 
 
 ---
 
+## 🗂️ Claude Workspace 구조
+
+Phase 2 이후:
+
+```
+~/claude-workspace/
+├── global/
+│   └── agents/              # 모든 프로젝트에서 사용 가능
+│       ├── workspace-manager.md
+│       ├── translate.md
+│       └── doc-writer.md
+├── projects/                # 프로젝트별 설정
+│   └── my-app/
+│       ├── .claude/
+│       ├── CLAUDE.md
+│       └── CLAUDE.local.md
+└── templates/               # MCP, CLAUDE.md 템플릿
+```
+
+`workspace-manager` 에이전트가 심볼릭 링크, `.gitignore`, 설정을 자동으로 처리합니다.
+
+**자세히 알아보기**: [Workspace 가이드](docs/ko/WORKSPACE.md)
+
+---
+
 ## 📚 문서
 
 ### 빠른 링크
@@ -182,31 +207,6 @@ Git은 Claude Code 버전 관리 기능을 위해 **권장**됩니다 (필수 �
 **Git이 없어도** Claude Code는 작동하지만 버전 관리 통합 기능을 사용할 수 없습니다.
 
 Phase 1에는 Git이 필요하지 않습니다. Phase 2에서 필요 시 자동으로 설치합니다.
-
----
-
-## 🗂️ Claude Workspace 구조
-
-Phase 2 이후:
-
-```
-~/claude-workspace/
-├── global/
-│   └── agents/              # 모든 프로젝트에서 사용 가능
-│       ├── workspace-manager.md
-│       ├── translate.md
-│       └── doc-writer.md
-├── projects/                # 프로젝트별 설정
-│   └── my-app/
-│       ├── .claude/
-│       ├── CLAUDE.md
-│       └── CLAUDE.local.md
-└── templates/               # MCP, CLAUDE.md 템플릿
-```
-
-`workspace-manager` 에이전트가 심볼릭 링크, `.gitignore`, 설정을 자동으로 처리합니다.
-
-**자세히 알아보기**: [Workspace 가이드](docs/ko/WORKSPACE.md)
 
 ---
 
