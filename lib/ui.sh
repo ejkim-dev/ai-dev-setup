@@ -51,6 +51,9 @@ select_menu() {
   local selected=0
   local key
 
+  # Flush any buffered stdin (prevents auto-selection after brew install, etc.)
+  while read -rsn1 -t 0.01 _discard 2>/dev/null; do :; done
+
   tput civis 2>/dev/null
   trap 'tput cnorm 2>/dev/null' EXIT
 
