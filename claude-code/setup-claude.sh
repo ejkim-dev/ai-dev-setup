@@ -277,6 +277,8 @@ OPT_MCP_SERENA=false
 OPT_MCP_FETCH=false
 OPT_MCP_PUPPETEER=false
 CONNECTED_PROJECTS="[]"
+CONNECTED_PATHS=()
+CONNECTED_NAMES=()
 
 # --- Prerequisite checks ---
 if ! command -v node &>/dev/null; then
@@ -530,6 +532,9 @@ EOF
       project_list="\"$project_name\""
     fi
 
+    CONNECTED_PATHS+=("$project_path")
+    CONNECTED_NAMES+=("$project_name")
+
     echo -e "  ${color_green}✅ $project_name $MSG_PROJ_DONE${color_reset}"
     echo ""
   done
@@ -620,40 +625,40 @@ if [ "$MENU_RESULT" -eq 0 ]; then
   if [ ${#MCP_SERVERS[@]} -gt 0 ]; then
     echo ""
     printf "  $MSG_MCP_INSTALLING_COUNT\n" "${#MCP_SERVERS[@]}"
-
-    # Ask for project path to configure .mcp.json
     echo ""
-    read -p "  $MSG_MCP_PROJECT_PATH_PROMPT" mcp_project
 
-    if [ -n "$mcp_project" ]; then
-      mcp_project="${mcp_project/#\~/$HOME}"
+    if [ ${#CONNECTED_PATHS[@]} -gt 0 ]; then
+      # Ask for each connected project
+      for idx in "${!CONNECTED_PATHS[@]}"; do
+        mcp_project="${CONNECTED_PATHS[$idx]}"
+        mcp_name="${CONNECTED_NAMES[$idx]}"
 
-      if [ -d "$mcp_project" ]; then
-        mcp_file="$mcp_project/.mcp.json"
+        printf "  $MSG_MCP_PROJECT_ASK_EACH\n" "$mcp_name"
+        select_menu "$MSG_YES" "$MSG_NO"
 
-        if [ -f "$mcp_file" ]; then
-          echo "  ⚠️  $MSG_MCP_FILE_EXISTS"
-          echo "  → $MSG_MCP_SKIP_CREATION"
-        else
-          # Create .mcp.json with selected servers
-          printf "  → $MSG_MCP_CREATING_FILE\n" "$mcp_file"
+        if [ "$MENU_RESULT" -eq 0 ]; then
+          mcp_file="$mcp_project/.mcp.json"
 
-          cat > "$mcp_file" << 'EOF_MCP'
+          if [ -f "$mcp_file" ]; then
+            echo "  ⚠️  $MSG_MCP_FILE_EXISTS"
+          else
+            printf "  → $MSG_MCP_CREATING_FILE\n" "$mcp_file"
+
+            cat > "$mcp_file" << 'EOF_MCP'
 {
   "mcpServers": {
 EOF_MCP
 
-          # Add each selected server to .mcp.json
-          first=true
-          for server in "${MCP_SERVERS[@]}"; do
-            [ "$first" = false ] && echo "," >> "$mcp_file"
-            first=false
+            first=true
+            for server in "${MCP_SERVERS[@]}"; do
+              [ "$first" = false ] && echo "," >> "$mcp_file"
+              first=false
 
-            case $server in
-              local-rag)
-                rag_data_dir="$mcp_project/.claude-data"
-                mkdir -p "$rag_data_dir"
-                cat >> "$mcp_file" << EOF
+              case $server in
+                local-rag)
+                  rag_data_dir="$mcp_project/.claude-data"
+                  mkdir -p "$rag_data_dir"
+                  cat >> "$mcp_file" << EOF
     "local-rag": {
       "command": "npx",
       "args": ["-y", "@local-rag/mcp-server"],
@@ -662,56 +667,55 @@ EOF_MCP
       }
     }
 EOF
-                ;;
-              filesystem)
-                cat >> "$mcp_file" << EOF
+                  ;;
+                filesystem)
+                  cat >> "$mcp_file" << EOF
     "filesystem": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "$mcp_project"]
     }
 EOF
-                ;;
-              serena)
-                cat >> "$mcp_file" << 'EOF'
+                  ;;
+                serena)
+                  cat >> "$mcp_file" << 'EOF'
     "serena": {
       "command": "npx",
       "args": ["-y", "@serena/mcp-server"]
     }
 EOF
-                ;;
-              fetch)
-                cat >> "$mcp_file" << 'EOF'
+                  ;;
+                fetch)
+                  cat >> "$mcp_file" << 'EOF'
     "fetch": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-fetch"]
     }
 EOF
-                ;;
-              puppeteer)
-                cat >> "$mcp_file" << 'EOF'
+                  ;;
+                puppeteer)
+                  cat >> "$mcp_file" << 'EOF'
     "puppeteer": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
     }
 EOF
-                ;;
-            esac
-          done
+                  ;;
+              esac
+            done
 
-          cat >> "$mcp_file" << 'EOF'
+            cat >> "$mcp_file" << 'EOF'
 
   }
 }
 EOF
 
-          printf "  ✅ $MSG_MCP_FILE_CREATED\n" "${#MCP_SERVERS[@]}"
+            printf "  ✅ $MSG_MCP_FILE_CREATED\n" "${#MCP_SERVERS[@]}"
+          fi
         fi
-      else
-        echo "  ❌ $MSG_MCP_PROJECT_NOT_FOUND $mcp_project"
-        echo "  → $MSG_MCP_PROJECT_MANUAL"
-      fi
+        echo ""
+      done
     else
-      echo "  → $MSG_MCP_SKIP_CREATION"
+      echo "  $MSG_MCP_NO_PROJECTS"
     fi
 
     done_msg
