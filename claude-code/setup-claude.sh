@@ -428,7 +428,7 @@ EOF
   while true; do
     echo "  $MSG_PROJ_ASK"
     echo ""
-    select_menu "$MSG_YES" "$MSG_NO"
+    select_menu "$MSG_PROJ_NOW" "$MSG_PROJ_LATER"
     [ "$MENU_RESULT" -ne 0 ] && break
 
     # Get and validate project path
