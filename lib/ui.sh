@@ -63,10 +63,10 @@ select_menu() {
   done
 
   while true; do
-    IFS= read -rsn1 key
+    IFS= read -rsn1 key </dev/tty || continue  # Force read from terminal, retry on failure
     case "$key" in
       $'\x1b')
-        IFS= read -rsn2 key
+        IFS= read -rsn2 key </dev/tty
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -80,7 +80,7 @@ select_menu() {
             ;;
         esac
         ;;
-      ''|$'\n'|$'\r')
+      $'\n'|$'\r')  # Only newline/return, not empty string
         break
         ;;
     esac
@@ -147,10 +147,10 @@ select_multi() {
   done
 
   while true; do
-    IFS= read -rsn1 key
+    IFS= read -rsn1 key </dev/tty || continue  # Force read from terminal, retry on failure
     case "$key" in
       $'\x1b')
-        IFS= read -rsn2 key
+        IFS= read -rsn2 key </dev/tty
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -174,7 +174,7 @@ select_multi() {
           checked[$selected]=1
         fi
         ;;
-      ''|$'\n'|$'\r')
+      $'\n'|$'\r')  # Only newline/return, not empty string
         break
         ;;
     esac
