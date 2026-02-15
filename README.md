@@ -90,7 +90,7 @@ After Phase 2, you'll have a complete Claude Code workspace:
 Remove Phase 1 installation:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh -o /tmp/cleanup.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/cleanup.sh
 
 bash /tmp/cleanup.sh
 ```

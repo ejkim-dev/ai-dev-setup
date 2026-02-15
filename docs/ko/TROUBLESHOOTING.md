@@ -785,7 +785,9 @@ ls -la ~/.claude/logs/
 
 **자동화 스크립트 사용 가능**:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+
+bash /tmp/uninstall.sh
 ```
 
 **제거되는 항목**:

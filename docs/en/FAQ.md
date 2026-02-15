@@ -115,7 +115,9 @@ echo "ja" > ~/.dev-setup-lang  # Japanese
 
 **Clean up Phase 1** (macOS):
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+
+bash /tmp/uninstall.sh
 ```
 
 **What gets removed**:
@@ -142,7 +144,9 @@ npm uninstall -g @anthropic-ai/claude-code
 **Full reinstall**:
 ```bash
 # 1. Clean up
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+
+bash /tmp/uninstall.sh
 
 # 2. Reinstall
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
@@ -598,7 +602,9 @@ Everything between markers is managed by ai-dev-setup. You can add your own conf
 
 ```bash
 # Run cleanup script
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+
+bash /tmp/uninstall.sh
 ```
 
 **What gets removed**:
