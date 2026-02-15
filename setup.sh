@@ -64,16 +64,11 @@ install_homebrew
 # --- 3. Packages ---
 install_essential_packages
 
-# --- 4. Terminal + Shell Setup ---
-step "$MSG_STEP_TERMINAL"
-
-# Terminal → Shell → tmux (Font installed in Step 3)
-SELECTED_FONT="d2coding"  # D2Coding installed via Brewfile in Step 3
+# --- 4. Terminal App ---
+step "$MSG_STEP_TERMINAL_APP"
+SELECTED_FONT="d2coding"
 setup_terminal "$SELECTED_FONT"
-TERMINAL_MENU_CHOICE=$MENU_RESULT  # Save for verification display
-setup_shell
-setup_tmux
-
+TERMINAL_MENU_CHOICE=$MENU_RESULT
 done_msg
 
 # Terminal theme verification guide
@@ -88,7 +83,6 @@ if [ "$TERMINAL_MENU_CHOICE" -ne 3 ]; then
   echo "  $MSG_TERMINAL_MANUAL_SETUP"
   echo ""
 
-  # Show relevant manual setup instructions
   if [ "$TERMINAL_MENU_CHOICE" -eq 0 ] || [ "$TERMINAL_MENU_CHOICE" -eq 2 ]; then
     echo "  ${color_yellow}Terminal.app:${color_reset}"
     echo "     $MSG_TERMINAL_MANUAL_TERMINAL"
@@ -105,7 +99,17 @@ if [ "$TERMINAL_MENU_CHOICE" -ne 3 ]; then
   echo ""
 fi
 
-# --- 5. AI Coding Tools ---
+# --- 5. Shell Setup ---
+step "$MSG_STEP_SHELL"
+setup_shell
+done_msg
+
+# --- 6. tmux ---
+step "$MSG_STEP_TMUX"
+setup_tmux
+done_msg
+
+# --- 7. AI Coding Tools ---
 install_ai_tools
 
 # === Cleanup ===
