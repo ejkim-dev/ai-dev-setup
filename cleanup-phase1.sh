@@ -31,10 +31,10 @@ select_menu() {
   done
 
   while true; do
-    IFS= read -rsn1 key
+    IFS= read -rsn1 key < /dev/tty
     case "$key" in
       $'\x1b')
-        IFS= read -rsn2 key
+        IFS= read -rsn2 key < /dev/tty
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
