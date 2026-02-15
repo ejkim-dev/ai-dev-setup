@@ -4,8 +4,16 @@
 # Prerequisites
 MSG_CLAUDE_NOT_INSTALLED="Claude Codeがインストールされていません。"
 MSG_INSTALL_NOW="今すぐインストールしますか？"
-MSG_CLAUDE_REQUIRED="Claude Codeが必要です。先にインストールしてください："
+MSG_CLAUDE_REQUIRED="このセットアップにはClaude Codeが必要です。"
 MSG_CLAUDE_INSTALL_CMD="  npm install -g @anthropic-ai/claude-code"
+MSG_CLAUDE_RESTART_TERMINAL="ターミナルを再起動してこのスクリプトを再実行してください。"
+MSG_CLAUDE_INSTALL_FAILED="インストール失敗"
+MSG_CLAUDE_CHECK_HEADER="以下を確認してください："
+MSG_CLAUDE_CHECK_NPM="1. npmが動作しているか: npm --version"
+MSG_CLAUDE_CHECK_INTERNET="2. インターネット接続"
+MSG_CLAUDE_CHECK_PERMISSIONS="3. 権限（一部のシステムではsudoが必要）"
+MSG_CLAUDE_TRY_MANUAL="手動で試す: npm install -g @anthropic-ai/claude-code"
+MSG_CLAUDE_NOT_IN_PATH="Claude CodeはインストールされましたがPATHにありません"
 MSG_NODE_NOT_INSTALLED="Node.jsがインストールされていません。MCPサーバーに必要です。"
 MSG_NODE_INSTALL_ASK="HomebrewでNode.jsをインストールしますか？"
 MSG_NPM_NOT_FOUND="npmが見つかりません。先にNode.jsをインストールしてください。"
@@ -96,6 +104,36 @@ MSG_MCP_FILE_EXISTS=".mcp.jsonが既に存在します。手動で追加して�
 MSG_MCP_FILE_REF="テンプレート参照："
 MSG_MCP_FILE_DONE="作成完了"
 
+# Common prompts
+MSG_YES="はい"
+MSG_NO="いいえ"
+
+# Language selection (always in English for all locales)
+MSG_LANG_SELECT="Select your language:"
+MSG_LANG_CUSTOM_CODE="Language code (e.g., zh, de, fr): "
+MSG_LANG_CUSTOM_NAME="Language name (e.g., 中文, Deutsch): "
+MSG_LANG_CUSTOM_INSTRUCTION="Instruction for Claude (e.g., Respond in Chinese): "
+
+# MCP server selection
+MSG_MCP_SELECT_PROMPT="インストールするMCPサーバーを選択してください:"
+MSG_MCP_SELECT_HINT="↑/↓で移動、Spaceで選択/解除、Enterで確定"
+MSG_MCP_RECOMMENDED_HEADER="📦 推奨コアセットアップ (3つ):"
+MSG_MCP_RECOMMENDED_DESC_1="• local-rag    📚 ドキュメント/コード検索"
+MSG_MCP_RECOMMENDED_DESC_2="• filesystem   📝 ファイル読み書き"
+MSG_MCP_RECOMMENDED_DESC_3="• serena       🌐 Web検索"
+MSG_MCP_ADDITIONAL_HEADER="⚪ 追加サーバー (オプション):"
+MSG_MCP_ADDITIONAL_DESC_1="• fetch        🌐 HTTPリクエスト"
+MSG_MCP_ADDITIONAL_DESC_2="• puppeteer    🤖 ブラウザ自動化"
+MSG_MCP_NO_SERVERS="MCPサーバーが選択されていません"
+MSG_MCP_INSTALLING_COUNT="%d個のMCPサーバーをインストール中..."
+MSG_MCP_PROJECT_PATH_PROMPT=".mcp.jsonを設定するプロジェクトパス (Enterでスキップ): "
+MSG_MCP_PROJECT_NOT_FOUND="プロジェクトが見つかりません:"
+MSG_MCP_PROJECT_MANUAL="後で.mcp.jsonを手動で作成できます"
+MSG_MCP_SKIP_CREATION=".mcp.json作成をスキップ (後で手動作成可能)"
+MSG_MCP_CREATING_FILE="%s を作成中..."
+MSG_MCP_FILE_CREATED=".mcp.jsonが%d個のサーバーで作成されました"
+MSG_MCP_INSTALLING_PREFIX="%s をインストール中..."
+
 # Git (Phase 2)
 MSG_GIT_TITLE="Git (バージョン管理)"
 MSG_GIT_DESC_1="Claude Codeを最大限活用するには、Gitのインストールをお勧めします："
@@ -109,6 +147,7 @@ MSG_GIT_CONFIG_ASK="Gitを設定しますか？（名前とメール）"
 MSG_GIT_NAME="名前: "
 MSG_GIT_EMAIL="メール: "
 MSG_GIT_CONFIG_DONE="Git設定完了"
+MSG_GIT_INSTALL_FAILED="インストール失敗。手動インストール: brew install git gh"
 
 # Completion
 MSG_COMPLETE="Claude Codeのセットアップが完了しました！"

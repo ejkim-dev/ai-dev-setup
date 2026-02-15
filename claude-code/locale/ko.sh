@@ -4,8 +4,16 @@
 # Prerequisites
 MSG_CLAUDE_NOT_INSTALLED="Claude Code가 설치되어 있지 않습니다."
 MSG_INSTALL_NOW="지금 설치하시겠습니까?"
-MSG_CLAUDE_REQUIRED="Claude Code가 필요합니다. 먼저 설치해주세요:"
+MSG_CLAUDE_REQUIRED="이 설정에는 Claude Code가 필요합니다."
 MSG_CLAUDE_INSTALL_CMD="  npm install -g @anthropic-ai/claude-code"
+MSG_CLAUDE_RESTART_TERMINAL="터미널을 재시작한 후 이 스크립트를 다시 실행해주세요."
+MSG_CLAUDE_INSTALL_FAILED="설치 실패"
+MSG_CLAUDE_CHECK_HEADER="다음을 확인해주세요:"
+MSG_CLAUDE_CHECK_NPM="1. npm이 작동하는지: npm --version"
+MSG_CLAUDE_CHECK_INTERNET="2. 인터넷 연결"
+MSG_CLAUDE_CHECK_PERMISSIONS="3. 권한 (일부 시스템에서 sudo 필요)"
+MSG_CLAUDE_TRY_MANUAL="수동 설치 시도: npm install -g @anthropic-ai/claude-code"
+MSG_CLAUDE_NOT_IN_PATH="Claude Code가 설치되었으나 PATH에 없습니다"
 MSG_NODE_NOT_INSTALLED="Node.js가 설치되어 있지 않습니다. MCP 서버에 필요합니다."
 MSG_NODE_INSTALL_ASK="Homebrew로 Node.js를 설치하시겠습니까?"
 MSG_NPM_NOT_FOUND="npm을 찾을 수 없습니다. Node.js를 먼저 설치해주세요."
@@ -96,6 +104,36 @@ MSG_MCP_FILE_EXISTS=".mcp.json이 이미 존재합니다. 수동으로 추가해
 MSG_MCP_FILE_REF="참고:"
 MSG_MCP_FILE_DONE="생성 완료"
 
+# Common prompts
+MSG_YES="예"
+MSG_NO="아니오"
+
+# Language selection (always in English for all locales)
+MSG_LANG_SELECT="Select your language:"
+MSG_LANG_CUSTOM_CODE="Language code (e.g., zh, de, fr): "
+MSG_LANG_CUSTOM_NAME="Language name (e.g., 中文, Deutsch): "
+MSG_LANG_CUSTOM_INSTRUCTION="Instruction for Claude (e.g., Respond in Chinese): "
+
+# MCP server selection
+MSG_MCP_SELECT_PROMPT="설치할 MCP 서버를 선택하세요:"
+MSG_MCP_SELECT_HINT="↑/↓로 이동, Space로 선택/해제, Enter로 확인"
+MSG_MCP_RECOMMENDED_HEADER="📦 추천 핵심 설정 (3개):"
+MSG_MCP_RECOMMENDED_DESC_1="• local-rag    📚 문서/코드 검색"
+MSG_MCP_RECOMMENDED_DESC_2="• filesystem   📝 파일 읽기/쓰기"
+MSG_MCP_RECOMMENDED_DESC_3="• serena       🌐 웹 검색"
+MSG_MCP_ADDITIONAL_HEADER="⚪ 추가 서버 (선택사항):"
+MSG_MCP_ADDITIONAL_DESC_1="• fetch        🌐 HTTP 요청"
+MSG_MCP_ADDITIONAL_DESC_2="• puppeteer    🤖 브라우저 자동화"
+MSG_MCP_NO_SERVERS="선택한 MCP 서버가 없습니다"
+MSG_MCP_INSTALLING_COUNT="%d개 MCP 서버 설치 중..."
+MSG_MCP_PROJECT_PATH_PROMPT=".mcp.json 설정할 프로젝트 경로 (Enter는 건너뛰기): "
+MSG_MCP_PROJECT_NOT_FOUND="프로젝트를 찾을 수 없습니다:"
+MSG_MCP_PROJECT_MANUAL="나중에 .mcp.json을 수동으로 생성할 수 있습니다"
+MSG_MCP_SKIP_CREATION=".mcp.json 생성 건너뜀 (나중에 수동으로 생성 가능)"
+MSG_MCP_CREATING_FILE="%s 생성 중..."
+MSG_MCP_FILE_CREATED=".mcp.json이 %d개 서버로 생성됨"
+MSG_MCP_INSTALLING_PREFIX="%s 설치 중..."
+
 # Git (Phase 2)
 MSG_GIT_TITLE="Git (버전 관리)"
 MSG_GIT_DESC_1="Claude Code를 최대한 활용하려면 Git 설치를 권장합니다:"
@@ -109,6 +147,7 @@ MSG_GIT_CONFIG_ASK="Git을 설정하시겠습니까? (이름 & 이메일)"
 MSG_GIT_NAME="이름: "
 MSG_GIT_EMAIL="이메일: "
 MSG_GIT_CONFIG_DONE="Git 설정 완료"
+MSG_GIT_INSTALL_FAILED="설치 실패. 수동 설치: brew install git gh"
 
 # Completion
 MSG_COMPLETE="Claude Code 설정이 완료되었습니다!"

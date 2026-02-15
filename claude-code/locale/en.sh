@@ -4,8 +4,16 @@
 # Prerequisites
 MSG_CLAUDE_NOT_INSTALLED="Claude Code is not installed."
 MSG_INSTALL_NOW="Install now?"
-MSG_CLAUDE_REQUIRED="Claude Code is required. Please install first:"
+MSG_CLAUDE_REQUIRED="Claude Code is required for this setup."
 MSG_CLAUDE_INSTALL_CMD="  npm install -g @anthropic-ai/claude-code"
+MSG_CLAUDE_RESTART_TERMINAL="Please restart your terminal and re-run this script."
+MSG_CLAUDE_INSTALL_FAILED="Installation failed"
+MSG_CLAUDE_CHECK_HEADER="Please check:"
+MSG_CLAUDE_CHECK_NPM="1. npm is working: npm --version"
+MSG_CLAUDE_CHECK_INTERNET="2. Internet connection"
+MSG_CLAUDE_CHECK_PERMISSIONS="3. Permissions (may need sudo on some systems)"
+MSG_CLAUDE_TRY_MANUAL="Try manually: npm install -g @anthropic-ai/claude-code"
+MSG_CLAUDE_NOT_IN_PATH="Claude Code installed but not in PATH"
 MSG_NODE_NOT_INSTALLED="Node.js is not installed. Required for MCP servers."
 MSG_NODE_INSTALL_ASK="Install Node.js with Homebrew?"
 MSG_NPM_NOT_FOUND="npm not found. Please install Node.js first."
@@ -96,6 +104,36 @@ MSG_MCP_FILE_EXISTS=".mcp.json already exists. Please add manually:"
 MSG_MCP_FILE_REF="See template:"
 MSG_MCP_FILE_DONE="created"
 
+# Common prompts
+MSG_YES="Yes"
+MSG_NO="No"
+
+# Language selection (always in English for all locales)
+MSG_LANG_SELECT="Select your language:"
+MSG_LANG_CUSTOM_CODE="Language code (e.g., zh, de, fr): "
+MSG_LANG_CUSTOM_NAME="Language name (e.g., 中文, Deutsch): "
+MSG_LANG_CUSTOM_INSTRUCTION="Instruction for Claude (e.g., Respond in Chinese): "
+
+# MCP server selection
+MSG_MCP_SELECT_PROMPT="Select MCP servers to install:"
+MSG_MCP_SELECT_HINT="Use ↑/↓ to navigate, Space to toggle, Enter to confirm"
+MSG_MCP_RECOMMENDED_HEADER="📦 Recommended core setup (3):"
+MSG_MCP_RECOMMENDED_DESC_1="• local-rag    📚 Search your docs/code"
+MSG_MCP_RECOMMENDED_DESC_2="• filesystem   📝 Read/write files"
+MSG_MCP_RECOMMENDED_DESC_3="• serena       🌐 Web search"
+MSG_MCP_ADDITIONAL_HEADER="⚪ Additional servers (optional):"
+MSG_MCP_ADDITIONAL_DESC_1="• fetch        🌐 HTTP requests"
+MSG_MCP_ADDITIONAL_DESC_2="• puppeteer    🤖 Browser automation"
+MSG_MCP_NO_SERVERS="No MCP servers selected"
+MSG_MCP_INSTALLING_COUNT="Installing %d MCP server(s)..."
+MSG_MCP_PROJECT_PATH_PROMPT="Enter project path for .mcp.json (or press Enter to skip): "
+MSG_MCP_PROJECT_NOT_FOUND="Project not found:"
+MSG_MCP_PROJECT_MANUAL="You can manually create .mcp.json later"
+MSG_MCP_SKIP_CREATION="Skipped .mcp.json creation (you can create it manually later)"
+MSG_MCP_CREATING_FILE="Creating %s..."
+MSG_MCP_FILE_CREATED=".mcp.json created with %d server(s)"
+MSG_MCP_INSTALLING_PREFIX="Installing %s..."
+
 # Git (Phase 2)
 MSG_GIT_TITLE="Git (Version Control)"
 MSG_GIT_DESC_1="To get the most out of Claude Code, Git is recommended:"
@@ -109,6 +147,7 @@ MSG_GIT_CONFIG_ASK="Configure Git (name & email)?"
 MSG_GIT_NAME="Your name: "
 MSG_GIT_EMAIL="Your email: "
 MSG_GIT_CONFIG_DONE="Git configured"
+MSG_GIT_INSTALL_FAILED="Installation failed. Install manually: brew install git gh"
 
 # Completion
 MSG_COMPLETE="Claude Code setup is complete!"

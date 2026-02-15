@@ -11,7 +11,11 @@ CONFIG_FILE="$WORKSPACE/config.json"
 color_green="\033[0;32m"
 color_yellow="\033[0;33m"
 color_cyan="\033[0;36m"
-color_reset="\033[0m"
+color_gray="\033[0;90m"
+color_bold="${color_bold}"
+color_bold_cyan="${color_bold_cyan}"
+color_bold_gray="${color_bold_gray}"
+color_reset="${color_reset}"
 
 done_msg() {
   echo -e "  ${color_green}✅ $MSG_DONE${color_reset}"
@@ -19,19 +23,6 @@ done_msg() {
 
 skip_msg() {
   echo -e "  ${color_yellow}⏭  $MSG_SKIP${color_reset}"
-}
-
-ask_yn() {
-  local prompt="$1"
-  local default="${2:-Y}"
-  if [ "$default" = "Y" ]; then
-    read -p "  $prompt [Y/n]: " answer
-    answer="${answer:-Y}"
-  else
-    read -p "  $prompt [y/N]: " answer
-    answer="${answer:-N}"
-  fi
-  [[ "$answer" =~ ^[Yy] ]]
 }
 
 # Arrow key menu selector
@@ -121,17 +112,17 @@ select_multi() {
 
     if [ "$i" -eq $selected ]; then
       if [ "${disabled[$i]}" -eq 1 ]; then
-        echo -e "  \033[1;90m▸ [$mark] ${options[$i]}\033[0m"
+        echo -e "  ${color_bold_gray}▸ [$mark] ${options[$i]}${color_reset}"
       elif [ "${checked[$i]}" -eq 1 ]; then
-        echo -e "  \033[1;36m▸ [$mark] ${options[$i]}\033[0m"
+        echo -e "  ${color_bold_cyan}▸ [$mark] ${options[$i]}${color_reset}"
       else
-        echo -e "  \033[1m▸ [$mark] ${options[$i]}\033[0m"
+        echo -e "  ${color_bold}▸ [$mark] ${options[$i]}${color_reset}"
       fi
     else
       if [ "${disabled[$i]}" -eq 1 ]; then
-        echo -e "  \033[90m  [$mark] ${options[$i]}\033[0m"
+        echo -e "  ${color_gray}  [$mark] ${options[$i]}${color_reset}"
       elif [ "${checked[$i]}" -eq 1 ]; then
-        echo -e "    \033[36m[$mark] ${options[$i]}\033[0m"
+        echo -e "    ${color_cyan}[$mark] ${options[$i]}${color_reset}"
       else
         echo -e "    [$mark] ${options[$i]}"
       fi
@@ -183,17 +174,17 @@ select_multi() {
 
       if [ "$i" -eq $selected ]; then
         if [ "${disabled[$i]}" -eq 1 ]; then
-          echo -e "  \033[1;90m▸ [$mark] ${options[$i]}\033[0m"
+          echo -e "  ${color_bold_gray}▸ [$mark] ${options[$i]}${color_reset}"
         elif [ "${checked[$i]}" -eq 1 ]; then
-          echo -e "  \033[1;36m▸ [$mark] ${options[$i]}\033[0m"
+          echo -e "  ${color_bold_cyan}▸ [$mark] ${options[$i]}${color_reset}"
         else
-          echo -e "  \033[1m▸ [$mark] ${options[$i]}\033[0m"
+          echo -e "  ${color_bold}▸ [$mark] ${options[$i]}${color_reset}"
         fi
       else
         if [ "${disabled[$i]}" -eq 1 ]; then
-          echo -e "  \033[90m  [$mark] ${options[$i]}\033[0m"
+          echo -e "  ${color_gray}  [$mark] ${options[$i]}${color_reset}"
         elif [ "${checked[$i]}" -eq 1 ]; then
-          echo -e "    \033[36m[$mark] ${options[$i]}\033[0m"
+          echo -e "    ${color_cyan}[$mark] ${options[$i]}${color_reset}"
         else
           echo -e "    [$mark] ${options[$i]}"
         fi
@@ -236,7 +227,7 @@ if [ -f "$HOME/.dev-setup-lang" ]; then
   esac
 else
   # No saved language, ask user
-  echo "  Select your language:"
+  echo "  $MSG_LANG_SELECT"
   echo ""
   select_menu "English" "한국어" "日本語" "Other"
 
@@ -259,9 +250,9 @@ else
 - コード、コマンド、技術用語は英語のまま使用"
       ;;
     3)
-      read -p "  Language code (e.g., zh, de, fr): " USER_LANG
-      read -p "  Language name (e.g., 中文, Deutsch): " LANG_NAME
-      read -p "  Instruction for Claude (e.g., Respond in Chinese): " custom_instr
+      read -p "  $MSG_LANG_CUSTOM_CODE" USER_LANG
+      read -p "  $MSG_LANG_CUSTOM_NAME" LANG_NAME
+      read -p "  $MSG_LANG_CUSTOM_INSTRUCTION" custom_instr
       LANG_INSTRUCTION="- $custom_instr"
       ;;
   esac
@@ -291,7 +282,10 @@ CONNECTED_PROJECTS="[]"
 if ! command -v node &>/dev/null; then
   echo "  ⚠️  $MSG_NODE_NOT_INSTALLED"
   if command -v brew &>/dev/null; then
-    if ask_yn "$MSG_NODE_INSTALL_ASK"; then
+    echo "  $MSG_NODE_INSTALL_ASK"
+    echo ""
+    select_menu "$MSG_YES" "$MSG_NO"
+    if [ "$MENU_RESULT" -eq 0 ]; then
       brew install node || echo "  ⚠️  Installation failed."
       done_msg
     fi
@@ -308,29 +302,32 @@ fi
 
 if ! command -v claude &>/dev/null; then
   echo "  $MSG_CLAUDE_NOT_INSTALLED"
-  if ask_yn "$MSG_INSTALL_NOW"; then
+  echo "  $MSG_INSTALL_NOW"
+  echo ""
+  select_menu "$MSG_YES" "$MSG_NO"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     if npm install -g @anthropic-ai/claude-code; then
       # Verify installation succeeded
       if command -v claude &>/dev/null; then
         done_msg
       else
         echo ""
-        echo "  ❌ Claude Code installed but not in PATH"
+        echo "  ❌ $MSG_CLAUDE_NOT_IN_PATH"
         echo ""
-        echo "  Please restart your terminal and re-run this script."
+        echo "  $MSG_CLAUDE_RESTART_TERMINAL"
         exit 1
       fi
     else
       echo ""
-      echo "  ❌ Installation failed"
+      echo "  ❌ $MSG_CLAUDE_INSTALL_FAILED"
       echo ""
-      echo "  Claude Code is required for this setup."
-      echo "  Please check:"
-      echo "    1. npm is working: npm --version"
-      echo "    2. Internet connection"
-      echo "    3. Permissions (may need sudo on some systems)"
+      echo "  $MSG_CLAUDE_REQUIRED"
+      echo "  $MSG_CLAUDE_CHECK_HEADER"
+      echo "    $MSG_CLAUDE_CHECK_NPM"
+      echo "    $MSG_CLAUDE_CHECK_INTERNET"
+      echo "    $MSG_CLAUDE_CHECK_PERMISSIONS"
       echo ""
-      echo "  Try manually: npm install -g @anthropic-ai/claude-code"
+      echo "  $MSG_CLAUDE_TRY_MANUAL"
       exit 1
     fi
   else
@@ -353,8 +350,11 @@ echo "  ├── global/agents/    ← $MSG_WS_TREE_AGENTS"
 echo "  ├── projects/         ← $MSG_WS_TREE_PROJECTS"
 echo "  └── templates/        ← $MSG_WS_TREE_TEMPLATES"
 echo ""
+echo "  $MSG_WS_ASK"
+echo ""
+select_menu "$MSG_YES" "$MSG_NO"
 
-if ask_yn "$MSG_WS_ASK"; then
+if [ "$MENU_RESULT" -eq 0 ]; then
   OPT_WORKSPACE=true
 
   mkdir -p "$WORKSPACE/global/agents"
@@ -384,7 +384,10 @@ if ask_yn "$MSG_WS_ASK"; then
     echo "  $MSG_WS_SYMLINK_EXISTS"
   elif [ -d "$HOME/.claude/agents" ]; then
     echo "  ⚠️  $MSG_WS_FOLDER_EXISTS"
-    if ask_yn "$MSG_WS_BACKUP_ASK"; then
+    echo "  $MSG_WS_BACKUP_ASK"
+    echo ""
+    select_menu "$MSG_YES" "$MSG_NO"
+    if [ "$MENU_RESULT" -eq 0 ]; then
       mv "$HOME/.claude/agents" "$HOME/.claude/agents.backup"
       ln -s "$WORKSPACE/global/agents" "$HOME/.claude/agents"
       echo "  → $MSG_WS_BACKUP_DONE"
@@ -406,7 +409,12 @@ if ask_yn "$MSG_WS_ASK"; then
 
   project_list=""
 
-  while ask_yn "$MSG_PROJ_ASK"; do
+  while true; do
+    echo "  $MSG_PROJ_ASK"
+    echo ""
+    select_menu "$MSG_YES" "$MSG_NO"
+    [ "$MENU_RESULT" -ne 0 ] && break
+
     read -p "  $MSG_PROJ_PATH" project_path
     project_path="${project_path/#\~/$HOME}"
     project_name=$(basename "$project_path")
@@ -495,8 +503,11 @@ echo ""
 echo "  $MSG_OBS_DESC_1"
 echo "  $MSG_OBS_DESC_2"
 echo ""
+echo "  $MSG_OBS_ASK"
+echo ""
+select_menu "$MSG_YES" "$MSG_NO"
 
-if ask_yn "$MSG_OBS_ASK"; then
+if [ "$MENU_RESULT" -eq 0 ]; then
   OPT_OBSIDIAN=true
   if command -v brew &>/dev/null; then
     brew install --cask obsidian || echo "  ⚠️  Installation failed."
@@ -516,21 +527,24 @@ echo "  $MSG_MCP_DESC_1"
 echo "  $MSG_MCP_DESC_2"
 echo "  $MSG_MCP_DESC_3"
 echo ""
+echo "  $MSG_MCP_ASK"
+echo ""
+select_menu "$MSG_YES" "$MSG_NO"
 
-if ask_yn "$MSG_MCP_ASK"; then
+if [ "$MENU_RESULT" -eq 0 ]; then
   echo ""
-  echo "  Select MCP servers to install:"
+  echo "  $MSG_MCP_SELECT_PROMPT"
   echo ""
-  echo "  📦 Recommended core setup (3):"
-  echo "     • local-rag    📚 Search your docs/code"
-  echo "     • filesystem   📝 Read/write files"
-  echo "     • serena       🌐 Web search"
+  echo "  $MSG_MCP_RECOMMENDED_HEADER"
+  echo "  $MSG_MCP_RECOMMENDED_DESC_1"
+  echo "  $MSG_MCP_RECOMMENDED_DESC_2"
+  echo "  $MSG_MCP_RECOMMENDED_DESC_3"
   echo ""
-  echo "  ⚪ Additional servers (optional):"
-  echo "     • fetch        🌐 HTTP requests"
-  echo "     • puppeteer    🤖 Browser automation"
+  echo "  $MSG_MCP_ADDITIONAL_HEADER"
+  echo "  $MSG_MCP_ADDITIONAL_DESC_1"
+  echo "  $MSG_MCP_ADDITIONAL_DESC_2"
   echo ""
-  echo "  Use ↑/↓ to navigate, Space to toggle, Enter to confirm"
+  echo "  $MSG_MCP_SELECT_HINT"
   echo ""
 
   # Build option labels with recommended status
@@ -556,27 +570,27 @@ if ask_yn "$MSG_MCP_ASK"; then
       0)
         OPT_MCP_RAG=true
         MCP_SERVERS+=("local-rag")
-        echo "  → Installing local-rag..."
+        printf "  → $MSG_MCP_INSTALLING_PREFIX\n" "local-rag"
         ;;
       1)
         OPT_MCP_FILESYSTEM=true
         MCP_SERVERS+=("filesystem")
-        echo "  → Installing filesystem..."
+        printf "  → $MSG_MCP_INSTALLING_PREFIX\n" "filesystem"
         ;;
       2)
         OPT_MCP_SERENA=true
         MCP_SERVERS+=("serena")
-        echo "  → Installing serena..."
+        printf "  → $MSG_MCP_INSTALLING_PREFIX\n" "serena"
         ;;
       3)
         OPT_MCP_FETCH=true
         MCP_SERVERS+=("fetch")
-        echo "  → Installing fetch..."
+        printf "  → $MSG_MCP_INSTALLING_PREFIX\n" "fetch"
         ;;
       4)
         OPT_MCP_PUPPETEER=true
         MCP_SERVERS+=("puppeteer")
-        echo "  → Installing puppeteer..."
+        printf "  → $MSG_MCP_INSTALLING_PREFIX\n" "puppeteer"
         ;;
     esac
   done
@@ -584,11 +598,11 @@ if ask_yn "$MSG_MCP_ASK"; then
   # Install selected MCP servers
   if [ ${#MCP_SERVERS[@]} -gt 0 ]; then
     echo ""
-    echo "  Installing ${#MCP_SERVERS[@]} MCP server(s)..."
+    printf "  $MSG_MCP_INSTALLING_COUNT\n" "${#MCP_SERVERS[@]}"
 
     # Ask for project path to configure .mcp.json
     echo ""
-    read -p "  Enter project path for .mcp.json (or press Enter to skip): " mcp_project
+    read -p "  $MSG_MCP_PROJECT_PATH_PROMPT" mcp_project
 
     if [ -n "$mcp_project" ]; then
       mcp_project="${mcp_project/#\~/$HOME}"
@@ -598,10 +612,10 @@ if ask_yn "$MSG_MCP_ASK"; then
 
         if [ -f "$mcp_file" ]; then
           echo "  ⚠️  $MSG_MCP_FILE_EXISTS"
-          echo "  → Skipping .mcp.json creation"
+          echo "  → $MSG_MCP_SKIP_CREATION"
         else
           # Create .mcp.json with selected servers
-          echo "  → Creating $mcp_file..."
+          printf "  → $MSG_MCP_CREATING_FILE\n" "$mcp_file"
 
           cat > "$mcp_file" << 'EOF_MCP'
 {
@@ -669,19 +683,19 @@ EOF
 }
 EOF
 
-          echo "  ✅ .mcp.json created with ${#MCP_SERVERS[@]} server(s)"
+          printf "  ✅ $MSG_MCP_FILE_CREATED\n" "${#MCP_SERVERS[@]}"
         fi
       else
-        echo "  ❌ Project not found: $mcp_project"
-        echo "  → You can manually create .mcp.json later"
+        echo "  ❌ $MSG_MCP_PROJECT_NOT_FOUND $mcp_project"
+        echo "  → $MSG_MCP_PROJECT_MANUAL"
       fi
     else
-      echo "  → Skipped .mcp.json creation (you can create it manually later)"
+      echo "  → $MSG_MCP_SKIP_CREATION"
     fi
 
     done_msg
   else
-    echo "  No MCP servers selected"
+    echo "  $MSG_MCP_NO_SERVERS"
     skip_msg
   fi
 
@@ -714,9 +728,9 @@ if [ "$OPT_WORKSPACE" = true ]; then
 EOF
 fi
 
-# === 5. Git + SSH (Optional) ===
+# === 4. Git + SSH (Optional) ===
 echo ""
-echo -e "${color_cyan}[5/5] $MSG_GIT_TITLE${color_reset}"
+echo -e "${color_cyan}[4/4] $MSG_GIT_TITLE${color_reset}"
 echo ""
 echo "  $MSG_GIT_DESC_1"
 echo "  $MSG_GIT_DESC_2"
@@ -731,14 +745,17 @@ if command -v git &>/dev/null; then
   echo "  $MSG_ALREADY_INSTALLED"
   done_msg
 else
-  if ask_yn "$MSG_GIT_INSTALL_ASK"; then
+  echo "  $MSG_GIT_INSTALL_ASK"
+  echo ""
+  select_menu "$MSG_YES" "$MSG_NO"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     echo "  $MSG_INSTALLING"
     if command -v brew &>/dev/null; then
       # macOS - use Homebrew
       if brew install git && brew install gh; then
         done_msg
       else
-        echo "  ⚠️  Installation failed. Install manually: brew install git gh"
+        echo "  ⚠️  $MSG_GIT_INSTALL_FAILED"
         skip_msg
       fi
     else
@@ -752,7 +769,11 @@ fi
 
 # Git config (if Git is available)
 if command -v git &>/dev/null; then
-  if ask_yn "$MSG_GIT_CONFIG_ASK"; then
+  echo ""
+  echo "  $MSG_GIT_CONFIG_ASK"
+  echo ""
+  select_menu "$MSG_YES" "$MSG_NO"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     read -p "  $MSG_GIT_NAME" git_name
     read -p "  $MSG_GIT_EMAIL" git_email
     git config --global user.name "$git_name"
@@ -765,7 +786,10 @@ if command -v git &>/dev/null; then
   if [ -f "$HOME/.ssh/id_ed25519" ]; then
     echo ""
     echo "  $MSG_SSH_EXISTS"
-    if ask_yn "$MSG_SSH_REGISTER"; then
+    echo "  $MSG_SSH_REGISTER"
+    echo ""
+    select_menu "$MSG_YES" "$MSG_NO"
+    if [ "$MENU_RESULT" -eq 0 ]; then
       cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
       echo ""
       echo "  📋 $MSG_SSH_COPIED"
@@ -773,19 +797,25 @@ if command -v git &>/dev/null; then
       echo ""
       read -p "  $MSG_SSH_ENTER "
     fi
-  elif ask_yn "$MSG_SSH_GENERATE"; then
-    read -p "  $MSG_SSH_EMAIL" ssh_email
-    if ssh-keygen -t ed25519 -C "$ssh_email" -f "$HOME/.ssh/id_ed25519"; then
-      eval "$(ssh-agent -s)" &>/dev/null || true
-      ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
-      cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
-      echo ""
-      echo "  📋 $MSG_SSH_COPIED"
-      echo "  $MSG_SSH_GITHUB_URL"
-      echo ""
-      read -p "  $MSG_SSH_ENTER "
-    else
-      echo "  ⚠️  SSH key generation cancelled."
+  else
+    echo ""
+    echo "  $MSG_SSH_GENERATE"
+    echo ""
+    select_menu "$MSG_YES" "$MSG_NO"
+    if [ "$MENU_RESULT" -eq 0 ]; then
+      read -p "  $MSG_SSH_EMAIL" ssh_email
+      if ssh-keygen -t ed25519 -C "$ssh_email" -f "$HOME/.ssh/id_ed25519"; then
+        eval "$(ssh-agent -s)" &>/dev/null || true
+        ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
+        cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
+        echo ""
+        echo "  📋 $MSG_SSH_COPIED"
+        echo "  $MSG_SSH_GITHUB_URL"
+        echo ""
+        read -p "  $MSG_SSH_ENTER "
+      else
+        echo "  ⚠️  SSH key generation cancelled."
+      fi
     fi
   fi
 fi
