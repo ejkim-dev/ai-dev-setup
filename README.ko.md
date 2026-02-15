@@ -50,24 +50,36 @@
 
 ### Phase 2: Claude Code 설정 (선택 사항)
 
-**8단계**:
+**전제 조건** (자동 확인):
+- **Node.js** 확인 (Phase 1에서)
+- **Claude Code CLI** 설치
 
-1. **Git** + **GitHub CLI** 설치
-2. **GitHub 인증** (SSH 키 설정)
-3. **Node.js** 확인 (Phase 1에서)
-4. **Claude Code CLI** 설치
-5. **claude-workspace** 구조 생성
-6. **Global Agents** (다중 선택)
-   - workspace-manager (추천)
-   - translate (추천)
-   - doc-writer (추천)
-7. **MCP Servers** (다중 선택, 총 5개)
+**4단계**:
+
+1. **[1/4] claude-workspace** 구조 생성
+   - ~/claude-workspace/ 구조 생성
+   - **Global Agents** 설치 (3개 모두 자동 설치)
+     - workspace-manager - 프로젝트 관리
+     - translate - 다국어 번역
+     - doc-writer - 문서 생성
+   - 템플릿 복사 (CLAUDE.md, .mcp.json 예시)
+   - ~/.claude/agents/ 심볼릭 링크
+   - 선택 사항: 기존 프로젝트 연결
+
+2. **[2/4] MCP Servers** (다중 선택, 총 5개)
    - local-rag (추천) - 문서/코드 검색
    - filesystem (추천) - 파일 읽기/쓰기
    - serena (추천) - 웹 검색
    - fetch - HTTP 요청
    - puppeteer - 브라우저 자동화
-8. **Obsidian** (선택적 노트 작성 앱)
+
+3. **[3/4] Obsidian** (선택적 노트 작성 앱)
+
+4. **[4/4] Git + GitHub** (선택 사항이지만 권장)
+   - Git 설치
+   - Git 설정 (이름/이메일)
+   - SSH 키 생성
+   - GitHub 인증
 
 **모든 프롬프트가 화살표 키 메뉴 사용** - 일관된 UI!
 

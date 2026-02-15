@@ -50,24 +50,36 @@ Includes optional [Claude Code](https://claude.ai/code) setup with workspace man
 
 ### Phase 2: Claude Code Setup (Optional)
 
-**8 Steps**:
+**Prerequisites** (auto-checked):
+- **Node.js** verification (from Phase 1)
+- **Claude Code CLI** installation
 
-1. **Git** + **GitHub CLI** installation
-2. **GitHub authentication** (SSH key setup)
-3. **Node.js** verification (from Phase 1)
-4. **Claude Code CLI** installation
-5. **claude-workspace** structure creation
-6. **Global Agents** (multi-select)
-   - workspace-manager (recommended)
-   - translate (recommended)
-   - doc-writer (recommended)
-7. **MCP Servers** (multi-select, 5 total)
+**4 Steps**:
+
+1. **[1/4] claude-workspace** structure creation
+   - Create ~/claude-workspace/ structure
+   - Install **Global Agents** (all 3 installed automatically)
+     - workspace-manager - Project management
+     - translate - Multi-language translation
+     - doc-writer - Documentation generation
+   - Copy templates (CLAUDE.md, .mcp.json examples)
+   - Symlink ~/.claude/agents/
+   - Optional: Connect existing projects
+
+2. **[2/4] MCP Servers** (multi-select, 5 total)
    - local-rag (recommended) - Document/code search
    - filesystem (recommended) - File read/write
    - serena (recommended) - Web search
    - fetch - HTTP requests
    - puppeteer - Browser automation
-8. **Obsidian** (optional note-taking app)
+
+3. **[3/4] Obsidian** (optional note-taking app)
+
+4. **[4/4] Git + GitHub** (optional but recommended)
+   - Git installation
+   - Git configuration (name/email)
+   - SSH key generation
+   - GitHub authentication
 
 **All prompts use arrow-key menus** - consistent UI throughout!
 
