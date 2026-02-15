@@ -11,31 +11,29 @@ install_ai_tools() {
   step "$MSG_STEP_AI_TOOLS"
   echo ""
 
-  # Show spinner while checking installation and updates
-  check_ai_tools_status() {
-    # Check installation status
-    claude_installed=0
-    gemini_installed=0
-    codex_installed=0
-    copilot_installed=0
+  # Check installation status
+  echo "  $MSG_CHECKING_UPDATES"
 
-    command -v claude >/dev/null 2>&1 && claude_installed=1
-    command -v gemini >/dev/null 2>&1 && gemini_installed=1
-    command -v codex >/dev/null 2>&1 && codex_installed=1
-    gh extension list 2>/dev/null | grep -q "gh-copilot" && copilot_installed=1
+  local claude_installed=0
+  local gemini_installed=0
+  local codex_installed=0
+  local copilot_installed=0
+  local claude_update_available=0
 
-    # Check for Claude Code updates (if installed)
-    claude_update_available=0
-    if [ $claude_installed -eq 1 ]; then
-      # Use timeout to prevent hanging on network issues
-      if timeout 5 npm outdated -g @anthropic-ai/claude-code 2>/dev/null | grep -q "@anthropic-ai/claude-code"; then
-        claude_update_available=1
-      fi
+  command -v claude >/dev/null 2>&1 && claude_installed=1
+  command -v gemini >/dev/null 2>&1 && gemini_installed=1
+  command -v codex >/dev/null 2>&1 && codex_installed=1
+  gh extension list 2>/dev/null | grep -q "gh-copilot" && copilot_installed=1
+
+  # Check for Claude Code updates (if installed)
+  if [ $claude_installed -eq 1 ]; then
+    # Use timeout to prevent hanging on network issues
+    if timeout 5 npm outdated -g @anthropic-ai/claude-code 2>/dev/null | grep -q "@anthropic-ai/claude-code"; then
+      claude_update_available=1
     fi
-  }
+  fi
 
-  # Run checks with spinner
-  run_with_spinner "$MSG_CHECKING_UPDATES" "check_ai_tools_status"
+  echo ""
 
   echo "  $MSG_AI_TOOLS_HINT"
   echo ""
