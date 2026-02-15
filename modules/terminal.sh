@@ -89,8 +89,47 @@ install_and_setup_iterm2() {
 }
 
 # Set up terminal applications (Terminal.app and/or iTerm2)
-# Note: D2Coding font is installed via Brewfile in Step 3
+# Note: D2Coding font should be installed in Step 3 (packages)
 setup_terminal() {
+  local font_name="${1:-d2coding}"
+
+  # Check if font is installed
+  local font_installed=0
+  if ls "$HOME/Library/Fonts/"*[Dd]2[Cc]oding*.ttc 2>/dev/null | grep -q . || \
+     ls "/Library/Fonts/"*[Dd]2[Cc]oding*.ttc 2>/dev/null | grep -q .; then
+    font_installed=1
+  fi
+
+  if [ $font_installed -eq 0 ]; then
+    echo ""
+    echo "  ⚠️  D2Coding 폰트가 설치되지 않았습니다!"
+    echo "  💡 터미널 테마를 적용하려면 폰트가 필요합니다."
+    echo ""
+    echo "폰트를 지금 설치하시겠습니까?"
+    select_menu "설치" "건너뛰기 (테마 적용 안 함)"
+
+    if [ "$MENU_RESULT" -eq 0 ]; then
+      if command -v brew &>/dev/null; then
+        echo ""
+        run_with_spinner "D2Coding 폰트 설치 중..." "brew install --cask font-d2coding"
+        if [ $? -eq 0 ]; then
+          echo "  ✅ D2Coding 폰트 설치 완료"
+          font_installed=1
+        else
+          echo "  ❌ 폰트 설치 실패"
+          echo "     수동 설치: brew install --cask font-d2coding"
+          return 1
+        fi
+      else
+        echo "  ❌ Homebrew가 없어서 폰트를 설치할 수 없습니다"
+        return 1
+      fi
+    else
+      echo "  ⏭️  터미널 테마 설정을 건너뜁니다"
+      return 0
+    fi
+  fi
+
   echo ""
   select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG_TERMINAL_OPT4"
 
