@@ -193,12 +193,14 @@ if [ "$MENU_RESULT" -eq 0 ]; then
     echo "  $MSG_PHASE2_OPENING"
     echo ""
 
-    # Open new terminal with setup-claude.sh using Dev profile
+    # Open new terminal with setup-claude.sh (use Dev profile if available)
     osascript <<EOF
 tell application "Terminal"
     activate
     do script "cd ~ && ~/claude-code-setup/setup-claude.sh"
-    set current settings of selected tab of front window to settings set "Dev"
+    try
+        set current settings of selected tab of front window to settings set "Dev"
+    end try
 end tell
 EOF
 
