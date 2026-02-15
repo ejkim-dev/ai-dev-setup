@@ -785,9 +785,9 @@ If none of the above helps, please report an issue:
 
 **Automated script available**:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
 
-bash /tmp/uninstall.sh
+bash /tmp/uninstall-tools.sh
 ```
 
 **What gets removed**:

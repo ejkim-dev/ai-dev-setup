@@ -14,7 +14,7 @@ How to partially or completely remove ai-dev-setup.
 **Automated script available**:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/cleanup.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/cleanup.sh
 
 bash /tmp/cleanup.sh
 ```
@@ -217,7 +217,7 @@ Only if not used by other tools:
 
 ```bash
 # Remove Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall-tools.sh)"
 
 # Remove Node.js
 brew uninstall node

@@ -115,9 +115,9 @@ echo "ja" > ~/.dev-setup-lang  # 일본어
 
 **Phase 1 정리** (macOS):
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
 
-bash /tmp/uninstall.sh
+bash /tmp/uninstall-tools.sh
 ```
 
 **제거되는 항목**:
@@ -144,9 +144,9 @@ npm uninstall -g @anthropic-ai/claude-code
 **전체 재설치**:
 ```bash
 # 1. 정리
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
 
-bash /tmp/uninstall.sh
+bash /tmp/uninstall-tools.sh
 
 # 2. 재설치
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
@@ -602,9 +602,9 @@ alias gl="git log --oneline -20"
 
 ```bash
 # 정리 스크립트 실행
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
 
-bash /tmp/uninstall.sh
+bash /tmp/uninstall-tools.sh
 ```
 
 **제거되는 항목**:
@@ -698,7 +698,7 @@ ln -s ~/claude-workspace/global/agents ~/.claude/agents
 다른 도구에서 사용하지 않는 경우에만:
 ```bash
 # Homebrew 제거
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall-tools.sh)"
 
 # Node.js 제거
 brew uninstall node

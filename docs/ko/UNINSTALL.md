@@ -14,7 +14,7 @@ ai-dev-setup을 부분적으로 또는 완전히 제거하는 방법입니다.
 **자동화 스크립트 사용 가능**:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/cleanup.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/cleanup.sh
 
 bash /tmp/cleanup.sh
 ```
@@ -217,7 +217,7 @@ sudo rm $(which claude)
 
 ```bash
 # Homebrew 제거
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall-tools.sh)"
 
 # Node.js 제거
 brew uninstall node

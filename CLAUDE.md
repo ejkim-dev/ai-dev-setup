@@ -7,23 +7,22 @@ A public repo for setting up development environments in one step. Supports macO
 ## Structure
 
 ```
-setup.sh              — [177 lines] Main orchestration only (macOS)
+setup.sh              — Main orchestration only (macOS)
 setup.ps1             — Windows install (PowerShell, 8 steps)
 Brewfile              — Homebrew packages (macOS only)
 lib/                  — Shared utilities (macOS)
-├── colors.sh         — [16 lines] Terminal color codes
-├── core.sh           — [46 lines] Global variables, step(), done_msg(), skip_msg(), ask_yn()
-├── ui.sh             — [220 lines] UI components (spinner, select_menu, select_multi)
-└── installer.sh      — [81 lines] Package installation wrappers
+├── colors.sh         — Terminal color codes
+├── core.sh           — Global variables, step(), done_msg(), skip_msg(), ask_yn()
+├── ui.sh             — UI components (spinner, select_menu, select_multi)
+└── installer.sh      — Package installation wrappers
 modules/              — Domain-specific logic (macOS)
-├── xcode.sh          — [20 lines] Xcode CLI Tools installation
-├── homebrew.sh       — [86 lines] Homebrew setup with error handling
-├── packages.sh       — [42 lines] Essential packages via Brewfile
-├── fonts.sh          — [40 lines] Font installation (D2Coding)
-├── terminal.sh       — [153 lines] Terminal.app and iTerm2 configuration
-├── shell.sh          — [141 lines] Oh My Zsh and .zshrc customization
-├── tmux.sh           — [36 lines] tmux configuration
-└── ai-tools.sh       — [112 lines] AI CLI tools (Claude Code, Gemini CLI, etc.)
+├── xcode.sh          — Xcode CLI Tools installation
+├── homebrew.sh       — Homebrew setup with error handling
+├── packages.sh       — Essential packages via Brewfile + font installation
+├── terminal.sh       — Terminal.app and iTerm2 configuration
+├── shell.sh          — Oh My Zsh and .zshrc customization
+├── tmux.sh           — tmux configuration
+└── ai-tools.sh       — AI CLI tools (Claude Code, Gemini CLI, etc.)
 configs/
 ├── mac/              — Terminal.app profile
 ├── windows/          — Windows Terminal theme
@@ -31,12 +30,9 @@ configs/
 claude-code/
 ├── setup-claude.sh   — Claude Code setup (macOS)
 ├── setup-claude.ps1  — Claude Code setup (Windows)
-├── README.md         — Main guide (simplified with links to doc/)
+├── README.md         — Main guide
 ├── README.ko.md      — Korean version of README
-├── doc/              — Comprehensive documentation
-│   ├── getting-started.md / .ko.md    — Quick start guide
-│   ├── claude-guide.md / .ko.md       — Complete concepts (CLAUDE.md, agents, MCP, Task.md)
-│   └── workspace-philosophy.md / .ko.md — Design philosophy and expansion strategies
+├── doc/              — Reference documentation (en/ko)
 ├── agents/           — Shared agents (workspace-manager, translate, doc-writer)
 ├── locale/           — i18n strings (en, ko, ja)
 ├── templates/        — .mcp.json templates (placeholder substitution)
@@ -57,10 +53,10 @@ CLAUDE.local.md       — (gitignored) Personal local settings and notes
 - **OS-specific separation**: macOS (setup.sh) / Windows (setup.ps1) as separate scripts
 - **Two-phase setup**: Basic environment (Phase 1) → Claude Code workspace setup (Phase 2)
 - **Language persistence**: Phase 1 saves language choice to `.dev-setup-lang`, Phase 2 auto-reads it
-- **Workspace centralization**: `~/claude-workspace/` with shared/ (agents, templates, mcp, doc) + projects/
+- **Workspace centralization**: `~/claude-workspace/` with shared/ (agents, templates, mcp) + projects/
 - **Template substitution**: MCP templates use `__PLACEHOLDER__` replaced by sed/PowerShell
 - **i18n support**: Language selected at setup start, all messages switch to that language via locale files
-- **Comprehensive documentation**: Bilingual guides (en/ko) for getting-started, concepts, and design philosophy
+- **Bilingual documentation**: Reference docs in `claude-code/doc/` (en/ko) for getting-started, concepts, and design philosophy
 
 ## OS Differences
 
@@ -86,7 +82,7 @@ CLAUDE.local.md       — (gitignored) Personal local settings and notes
 
 ## Code Quality & UI/UX Consistency
 
-**IMPORTANT**: Before making any changes, review `.claude/notes/ui-ux-checklist.md` for complete guidelines.
+**IMPORTANT**: Before making any changes, review `.claude/notes/checklists/ui-ux-checklist.md` for complete guidelines.
 
 **Critical Rules**:
 1. **No hardcoding**: All user-facing text must use `$MSG_*` variables from locale files (en.sh, ko.sh, ja.sh)
@@ -114,7 +110,7 @@ local opt_item="$MSG_ITEM"
 ```
 
 **When adding new features**:
-1. Check existing patterns in `.claude/notes/ui-ux-checklist.md`
+1. Check existing patterns in `.claude/notes/checklists/ui-ux-checklist.md`
 2. Add locale messages first (en, ko, ja)
 3. Use variables for all options
 4. Run check scripts before committing
@@ -127,13 +123,9 @@ After Phase 2 setup, users get `~/claude-workspace/`:
 ~/claude-workspace/
 ├── .gitignore              — Excludes projects/*, setup-lang/, secrets
 ├── config.json             — User preferences (language, connected projects)
-├── doc/                    — Documentation (committed to git)
-│   ├── getting-started.md / .ko.md
-│   ├── claude-guide.md / .ko.md
-│   └── workspace-philosophy.md / .ko.md
 ├── shared/                 — Shared across all projects (committed to git)
 │   ├── agents/            — Reusable AI assistants
-│   ├── templates/         — Project starter files
+│   ├── templates/         — Project starter files (CLAUDE.md, CLAUDE.local.md, etc.)
 │   └── mcp/               — MCP server configurations
 └── projects/              — Project-specific settings (gitignored)
     └── <project-name>/
@@ -146,11 +138,6 @@ After Phase 2 setup, users get `~/claude-workspace/`:
 - **Symlink-based**: Projects link to workspace, update once → apply everywhere
 - **Git-ready**: Workspace can be versioned and synced across machines
 - **Language persistence**: `.dev-setup-lang` (Phase 1) → auto-loaded in Phase 2
-
-**Documentation**:
-- `getting-started`: Quick start for new users
-- `claude-guide`: Complete reference (CLAUDE.md, agents, MCP, Task.md, slash commands)
-- `workspace-philosophy`: Design decisions, why centralization, expansion strategies
 
 ## Project-specific Claude Settings
 

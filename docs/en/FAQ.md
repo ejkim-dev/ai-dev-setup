@@ -115,9 +115,9 @@ echo "ja" > ~/.dev-setup-lang  # Japanese
 
 **Clean up Phase 1** (macOS):
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
 
-bash /tmp/uninstall.sh
+bash /tmp/uninstall-tools.sh
 ```
 
 **What gets removed**:
@@ -144,9 +144,9 @@ npm uninstall -g @anthropic-ai/claude-code
 **Full reinstall**:
 ```bash
 # 1. Clean up
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
 
-bash /tmp/uninstall.sh
+bash /tmp/uninstall-tools.sh
 
 # 2. Reinstall
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
@@ -602,9 +602,9 @@ Everything between markers is managed by ai-dev-setup. You can add your own conf
 
 ```bash
 # Run cleanup script
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall.sh -o /tmp/uninstall.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
 
-bash /tmp/uninstall.sh
+bash /tmp/uninstall-tools.sh
 ```
 
 **What gets removed**:
@@ -698,7 +698,7 @@ ln -s ~/claude-workspace/global/agents ~/.claude/agents
 Only if not used by other tools:
 ```bash
 # Remove Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall-tools.sh)"
 
 # Remove Node.js
 brew uninstall node
