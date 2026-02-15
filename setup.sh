@@ -108,6 +108,69 @@ select_menu() {
   MENU_RESULT=$selected
 }
 
+# Import Terminal.app profile using PlistBuddy
+# Usage: import_terminal_profile "/path/to/profile.terminal"
+# Returns: 0 on success, 1 on failure
+import_terminal_profile() {
+  local dev_terminal="$1"
+  local terminal_plist="$HOME/Library/Preferences/com.apple.Terminal.plist"
+
+  # Quit Terminal to ensure preferences can be written
+  osascript -e 'tell application "Terminal" to quit' 2>/dev/null || true
+  sleep 1
+
+  # Backup
+  cp "$terminal_plist" "${terminal_plist}.backup" 2>/dev/null || true
+
+  # Convert to XML (PlistBuddy can read binary but safer to convert)
+  plutil -convert xml1 "$terminal_plist" 2>/dev/null || true
+
+  # Ensure Window Settings dictionary exists
+  if ! /usr/libexec/PlistBuddy -c "Print :Window\ Settings" "$terminal_plist" >/dev/null 2>&1; then
+    /usr/libexec/PlistBuddy -c "Add :Window\ Settings dict" "$terminal_plist" 2>/dev/null || true
+  fi
+
+  # Delete existing Dev profile if any
+  /usr/libexec/PlistBuddy -c "Delete :Window\ Settings:Dev" "$terminal_plist" 2>/dev/null || true
+
+  # Convert Dev.terminal to XML
+  local temp_dev="/tmp/dev-profile-$$.xml"
+  plutil -convert xml1 "$dev_terminal" -o "$temp_dev" 2>/dev/null
+
+  if [ ! -f "$temp_dev" ]; then
+    rm -f "$temp_dev"
+    return 1
+  fi
+
+  # Add Dev profile and merge
+  /usr/libexec/PlistBuddy -c "Add :Window\ Settings:Dev dict" "$terminal_plist" 2>/dev/null
+  /usr/libexec/PlistBuddy -c "Merge $temp_dev :Window\ Settings:Dev" "$terminal_plist" 2>/dev/null
+
+  # Set as default profile
+  /usr/libexec/PlistBuddy -c "Set :Default\ Window\ Settings Dev" "$terminal_plist" 2>/dev/null || \
+    /usr/libexec/PlistBuddy -c "Add :Default\ Window\ Settings string Dev" "$terminal_plist" 2>/dev/null
+
+  /usr/libexec/PlistBuddy -c "Set :Startup\ Window\ Settings Dev" "$terminal_plist" 2>/dev/null || \
+    /usr/libexec/PlistBuddy -c "Add :Startup\ Window\ Settings string Dev" "$terminal_plist" 2>/dev/null
+
+  # Convert back to binary
+  plutil -convert binary1 "$terminal_plist" 2>/dev/null
+
+  # Restart cfprefsd
+  killall cfprefsd 2>/dev/null || true
+
+  # Cleanup
+  rm -f "$temp_dev"
+
+  # Verify
+  sleep 1
+  if defaults read com.apple.Terminal "Default Window Settings" 2>/dev/null | grep -q "Dev"; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 # Multi-select checkbox menu
 # Usage: MULTI_DEFAULTS="0 2" DISABLED_ITEMS="3" select_multi "Option A" "Option B" "Option C" "Option D"
 # Result: MULTI_RESULT array of selected indices (0-based)
@@ -395,19 +458,7 @@ select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG
 case "$MENU_RESULT" in
   0)
     # Terminal.app - import Dev theme and set as default
-    # Quit Terminal to ensure preferences can be written
-    osascript -e 'tell application "Terminal" to quit' 2>/dev/null || true
-    sleep 1
-
-    # Open and import the profile
-    open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 3  # Wait for Terminal to import the profile
-
-    # Verify profile was imported before setting as default
-    if defaults read com.apple.Terminal "Window Settings" 2>/dev/null | grep -q '"Dev"'; then
-      defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
-      defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
-      killall cfprefsd 2>/dev/null || true
+    if import_terminal_profile "$SCRIPT_DIR/configs/mac/Dev.terminal"; then
       echo "  ✅ $MSG_TERMINAL_APPLIED"
       echo "  💡 $MSG_TERMINAL_RESTART_HINT"
     else
@@ -447,19 +498,7 @@ case "$MENU_RESULT" in
     ;;
   2)
     # Both
-    # Quit Terminal to ensure preferences can be written
-    osascript -e 'tell application "Terminal" to quit' 2>/dev/null || true
-    sleep 1
-
-    # Open and import the profile
-    open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 3  # Wait for Terminal to import the profile
-
-    # Verify profile was imported before setting as default
-    if defaults read com.apple.Terminal "Window Settings" 2>/dev/null | grep -q '"Dev"'; then
-      defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
-      defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
-      killall cfprefsd 2>/dev/null || true
+    if import_terminal_profile "$SCRIPT_DIR/configs/mac/Dev.terminal"; then
       echo "  ✅ Terminal.app: $MSG_TERMINAL_APPLIED"
     else
       echo "  ⚠️  Terminal.app: Profile import failed"
