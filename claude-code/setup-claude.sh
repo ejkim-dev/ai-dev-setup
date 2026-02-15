@@ -533,13 +533,20 @@ if ask_yn "$MSG_MCP_ASK"; then
   echo "  Use ↑/↓ to navigate, Space to toggle, Enter to confirm"
   echo ""
 
+  # Build option labels with recommended status
+  local opt_localrag="$MSG_MCP_SERVER_LOCALRAG $MSG_RECOMMENDED"
+  local opt_filesystem="$MSG_MCP_SERVER_FILESYSTEM $MSG_RECOMMENDED"
+  local opt_serena="$MSG_MCP_SERVER_SERENA $MSG_RECOMMENDED"
+  local opt_fetch="$MSG_MCP_SERVER_FETCH"
+  local opt_puppeteer="$MSG_MCP_SERVER_PUPPETEER"
+
   # Multi-select menu with recommended servers pre-checked
   MULTI_DEFAULTS="0 1 2" DISABLED_ITEMS="" select_multi \
-    "local-rag    📚 Search your docs/code (recommended)" \
-    "filesystem   📝 Read/write files (recommended)" \
-    "serena       🌐 Web search (recommended)" \
-    "fetch        🌐 HTTP requests" \
-    "puppeteer    🤖 Browser automation"
+    "$opt_localrag" \
+    "$opt_filesystem" \
+    "$opt_serena" \
+    "$opt_fetch" \
+    "$opt_puppeteer"
 
   # Process selected servers
   echo ""

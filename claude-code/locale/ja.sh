@@ -67,6 +67,14 @@ MSG_MCP_DESC_2="MCPサーバーを接続すると、ドキュメント検索やJ
 MSG_MCP_DESC_3="外部サービスをClaudeが直接使用できます。"
 MSG_MCP_ASK="MCPサーバーをセットアップしますか？"
 
+# MCP Server options
+MSG_MCP_SERVER_LOCALRAG="local-rag - ドキュメント/コード検索"
+MSG_MCP_SERVER_FILESYSTEM="filesystem - ファイル読み書き"
+MSG_MCP_SERVER_SERENA="serena - Web検索"
+MSG_MCP_SERVER_FETCH="fetch - HTTPリクエスト"
+MSG_MCP_SERVER_PUPPETEER="puppeteer - ブラウザ自動化"
+MSG_RECOMMENDED="(推奨)"
+
 # local-rag
 MSG_RAG_TITLE="local-rag（ドキュメント検索）"
 MSG_RAG_DESC="PDF、マークダウンなどのドキュメントをClaudeで検索できます。"

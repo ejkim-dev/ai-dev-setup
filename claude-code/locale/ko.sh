@@ -67,6 +67,14 @@ MSG_MCP_DESC_2="MCP 서버를 연결하면 문서 검색, Jira 연동 등"
 MSG_MCP_DESC_3="외부 서비스를 Claude가 직접 사용할 수 있습니다."
 MSG_MCP_ASK="MCP 서버를 설정하시겠습니까?"
 
+# MCP Server options
+MSG_MCP_SERVER_LOCALRAG="local-rag - 문서/코드 검색"
+MSG_MCP_SERVER_FILESYSTEM="filesystem - 파일 읽기/쓰기"
+MSG_MCP_SERVER_SERENA="serena - 웹 검색"
+MSG_MCP_SERVER_FETCH="fetch - HTTP 요청"
+MSG_MCP_SERVER_PUPPETEER="puppeteer - 브라우저 자동화"
+MSG_RECOMMENDED="(추천)"
+
 # local-rag
 MSG_RAG_TITLE="local-rag (문서 검색)"
 MSG_RAG_DESC="PDF, 마크다운 등 문서를 Claude에게 검색시킬 수 있습니다."
