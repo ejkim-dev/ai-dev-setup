@@ -101,18 +101,24 @@ echo ""
 
 # 1. AI CLI 도구 제거
 echo "[1/7] AI CLI 도구 제거..."
-if command -v npm &>/dev/null; then
-  npm uninstall -g @anthropic-ai/claude-code 2>/dev/null || true
-  npm uninstall -g @google/gemini-cli 2>/dev/null || true
-  npm uninstall -g @openai/codex 2>/dev/null || true
-  echo "  ✅ AI CLI 도구 제거 완료"
+if command -v npm &>/dev/null || command -v gh &>/dev/null; then
+  echo "AI CLI 도구를 제거하시겠습니까?"
+  select_menu "제거" "건너뛰기"
+  if [ "$MENU_RESULT" -eq 0 ]; then
+    if command -v npm &>/dev/null; then
+      npm uninstall -g @anthropic-ai/claude-code 2>/dev/null || true
+      npm uninstall -g @google/gemini-cli 2>/dev/null || true
+      npm uninstall -g @openai/codex 2>/dev/null || true
+    fi
+    if command -v gh &>/dev/null; then
+      gh extension remove github/gh-copilot 2>/dev/null || true
+    fi
+    echo "  ✅ AI CLI 도구 제거 완료"
+  else
+    echo "  ⏭️  건너뜀"
+  fi
 else
-  echo "  ⏭️  npm 없음, 건너뜀"
-fi
-
-# GitHub Copilot CLI extension
-if command -v gh &>/dev/null; then
-  gh extension remove github/gh-copilot 2>/dev/null || true
+  echo "  ⏭️  설치된 AI 도구 없음"
 fi
 
 echo ""
@@ -120,27 +126,34 @@ echo ""
 # 2. Homebrew 패키지 제거
 echo "[2/7] Homebrew 패키지 제거..."
 if command -v brew &>/dev/null; then
-  # 폰트
-  brew uninstall --cask font-d2coding 2>/dev/null || true
-
-  # 패키지
-  brew uninstall zsh-syntax-highlighting 2>/dev/null || true
-  brew uninstall zsh-autosuggestions 2>/dev/null || true
-  brew uninstall tmux 2>/dev/null || true
-  brew uninstall ripgrep 2>/dev/null || true
-
-  # Node.js는 선택적으로 (다른 용도로 사용 중일 수 있음)
-  echo ""
-  echo "  Node.js도 제거하시겠습니까?"
-  select_menu "제거" "유지"
+  echo "Homebrew 패키지를 제거하시겠습니까?"
+  echo "(폰트, zsh plugins, tmux, ripgrep 등)"
+  select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    brew uninstall node 2>/dev/null || true
-    echo "  ✅ Node.js 제거됨"
-  else
-    echo "  ⏭️  Node.js 유지"
-  fi
+    # 폰트
+    brew uninstall --cask font-d2coding 2>/dev/null || true
 
-  echo "  ✅ Homebrew 패키지 제거 완료"
+    # 패키지
+    brew uninstall zsh-syntax-highlighting 2>/dev/null || true
+    brew uninstall zsh-autosuggestions 2>/dev/null || true
+    brew uninstall tmux 2>/dev/null || true
+    brew uninstall ripgrep 2>/dev/null || true
+
+    # Node.js는 선택적으로 (다른 용도로 사용 중일 수 있음)
+    echo ""
+    echo "  Node.js도 제거하시겠습니까?"
+    select_menu "제거" "유지"
+    if [ "$MENU_RESULT" -eq 0 ]; then
+      brew uninstall node 2>/dev/null || true
+      echo "  ✅ Node.js 제거됨"
+    else
+      echo "  ⏭️  Node.js 유지"
+    fi
+
+    echo "  ✅ Homebrew 패키지 제거 완료"
+  else
+    echo "  ⏭️  건너뜀"
+  fi
 else
   echo "  ⏭️  Homebrew 없음, 건너뜀"
 fi
@@ -150,13 +163,19 @@ echo ""
 # 3. Oh My Zsh 제거
 echo "[3/7] Oh My Zsh 제거..."
 if [ -d "$HOME/.oh-my-zsh" ]; then
-  # 직접 삭제 (uninstall.sh는 입력 대기할 수 있음)
-  rm -rf "$HOME/.oh-my-zsh"
+  echo "Oh My Zsh를 제거하시겠습니까?"
+  select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
+    # 직접 삭제 (uninstall.sh는 입력 대기할 수 있음)
+    rm -rf "$HOME/.oh-my-zsh"
 
-  # custom 폴더도 제거
-  rm -rf "$HOME/.oh-my-zsh.custom" 2>/dev/null || true
+    # custom 폴더도 제거
+    rm -rf "$HOME/.oh-my-zsh.custom" 2>/dev/null || true
 
-  echo "  ✅ Oh My Zsh 제거 완료"
+    echo "  ✅ Oh My Zsh 제거 완료"
+  else
+    echo "  ⏭️  유지"
+  fi
 else
   echo "  ⏭️  Oh My Zsh 없음, 건너뜀"
 fi
@@ -200,11 +219,17 @@ echo ""
 # 5. .tmux.conf 제거
 echo "[5/7] .tmux.conf 제거..."
 if [ -f "$HOME/.tmux.conf" ]; then
-  # 백업
-  cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
-  rm "$HOME/.tmux.conf"
-  echo "  ✅ .tmux.conf 제거 완료"
-  echo "  📝 백업: ~/.tmux.conf.backup.*"
+  echo ".tmux.conf를 제거하시겠습니까?"
+  select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
+    # 백업
+    cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
+    rm "$HOME/.tmux.conf"
+    echo "  ✅ .tmux.conf 제거 완료"
+    echo "  📝 백업: ~/.tmux.conf.backup.*"
+  else
+    echo "  ⏭️  유지"
+  fi
 else
   echo "  ⏭️  .tmux.conf 없음"
 fi
@@ -215,14 +240,20 @@ echo ""
 echo "[6/7] Terminal.app Dev 프로필 제거..."
 if defaults read com.apple.Terminal "Window Settings" &>/dev/null; then
   if defaults read com.apple.Terminal "Window Settings" | grep -q "Dev" 2>/dev/null; then
-    # Dev 프로필 제거
-    defaults delete com.apple.Terminal "Window Settings.Dev" 2>/dev/null || true
+    echo "Terminal.app Dev 프로필을 제거하시겠습니까?"
+    select_menu "제거" "유지"
+    if [ "$MENU_RESULT" -eq 0 ]; then
+      # Dev 프로필 제거
+      defaults delete com.apple.Terminal "Window Settings.Dev" 2>/dev/null || true
 
-    # Default로 Basic 설정
-    defaults write com.apple.Terminal "Default Window Settings" -string "Basic"
-    defaults write com.apple.Terminal "Startup Window Settings" -string "Basic"
+      # Default로 Basic 설정
+      defaults write com.apple.Terminal "Default Window Settings" -string "Basic"
+      defaults write com.apple.Terminal "Startup Window Settings" -string "Basic"
 
-    echo "  ✅ Terminal.app Dev 프로필 제거 완료"
+      echo "  ✅ Terminal.app Dev 프로필 제거 완료"
+    else
+      echo "  ⏭️  유지"
+    fi
   else
     echo "  ℹ️  Dev 프로필 없음"
   fi
@@ -234,16 +265,25 @@ echo ""
 
 # 7. Phase 2 관련 파일 제거
 echo "[7/7] Phase 2 관련 파일 제거..."
-if [ -d "$HOME/claude-code-setup" ]; then
-  rm -rf "$HOME/claude-code-setup"
-  echo "  ✅ ~/claude-code-setup/ 제거 완료"
-else
-  echo "  ⏭️  ~/claude-code-setup/ 없음"
-fi
+if [ -d "$HOME/claude-code-setup" ] || [ -f "$HOME/.dev-setup-lang" ]; then
+  echo "Phase 2 관련 파일을 제거하시겠습니까?"
+  echo "(~/claude-code-setup/, ~/.dev-setup-lang)"
+  select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
+    if [ -d "$HOME/claude-code-setup" ]; then
+      rm -rf "$HOME/claude-code-setup"
+      echo "  ✅ ~/claude-code-setup/ 제거 완료"
+    fi
 
-if [ -f "$HOME/.dev-setup-lang" ]; then
-  rm "$HOME/.dev-setup-lang"
-  echo "  ✅ ~/.dev-setup-lang 제거 완료"
+    if [ -f "$HOME/.dev-setup-lang" ]; then
+      rm "$HOME/.dev-setup-lang"
+      echo "  ✅ ~/.dev-setup-lang 제거 완료"
+    fi
+  else
+    echo "  ⏭️  유지"
+  fi
+else
+  echo "  ⏭️  Phase 2 파일 없음"
 fi
 
 echo ""
