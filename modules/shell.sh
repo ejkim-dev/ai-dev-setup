@@ -49,7 +49,35 @@ setup_shell() {
       echo "     $MSG_OHMYZSH_THEME_SKIP"
     fi
     echo ""
-    MULTI_DEFAULTS="0 1" select_multi "$MSG_ZSHRC_OPT_THEME" "$MSG_ZSHRC_OPT_PLUGINS" "$MSG_ZSHRC_OPT_ALIAS"
+
+    # Check if zsh plugins are installed (from step 3/7)
+    local autosuggestions_installed=0
+    local syntax_installed=0
+    if command -v brew &>/dev/null; then
+      brew list zsh-autosuggestions &>/dev/null && autosuggestions_installed=1
+      brew list zsh-syntax-highlighting &>/dev/null && syntax_installed=1
+    fi
+
+    # Build option labels with status
+    local opt_theme="$MSG_ZSHRC_OPT_THEME"
+    local opt_autosuggestions="$MSG_ZSHRC_OPT_AUTOSUGGESTIONS"
+    local opt_syntax="$MSG_ZSHRC_OPT_SYNTAX"
+    local opt_alias="$MSG_ZSHRC_OPT_ALIAS"
+
+    [ $autosuggestions_installed -eq 0 ] && opt_autosuggestions="$opt_autosuggestions $MSG_ZSHRC_NOT_INSTALLED"
+    [ $syntax_installed -eq 0 ] && opt_syntax="$opt_syntax $MSG_ZSHRC_NOT_INSTALLED"
+
+    # Auto-select installed plugins
+    local defaults="0"
+    [ $autosuggestions_installed -eq 1 ] && defaults="$defaults 1"
+    [ $syntax_installed -eq 1 ] && defaults="$defaults 2"
+
+    # Disable options for non-installed plugins
+    local disabled=""
+    [ $autosuggestions_installed -eq 0 ] && disabled="$disabled 1"
+    [ $syntax_installed -eq 0 ] && disabled="$disabled 2"
+
+    MULTI_DEFAULTS="$defaults" DISABLED_ITEMS="$disabled" select_multi "$opt_theme" "$opt_autosuggestions" "$opt_syntax" "$opt_alias"
 
     if [ ${#MULTI_RESULT[@]} -gt 0 ]; then
       # Prepare .zshrc
@@ -99,19 +127,25 @@ EOF
               echo "  ⚠️  agnoster theme requires Oh My Zsh (skipped)"
             fi
             ;;
-          1) # plugins
+          1) # zsh-autosuggestions
             cat >> "$HOME/.zshrc" << 'EOF'
 
-# === zsh plugins ===
+# === zsh-autosuggestions ===
 if [ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
   source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
+EOF
+            ;;
+          2) # zsh-syntax-highlighting
+            cat >> "$HOME/.zshrc" << 'EOF'
+
+# === zsh-syntax-highlighting ===
 if [ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
   source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 EOF
             ;;
-          2) # alias
+          3) # alias
             cat >> "$HOME/.zshrc" << 'EOF'
 
 # === Useful aliases ===
