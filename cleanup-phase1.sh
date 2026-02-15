@@ -147,12 +147,12 @@ if command -v brew &>/dev/null; then
     # Node.js는 선택적으로 (다른 용도로 사용 중일 수 있음)
     echo ""
     echo "  Node.js도 제거하시겠습니까?"
-    select_menu "제거" "유지"
+    select_menu "제거" "건너뛰기"
     if [ "$MENU_RESULT" -eq 0 ]; then
       brew uninstall node 2>/dev/null || true
       echo "  ✅ Node.js 제거됨"
     else
-      echo "  ⏭️  Node.js 유지"
+      echo "  ⏭️  Node.js 건너뜀"
     fi
 
     echo "  ✅ Homebrew 패키지 제거 완료"
@@ -169,7 +169,7 @@ echo ""
 echo "[3/8] Oh My Zsh 제거..."
 if [ -d "$HOME/.oh-my-zsh" ]; then
   echo "Oh My Zsh를 제거하시겠습니까?"
-  select_menu "제거" "유지"
+  select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
     # 직접 삭제 (uninstall.sh는 입력 대기할 수 있음)
     rm -rf "$HOME/.oh-my-zsh"
@@ -179,7 +179,7 @@ if [ -d "$HOME/.oh-my-zsh" ]; then
 
     echo "  ✅ Oh My Zsh 제거 완료"
   else
-    echo "  ⏭️  유지"
+    echo "  ⏭️  건너뜀"
   fi
 else
   echo "  ⏭️  Oh My Zsh 없음, 건너뜀"
@@ -225,7 +225,7 @@ echo ""
 echo "[5/8] .tmux.conf 제거..."
 if [ -f "$HOME/.tmux.conf" ]; then
   echo ".tmux.conf를 제거하시겠습니까?"
-  select_menu "제거" "유지"
+  select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
     # 백업
     cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
@@ -233,7 +233,7 @@ if [ -f "$HOME/.tmux.conf" ]; then
     echo "  ✅ .tmux.conf 제거 완료"
     echo "  📝 백업: ~/.tmux.conf.backup.*"
   else
-    echo "  ⏭️  유지"
+    echo "  ⏭️  건너뜀"
   fi
 else
   echo "  ⏭️  .tmux.conf 없음"
@@ -246,7 +246,7 @@ echo "[6/8] Terminal.app Dev 프로필 제거..."
 if defaults read com.apple.Terminal "Window Settings" &>/dev/null; then
   if defaults read com.apple.Terminal "Window Settings" | grep -q "Dev" 2>/dev/null; then
     echo "Terminal.app Dev 프로필을 제거하시겠습니까?"
-    select_menu "제거" "유지"
+    select_menu "제거" "건너뛰기"
     if [ "$MENU_RESULT" -eq 0 ]; then
       # Dev 프로필 제거
       defaults delete com.apple.Terminal "Window Settings.Dev" 2>/dev/null || true
@@ -257,7 +257,7 @@ if defaults read com.apple.Terminal "Window Settings" &>/dev/null; then
 
       echo "  ✅ Terminal.app Dev 프로필 제거 완료"
     else
-      echo "  ⏭️  유지"
+      echo "  ⏭️  건너뜀"
     fi
   else
     echo "  ℹ️  Dev 프로필 없음"
@@ -273,13 +273,13 @@ echo "[7/8] Phase 2 관련 파일 제거..."
 if [ -d "$HOME/claude-code-setup" ] || [ -d "$HOME/claude-workspace" ]; then
   echo "Phase 2 관련 파일을 제거하시겠습니까?"
   echo "(~/claude-code-setup/, ~/claude-workspace/)"
-  select_menu "제거" "유지"
+  select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
     rm -rf "$HOME/claude-code-setup" 2>/dev/null || true
     rm -rf "$HOME/claude-workspace" 2>/dev/null || true
     echo "  ✅ Phase 2 파일 제거 완료"
   else
-    echo "  ⏭️  유지"
+    echo "  ⏭️  건너뜀"
   fi
 else
   echo "  ⏭️  Phase 2 파일 없음"
@@ -291,13 +291,13 @@ echo ""
 echo "[8/8] Obsidian 제거..."
 if [ -d "/Applications/Obsidian.app" ]; then
   echo "Obsidian을 제거하시겠습니까?"
-  select_menu "제거" "유지"
+  select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
     brew uninstall --cask obsidian 2>/dev/null || true
     rm -rf "/Applications/Obsidian.app" 2>/dev/null || true
     echo "  ✅ Obsidian 제거 완료"
   else
-    echo "  ⏭️  유지"
+    echo "  ⏭️  건너뜀"
   fi
 else
   echo "  ⏭️  Obsidian 없음"
@@ -317,13 +317,13 @@ echo ""
 # iTerm2 제거
 if [ -d "/Applications/iTerm.app" ]; then
   echo "iTerm2를 제거하시겠습니까?"
-  MENU_DEFAULT=1 select_menu "제거" "유지"
+  MENU_DEFAULT=1 select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
     brew uninstall --cask iterm2 2>/dev/null || true
     rm -rf "/Applications/iTerm.app" 2>/dev/null || true
     echo "  ✅ iTerm2 제거 완료"
   else
-    echo "  ⏭️  iTerm2 유지"
+    echo "  ⏭️  iTerm2 건너뜀"
   fi
 else
   echo "  ⏭️  iTerm2 없음"
@@ -333,7 +333,7 @@ fi
 if command -v brew &>/dev/null; then
   echo ""
   echo "Homebrew를 완전히 제거하시겠습니까?"
-  MENU_DEFAULT=1 select_menu "제거" "유지"
+  MENU_DEFAULT=1 select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
     echo "  Homebrew 제거 중... (시간이 걸릴 수 있습니다)"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)" -- --force
@@ -350,7 +350,7 @@ if command -v brew &>/dev/null; then
 
     echo "  ✅ Homebrew 제거 완료"
   else
-    echo "  ⏭️  Homebrew 유지"
+    echo "  ⏭️  Homebrew 건너뜀"
   fi
 fi
 
@@ -358,13 +358,13 @@ fi
 if xcode-select -p &>/dev/null; then
   echo ""
   echo "Xcode Command Line Tools를 제거하시겠습니까?"
-  MENU_DEFAULT=1 select_menu "제거" "유지"
+  MENU_DEFAULT=1 select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
     echo "  Xcode Command Line Tools 제거 중..."
     sudo rm -rf /Library/Developer/CommandLineTools
     echo "  ✅ Xcode Command Line Tools 제거 완료"
   else
-    echo "  ⏭️  Xcode Command Line Tools 유지"
+    echo "  ⏭️  Xcode Command Line Tools 건너뜀"
   fi
 fi
 
