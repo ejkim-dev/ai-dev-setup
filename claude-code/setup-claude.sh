@@ -468,22 +468,25 @@ EOF
       continue
     fi
 
-    project_name=$(basename "$project_path")
+    # Extract short name: com.sample.myproject → myproject
+    raw_name=$(basename "$project_path")
+    project_name="${raw_name##*.}"
 
-    # Handle name collision
+    # Auto-number if duplicate: myproject → myproject_1 → myproject_2
     ws_project="$WORKSPACE/projects/$project_name"
     if [ -d "$ws_project" ]; then
       echo "  ⚠️  '$project_name' $MSG_PROJ_NAME_CONFLICT"
       echo "  $MSG_PROJ_USE_EXISTING"
-      select_menu "$MSG_PROJ_USE_EXISTING_YES" "$MSG_PROJ_RENAME"
+      select_menu "$MSG_PROJ_USE_EXISTING_YES" "$MSG_PROJ_NEW"
 
       if [ "$MENU_RESULT" -eq 1 ]; then
-        read -p "  → " alt_name
-        if [ -z "$alt_name" ]; then
-          continue
-        fi
-        project_name="$alt_name"
+        counter=1
+        while [ -d "$WORKSPACE/projects/${project_name}_${counter}" ]; do
+          counter=$((counter + 1))
+        done
+        project_name="${project_name}_${counter}"
         ws_project="$WORKSPACE/projects/$project_name"
+        echo "  → $MSG_PROJ_AUTO_NAMED '$project_name'"
       fi
     fi
 

@@ -80,7 +80,8 @@ MSG_PROJ_DONE="connected"
 MSG_PROJ_NAME_CONFLICT="already exists in workspace."
 MSG_PROJ_USE_EXISTING="Use existing workspace settings?"
 MSG_PROJ_USE_EXISTING_YES="Use existing"
-MSG_PROJ_RENAME="Rename"
+MSG_PROJ_NEW="Create new"
+MSG_PROJ_AUTO_NAMED="Auto-named as"
 
 # Obsidian
 MSG_OBS_TITLE="Obsidian"

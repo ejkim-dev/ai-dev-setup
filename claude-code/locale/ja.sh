@@ -80,7 +80,8 @@ MSG_PROJ_DONE="接続完了"
 MSG_PROJ_NAME_CONFLICT="がワークスペースに既に存在します。"
 MSG_PROJ_USE_EXISTING="既存のワークスペース設定を使用しますか？"
 MSG_PROJ_USE_EXISTING_YES="既存を使用"
-MSG_PROJ_RENAME="名前変更"
+MSG_PROJ_NEW="新規作成"
+MSG_PROJ_AUTO_NAMED="自動命名:"
 
 # Obsidian
 MSG_OBS_TITLE="Obsidian"
