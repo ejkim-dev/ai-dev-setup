@@ -868,7 +868,7 @@ if command -v git &>/dev/null; then
   echo ""
   echo "  $MSG_GIT_CONFIG_ASK"
   echo ""
-  select_menu "$MSG_YES" "$MSG_NO"
+  select_menu "$MSG_GIT_CONFIG_NOW" "$MSG_GIT_CONFIG_LATER"
   if [ "$MENU_RESULT" -eq 0 ]; then
     read -p "  $MSG_GIT_NAME" git_name
     read -p "  $MSG_GIT_EMAIL" git_email
