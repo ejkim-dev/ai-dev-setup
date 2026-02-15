@@ -5,6 +5,7 @@ Thumbs.db
 .claude/
 !.claude/tools/
 !.claude/notes/
+!.claude/skills/
 CLAUDE.local.md
 .claude-data/
 
