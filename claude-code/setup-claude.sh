@@ -481,7 +481,15 @@ EOF
     if [ "$is_dup" = false ] && [ -L "$project_path/.claude" ]; then
       link_target="$(readlink "$project_path/.claude")"
       if [[ "$link_target" == *"$WORKSPACE/projects/"* ]]; then
-        is_dup=true
+        if [ -e "$project_path/.claude" ]; then
+          # Valid symlink — already connected
+          is_dup=true
+        else
+          # Broken symlink from deleted workspace — clean up stale links
+          rm -f "$project_path/.claude"
+          rm -f "$project_path/CLAUDE.md"
+          rm -f "$project_path/CLAUDE.local.md"
+        fi
       fi
     fi
 
@@ -529,10 +537,11 @@ EOF
       fi
     fi
 
-    # Symlinks (always create if missing)
+    # Symlinks (always create if missing, replace broken symlinks)
     if [ -e "$project_path/.claude" ]; then
       echo "  ⚠️  $project_path/.claude $MSG_PROJ_EXISTS"
     else
+      [ -L "$project_path/.claude" ] && rm -f "$project_path/.claude"
       ln -s "$ws_project/.claude" "$project_path/.claude"
       echo "  → $MSG_PROJ_LINK_CLAUDE"
     fi
@@ -540,6 +549,7 @@ EOF
     if [ -e "$project_path/CLAUDE.md" ]; then
       echo "  ⚠️  $project_path/CLAUDE.md $MSG_PROJ_EXISTS"
     else
+      [ -L "$project_path/CLAUDE.md" ] && rm -f "$project_path/CLAUDE.md"
       ln -s "$ws_project/CLAUDE.md" "$project_path/CLAUDE.md"
       echo "  → $MSG_PROJ_LINK_CLAUDEMD"
     fi
@@ -547,6 +557,7 @@ EOF
     if [ -e "$project_path/CLAUDE.local.md" ]; then
       echo "  ⚠️  $project_path/CLAUDE.local.md $MSG_PROJ_EXISTS"
     else
+      [ -L "$project_path/CLAUDE.local.md" ] && rm -f "$project_path/CLAUDE.local.md"
       ln -s "$ws_project/CLAUDE.local.md" "$project_path/CLAUDE.local.md"
       echo "  → $MSG_PROJ_LINK_LOCALMD"
     fi
