@@ -6,6 +6,9 @@
 
 set -e
 
+# Redirect stdin to terminal (allows interactive input when run via curl | bash)
+exec < /dev/tty
+
 # Color codes
 color_bold_cyan="\033[1;36m"
 color_reset="\033[0m"
@@ -31,10 +34,10 @@ select_menu() {
   done
 
   while true; do
-    IFS= read -rsn1 key < /dev/tty
+    IFS= read -rsn1 key
     case "$key" in
       $'\x1b')
-        IFS= read -rsn2 key < /dev/tty
+        IFS= read -rsn2 key
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
