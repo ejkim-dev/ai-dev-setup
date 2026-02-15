@@ -176,25 +176,20 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-echo "$MSG_PHASE2_ASK"
-select_menu "$MSG_PHASE2_OPT_YES" "$MSG_PHASE2_OPT_NO"
+echo "  $MSG_PHASE2_RESTART_WARN"
+echo "$MSG_PHASE2_RESTART_REASON"
+echo ""
+
+echo "$MSG_PHASE2_OPEN_TERM_ASK"
+select_menu "$MSG_PHASE2_OPEN_OPT_YES" "$MSG_PHASE2_OPEN_OPT_NO"
 
 if [ "$MENU_RESULT" -eq 0 ]; then
   echo ""
-  echo "  $MSG_PHASE2_RESTART_WARN"
-  echo "$MSG_PHASE2_RESTART_REASON"
+  echo "  $MSG_PHASE2_OPENING"
   echo ""
 
-  echo "$MSG_PHASE2_OPEN_TERM_ASK"
-  select_menu "$MSG_PHASE2_OPEN_OPT_YES" "$MSG_PHASE2_OPEN_OPT_NO"
-
-  if [ "$MENU_RESULT" -eq 0 ]; then
-    echo ""
-    echo "  $MSG_PHASE2_OPENING"
-    echo ""
-
-    # Open new terminal with setup-claude.sh (use Dev profile if available)
-    osascript <<EOF
+  # Open new terminal with setup-claude.sh (use Dev profile if available)
+  osascript <<EOF
 tell application "Terminal"
     activate
     do script "cd ~ && ~/claude-code-setup/setup-claude.sh"
@@ -204,13 +199,8 @@ tell application "Terminal"
 end tell
 EOF
 
-    echo "  $MSG_PHASE2_OPENED"
-    echo "  $MSG_PHASE2_CLOSE_INFO"
-  else
-    echo ""
-    echo "  $MSG_PHASE2_MANUAL"
-    echo "     ~/claude-code-setup/setup-claude.sh"
-  fi
+  echo "  $MSG_PHASE2_OPENED"
+  echo "  $MSG_PHASE2_CLOSE_INFO"
 else
   echo ""
   echo "  $MSG_PHASE2_MANUAL_LATER"
