@@ -564,10 +564,11 @@ EOF
       echo "  → $MSG_PROJ_GITIGNORE"
     fi
 
+    project_entry="{\"name\": \"$project_name\", \"path\": \"$project_path\"}"
     if [ -n "$project_list" ]; then
-      project_list="$project_list, \"$project_name\""
+      project_list="$project_list, $project_entry"
     else
-      project_list="\"$project_name\""
+      project_list="$project_entry"
     fi
 
     CONNECTED_PATHS+=("$project_path")
