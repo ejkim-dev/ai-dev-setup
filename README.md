@@ -21,246 +21,85 @@ Includes optional [Claude Code](https://claude.ai/code) setup with workspace man
 
 ### Phase 1: Basic Development Environment
 
-**7 Steps** (all optional except required tools):
+7 interactive steps to set up terminal, shell, and essential packages:
+- Package manager (Homebrew/winget)
+- Node.js, ripgrep, fonts
+- Terminal themes & shell customization
+- tmux (macOS)
 
-1. **Language selection** (en/ko/ja)
-2. **Xcode Command Line Tools** (macOS only)
-3. **Package Manager** - Homebrew (macOS) or winget (Windows)
-4. **Essential Packages** (multi-select with arrow keys)
-   - Node.js (required for AI tools)
-   - ripgrep (fast code search)
-   - D2Coding font (Korean coding font)
-   - zsh-autosuggestions (command auto-completion)
-   - zsh-syntax-highlighting (syntax highlighting)
-5. **Terminal themes**
-   - Terminal.app + iTerm2 (macOS)
-   - Windows Terminal (Windows)
-6. **Shell customization** (multi-select)
-   - agnoster theme + random emoji
-   - zsh plugin configurations (auto-linked from step 4)
-   - Useful aliases (optional)
-7. **tmux** (macOS terminal multiplexer)
-
-**UI**: Arrow-key navigation with `select_menu` - no typing required!
-
-**Features**:
-- Auto-detect already installed tools
-- Auto-link: Plugins installed in step 4 are auto-selected in step 6
-- Disabled options: Can't configure plugins that aren't installed
+**[→ Phase 1 Details](docs/en/PHASE1.md)**
 
 ### Phase 2: Claude Code Setup (Optional)
 
-**Prerequisites** (auto-checked):
-- **Node.js** verification (from Phase 1)
-- **Claude Code CLI** installation
+4 steps to set up Claude Code workspace:
+- Global agents (workspace-manager, translate, doc-writer)
+- MCP servers (local-rag, filesystem, serena, etc.)
+- Obsidian integration
+- Git + GitHub setup
 
-**4 Steps**:
-
-1. **[1/4] claude-workspace** structure creation
-   - Create ~/claude-workspace/ structure
-   - Install **Global Agents** (all 3 installed automatically)
-     - workspace-manager - Project management
-     - translate - Multi-language translation
-     - doc-writer - Documentation generation
-   - Copy templates (CLAUDE.md, .mcp.json examples)
-   - Symlink ~/.claude/agents/
-   - Optional: Connect existing projects
-
-2. **[2/4] MCP Servers** (multi-select, 5 total)
-   - local-rag (recommended) - Document/code search
-   - filesystem (recommended) - File read/write
-   - serena (recommended) - Web search
-   - fetch - HTTP requests
-   - puppeteer - Browser automation
-
-3. **[3/4] Obsidian** (optional note-taking app)
-
-4. **[4/4] Git + GitHub** (optional but recommended)
-   - Git installation
-   - Git configuration (name/email)
-   - SSH key generation
-   - GitHub authentication
-
-**All prompts use arrow-key menus** - consistent UI throughout!
+**[→ Phase 2 Details](docs/en/PHASE2.md)**
 
 ---
 
-## 🚀 Quick Start (One Line)
-
-No Git required. Just copy and paste.
+## 🚀 Quick Start
 
 ### macOS
 
-Open Terminal:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
 ```
 
 ### Windows
 
-Open PowerShell as Administrator:
 ```powershell
 irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex
 ```
 
-The script downloads, extracts, and starts an interactive setup. Each step uses arrow-key menus - choose what you need.
-
-**Supports**: English, Korean, and Japanese (selected at startup)
+Interactive setup with arrow-key menus. Supports English, Korean, and Japanese.
 
 ---
 
-## 🗂️ Claude Workspace Structure
+## 🗂️ What You Get
 
-After Phase 2:
+After Phase 2, you'll have a complete Claude Code workspace:
 
 ```
 ~/claude-workspace/
-├── global/
-│   └── agents/              # Available in all projects
-│       ├── workspace-manager.md
-│       ├── translate.md
-│       └── doc-writer.md
-├── projects/                # Per-project settings
-│   └── my-app/
-│       ├── .claude/
-│       ├── CLAUDE.md
-│       └── CLAUDE.local.md
-└── templates/               # MCP, CLAUDE.md templates
+├── global/agents/          # Available in all projects
+├── projects/               # Per-project settings
+└── templates/              # CLAUDE.md, .mcp.json examples
 ```
 
-The `workspace-manager` agent handles symlinks, `.gitignore`, and configuration automatically.
-
-**Learn more**: [Workspace Guide](docs/en/WORKSPACE.md)
+**[→ Workspace Guide](docs/en/WORKSPACE.md)**
 
 ---
 
 ## 📚 Documentation
 
-### Quick Links
-
-- **[Phase 1 Details](docs/en/PHASE1.md)** - Basic environment setup guide
-- **[Phase 2 Details](docs/en/PHASE2.md)** - Claude Code setup guide
+- **[Phase 1 Details](docs/en/PHASE1.md)** - Basic environment setup
+- **[Phase 2 Details](docs/en/PHASE2.md)** - Claude Code setup
 - **[Workspace Guide](docs/en/WORKSPACE.md)** - Workspace structure and usage
-- **[Troubleshooting](docs/en/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Troubleshooting](docs/en/TROUBLESHOOTING.md)** - Common issues and fixes
 - **[FAQ](docs/en/FAQ.md)** - Frequently asked questions
-
-### 한국어 문서
-
-- **[Phase 1 상세](docs/ko/PHASE1.md)** - 기본 환경 설정 가이드
-- **[Phase 2 상세](docs/ko/PHASE2.md)** - Claude Code 설정 가이드
-- **[Workspace 가이드](docs/ko/WORKSPACE.md)** - Workspace 구조 및 사용법
-- **[문제 해결](docs/ko/TROUBLESHOOTING.md)** - 일반적인 문제 및 해결책
-- **[FAQ](docs/ko/FAQ.md)** - 자주 묻는 질문
+- **[Uninstall Guide](docs/en/UNINSTALL.md)** - Removal instructions
 
 ---
 
-## 💡 Why Git in Phase 2?
+## 🧹 Cleanup
 
-Git is **recommended** (not required) for Claude Code version control features:
+Remove Phase 1 installation:
 
-**With Git**, Claude Code can:
-- ✅ Track code changes (`git status`, `git diff`)
-- ✅ Auto-generate commits with AI-written messages
-- ✅ Create pull requests (`gh pr create`)
-- ✅ Manage branches and collaborate
-
-**Without Git**, Claude Code still works but you'll miss version control integration.
-
-Phase 1 doesn't require Git. Phase 2 installs it automatically if needed.
-
----
-
-## 🧹 Cleanup & Reinstall
-
-Remove Phase 1 installation and start over:
-
-### macOS
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
 ```
 
-**What gets removed**:
-- Oh My Zsh (`~/.oh-my-zsh/`)
-- Installed packages (Node.js, ripgrep, etc.)
-- Shell configuration (`~/.zshrc`)
-- tmux configuration (`~/.tmux.conf`)
-- Terminal.app Dev profile
-- Phase 2 files (`~/claude-code-setup/`)
-
-**What is NOT removed** (may be used by other apps):
-- Homebrew
-- Xcode Command Line Tools
-- D2Coding font
-
-Each step asks for confirmation with an interactive menu.
-
----
-
-## 🌐 Language Support
-
-Select your language at startup:
-- 🇺🇸 English
-- 🇰🇷 한국어 (Korean)
-- 🇯🇵 日本語 (Japanese)
-
-All menus, messages, and documentation follow your choice.
-
-Change language anytime:
-```bash
-rm ~/.dev-setup-lang
-./setup.sh  # Prompts for language again
-```
-
----
-
-## 🛠️ Customization
-
-### Add a Language
-
-Create `locale/<code>.sh` (and `.ps1` for Windows) with translated `MSG_*` variables.
-
-See `locale/en.sh` as reference.
-
-### Add a Global Agent
-
-Drop a `.md` file in `claude-code/agents/`. It will be installed to `~/claude-workspace/global/agents/` and available in all projects.
-
-### Add an MCP Template
-
-Add a JSON file in `claude-code/templates/` with `__PLACEHOLDER__` variables that get substituted during setup.
-
----
-
-## 📖 How It Works
-
-```
-install.sh/install.ps1
-  ↓ Downloads ZIP and extracts to ~/ai-dev-setup/
-
-setup.sh/setup.ps1 (Phase 1)
-  ↓ Language selection (English/한국어/日本語)
-  ↓ Saves language to ~/.dev-setup-lang
-  ↓ Installs tools → configures terminal/shell
-  ↓ Copies claude-code/ → ~/claude-code-setup/
-  ↓ Deletes ~/ai-dev-setup/ (cleanup)
-  ✅ Phase 1 Complete!
-
-  ↓ "Continue to Phase 2 now?" (in selected language)
-  ├─ Yes → Opens new terminal with Phase 2
-  └─ No → Can run anytime: ~/claude-code-setup/setup-claude.sh
-
-~/claude-code-setup/setup-claude.sh (Phase 2, optional)
-  ↓ Loads language from ~/.dev-setup-lang
-  ↓ Git setup → workspace → agents → MCP servers
-  ↓ Saves config to ~/claude-workspace/config.json
-  ✅ Done!
-```
+**[→ Complete uninstall guide](docs/en/UNINSTALL.md)**
 
 ---
 
 ## 🆘 Getting Help
 
-- **[Troubleshooting Guide](docs/en/TROUBLESHOOTING.md)** - Common issues and fixes
+- **[Troubleshooting](docs/en/TROUBLESHOOTING.md)** - Common issues and fixes
 - **[FAQ](docs/en/FAQ.md)** - Frequently asked questions
 - **[GitHub Issues](https://github.com/ejkim-dev/ai-dev-setup/issues)** - Report bugs or request features
 
@@ -269,11 +108,3 @@ setup.sh/setup.ps1 (Phase 1)
 ## 📄 License
 
 [MIT](LICENSE)
-
----
-
-## 🔗 Links
-
-- **Documentation**: [docs/en/](docs/en/) | [docs/ko/](docs/ko/)
-- **Repository**: [github.com/ejkim-dev/ai-dev-setup](https://github.com/ejkim-dev/ai-dev-setup)
-- **Claude Code**: [claude.ai/code](https://claude.ai/code)

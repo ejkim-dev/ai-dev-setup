@@ -21,246 +21,85 @@
 
 ### Phase 1: 기본 개발 환경
 
-**7단계** (필수 도구 제외 모두 선택 사항):
+터미널, 셸, 필수 패키지를 설정하는 7단계:
+- 패키지 관리자 (Homebrew/winget)
+- Node.js, ripgrep, 폰트
+- 터미널 테마 & 셸 커스터마이징
+- tmux (macOS)
 
-1. **언어 선택** (en/ko/ja)
-2. **Xcode Command Line Tools** (macOS만)
-3. **패키지 관리자** - Homebrew (macOS) 또는 winget (Windows)
-4. **필수 패키지** (화살표 키로 다중 선택)
-   - Node.js (AI 도구에 필요)
-   - ripgrep (빠른 코드 검색)
-   - D2Coding 폰트 (한글 코딩 폰트)
-   - zsh-autosuggestions (명령어 자동 완성)
-   - zsh-syntax-highlighting (문법 강조)
-5. **터미널 테마**
-   - Terminal.app + iTerm2 (macOS)
-   - Windows Terminal (Windows)
-6. **쉘 커스터마이징** (다중 선택)
-   - agnoster 테마 + 랜덤 이모지
-   - zsh 플러그인 설정 (4단계에서 자동 연결)
-   - 유용한 별칭 (선택 사항)
-7. **tmux** (macOS 터미널 멀티플렉서)
-
-**UI**: `select_menu`로 화살표 키 탐색 - 타이핑 불필요!
-
-**기능**:
-- 이미 설치된 도구 자동 감지
-- 자동 연결: 4단계에서 설치한 플러그인이 6단계에서 자동 선택됨
-- 비활성화 옵션: 설치되지 않은 플러그인은 설정 불가
+**[→ Phase 1 상세 가이드](docs/ko/PHASE1.md)**
 
 ### Phase 2: Claude Code 설정 (선택 사항)
 
-**전제 조건** (자동 확인):
-- **Node.js** 확인 (Phase 1에서)
-- **Claude Code CLI** 설치
+Claude Code 워크스페이스를 설정하는 4단계:
+- 글로벌 에이전트 (workspace-manager, translate, doc-writer)
+- MCP 서버 (local-rag, filesystem, serena 등)
+- Obsidian 연동
+- Git + GitHub 설정
 
-**4단계**:
-
-1. **[1/4] claude-workspace** 구조 생성
-   - ~/claude-workspace/ 구조 생성
-   - **Global Agents** 설치 (3개 모두 자동 설치)
-     - workspace-manager - 프로젝트 관리
-     - translate - 다국어 번역
-     - doc-writer - 문서 생성
-   - 템플릿 복사 (CLAUDE.md, .mcp.json 예시)
-   - ~/.claude/agents/ 심볼릭 링크
-   - 선택 사항: 기존 프로젝트 연결
-
-2. **[2/4] MCP Servers** (다중 선택, 총 5개)
-   - local-rag (추천) - 문서/코드 검색
-   - filesystem (추천) - 파일 읽기/쓰기
-   - serena (추천) - 웹 검색
-   - fetch - HTTP 요청
-   - puppeteer - 브라우저 자동화
-
-3. **[3/4] Obsidian** (선택적 노트 작성 앱)
-
-4. **[4/4] Git + GitHub** (선택 사항이지만 권장)
-   - Git 설치
-   - Git 설정 (이름/이메일)
-   - SSH 키 생성
-   - GitHub 인증
-
-**모든 프롬프트가 화살표 키 메뉴 사용** - 일관된 UI!
+**[→ Phase 2 상세 가이드](docs/ko/PHASE2.md)**
 
 ---
 
-## 🚀 빠른 시작 (한 줄)
-
-Git 필요 없음. 복사해서 붙여넣기만 하세요.
+## 🚀 빠른 시작
 
 ### macOS
 
-터미널 열기:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
 ```
 
 ### Windows
 
-PowerShell을 관리자 권한으로 열기:
 ```powershell
 irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex
 ```
 
-스크립트가 다운로드하고 압축을 풀어 대화형 설정을 시작합니다. 각 단계마다 화살표 키 메뉴를 사용 - 필요한 것만 선택하세요.
-
-**지원 언어**: 한국어, 영어, 일본어 (시작 시 선택)
+화살표 키 메뉴로 진행되는 대화형 설정. 한국어, 영어, 일본어를 지원합니다.
 
 ---
 
-## 🗂️ Claude Workspace 구조
+## 🗂️ 설치 후 구조
 
-Phase 2 이후:
+Phase 2 이후 완전한 Claude Code 워크스페이스가 구성됩니다:
 
 ```
 ~/claude-workspace/
-├── global/
-│   └── agents/              # 모든 프로젝트에서 사용 가능
-│       ├── workspace-manager.md
-│       ├── translate.md
-│       └── doc-writer.md
-├── projects/                # 프로젝트별 설정
-│   └── my-app/
-│       ├── .claude/
-│       ├── CLAUDE.md
-│       └── CLAUDE.local.md
-└── templates/               # MCP, CLAUDE.md 템플릿
+├── global/agents/          # 모든 프로젝트에서 사용 가능
+├── projects/               # 프로젝트별 설정
+└── templates/              # CLAUDE.md, .mcp.json 예시
 ```
 
-`workspace-manager` 에이전트가 심볼릭 링크, `.gitignore`, 설정을 자동으로 처리합니다.
-
-**자세히 알아보기**: [Workspace 가이드](docs/ko/WORKSPACE.md)
+**[→ Workspace 가이드](docs/ko/WORKSPACE.md)**
 
 ---
 
 ## 📚 문서
 
-### 빠른 링크
-
-- **[Phase 1 상세](docs/ko/PHASE1.md)** - 기본 환경 설정 가이드
-- **[Phase 2 상세](docs/ko/PHASE2.md)** - Claude Code 설정 가이드
+- **[Phase 1 가이드](docs/ko/PHASE1.md)** - 기본 환경 설정
+- **[Phase 2 가이드](docs/ko/PHASE2.md)** - Claude Code 설정
 - **[Workspace 가이드](docs/ko/WORKSPACE.md)** - Workspace 구조 및 사용법
 - **[문제 해결](docs/ko/TROUBLESHOOTING.md)** - 일반적인 문제 및 해결책
 - **[FAQ](docs/ko/FAQ.md)** - 자주 묻는 질문
-
-### English Documentation
-
-- **[Phase 1 Details](docs/en/PHASE1.md)** - Basic environment setup guide
-- **[Phase 2 Details](docs/en/PHASE2.md)** - Claude Code setup guide
-- **[Workspace Guide](docs/en/WORKSPACE.md)** - Workspace structure and usage
-- **[Troubleshooting](docs/en/TROUBLESHOOTING.md)** - Common issues and solutions
-- **[FAQ](docs/en/FAQ.md)** - Frequently asked questions
+- **[제거 가이드](docs/ko/UNINSTALL.md)** - 제거 방법
 
 ---
 
-## 💡 왜 Git이 Phase 2에 있나요?
+## 🧹 정리
 
-Git은 Claude Code 버전 관리 기능을 위해 **권장**됩니다 (필수 아님):
+Phase 1 설치 제거:
 
-**Git이 있으면**, Claude Code는:
-- ✅ 코드 변경사항 추적 (`git status`, `git diff`)
-- ✅ AI가 작성한 메시지로 커밋 자동 생성
-- ✅ Pull request 생성 (`gh pr create`)
-- ✅ 브랜치 관리 및 협업
-
-**Git이 없어도** Claude Code는 작동하지만 버전 관리 통합 기능을 사용할 수 없습니다.
-
-Phase 1에는 Git이 필요하지 않습니다. Phase 2에서 필요 시 자동으로 설치합니다.
-
----
-
-## 🧹 정리 및 재설치
-
-Phase 1 설치를 제거하고 처음부터 다시 시작:
-
-### macOS
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
 ```
 
-**제거되는 항목**:
-- Oh My Zsh (`~/.oh-my-zsh/`)
-- 설치된 패키지 (Node.js, ripgrep 등)
-- 셸 설정 (`~/.zshrc`)
-- tmux 설정 (`~/.tmux.conf`)
-- Terminal.app Dev 프로필
-- Phase 2 파일 (`~/claude-code-setup/`)
-
-**제거되지 않는 항목** (다른 앱에서 사용 중일 수 있음):
-- Homebrew
-- Xcode Command Line Tools
-- D2Coding 폰트
-
-각 단계마다 인터랙티브 메뉴로 확인을 요청합니다.
-
----
-
-## 🌐 언어 지원
-
-시작 시 언어를 선택하세요:
-- 🇺🇸 English
-- 🇰🇷 한국어 (Korean)
-- 🇯🇵 日本語 (Japanese)
-
-모든 메뉴, 메시지, 문서가 선택한 언어를 따릅니다.
-
-언제든지 언어 변경:
-```bash
-rm ~/.dev-setup-lang
-./setup.sh  # 다시 언어를 물어봄
-```
-
----
-
-## 🛠️ 커스터마이징
-
-### 언어 추가
-
-`locale/<code>.sh` (Windows용 `.ps1`) 생성하고 번역된 `MSG_*` 변수 작성.
-
-`locale/en.sh`를 참고하세요.
-
-### Global Agent 추가
-
-`claude-code/agents/`에 `.md` 파일 추가. `~/claude-workspace/global/agents/`에 설치되어 모든 프로젝트에서 사용 가능.
-
-### MCP 템플릿 추가
-
-`claude-code/templates/`에 `__PLACEHOLDER__` 변수를 포함한 JSON 파일 추가. 설정 중 치환됨.
-
----
-
-## 📖 작동 방식
-
-```
-install.sh/install.ps1
-  ↓ ZIP 다운로드 및 ~/ai-dev-setup/에 압축 해제
-
-setup.sh/setup.ps1 (Phase 1)
-  ↓ 언어 선택 (English/한국어/日本語)
-  ↓ ~/.dev-setup-lang에 언어 저장
-  ↓ 도구 설치 → 터미널/셸 설정
-  ↓ claude-code/ 복사 → ~/claude-code-setup/
-  ↓ ~/ai-dev-setup/ 삭제 (정리)
-  ✅ Phase 1 완료!
-
-  ↓ "Phase 2를 지금 진행하시겠습니까?" (선택한 언어로)
-  ├─ 예 → Phase 2로 새 터미널 열림
-  └─ 아니오 → 언제든 실행 가능: ~/claude-code-setup/setup-claude.sh
-
-~/claude-code-setup/setup-claude.sh (Phase 2, 선택)
-  ↓ ~/.dev-setup-lang에서 언어 로드
-  ↓ Git 설정 → workspace → agents → MCP 서버
-  ↓ ~/claude-workspace/config.json에 설정 저장
-  ✅ 완료!
-```
+**[→ 완전 제거 가이드](docs/ko/UNINSTALL.md)**
 
 ---
 
 ## 🆘 도움 받기
 
-- **[문제 해결 가이드](docs/ko/TROUBLESHOOTING.md)** - 일반적인 문제 및 해결책
+- **[문제 해결](docs/ko/TROUBLESHOOTING.md)** - 일반적인 문제 및 해결책
 - **[FAQ](docs/ko/FAQ.md)** - 자주 묻는 질문
 - **[GitHub Issues](https://github.com/ejkim-dev/ai-dev-setup/issues)** - 버그 보고 또는 기능 요청
 
@@ -269,11 +108,3 @@ setup.sh/setup.ps1 (Phase 1)
 ## 📄 라이선스
 
 [MIT](LICENSE)
-
----
-
-## 🔗 링크
-
-- **문서**: [docs/ko/](docs/ko/) | [docs/en/](docs/en/)
-- **저장소**: [github.com/ejkim-dev/ai-dev-setup](https://github.com/ejkim-dev/ai-dev-setup)
-- **Claude Code**: [claude.ai/code](https://claude.ai/code)
