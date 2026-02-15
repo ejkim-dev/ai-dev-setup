@@ -154,46 +154,6 @@ The `workspace-manager` agent handles symlinks, `.gitignore`, and configuration 
 
 ---
 
-## 🎨 Key Features
-
-### Arrow-Key Navigation Everywhere
-
-**No more `[Y/n]` prompts!** All menus use arrow keys:
-
-```
-  ▸ Install
-    Skip
-```
-
-Navigate with ↑↓, select with Enter. Simple and consistent.
-
-### Multi-Select Menus
-
-Choose multiple options at once:
-
-```
-  ▸ [x] Node.js - JavaScript runtime (required)
-    [x] ripgrep - Fast code search
-    [x] D2Coding Font - Korean coding font
-    [ ] zsh-autosuggestions - Command suggestions
-
-  ↑↓: navigate | Space: toggle | Enter: confirm
-```
-
-### Auto-Linking
-
-Smart connections between steps:
-
-**Step 4**: Install `zsh-autosuggestions`
-→ **Step 6**: Auto-selects "Command auto-suggestions config"
-
-If you didn't install it in step 4:
-→ **Step 6**: Shows "Not installed" and disables the option
-
-No manual configuration needed!
-
----
-
 ## 💡 Why Git in Phase 2?
 
 Git is **recommended** (not required) for Claude Code version control features:
