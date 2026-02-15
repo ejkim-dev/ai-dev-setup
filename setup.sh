@@ -171,6 +171,58 @@ import_terminal_profile() {
   fi
 }
 
+# Install iTerm2 and apply Dev profile
+# Returns: 0 on success, 1 on failure
+install_and_setup_iterm2() {
+  local profile_json="$1"
+  local profile_dir="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+  local profile_file="$profile_dir/iterm2-dev-profile.json"
+
+  # Check if already installed
+  if [ -d "/Applications/iTerm.app" ]; then
+    echo "  iTerm2: $MSG_ALREADY_INSTALLED"
+  else
+    # Install iTerm2
+    if brew install --cask iterm2; then
+      sleep 2  # Wait for installation to complete
+      if [ -d "/Applications/iTerm.app" ]; then
+        echo "  ✅ $MSG_ITERM2_INSTALLED"
+      else
+        echo "  ⚠️  Installation succeeded but app not found in /Applications/"
+        echo "      Check: brew --prefix --cask iterm2"
+        return 1
+      fi
+    else
+      echo "  ❌ $MSG_ITERM2_INSTALL_FAILED"
+      echo "      Try: brew install --cask iterm2"
+      return 1
+    fi
+  fi
+
+  # Apply Dev profile (only if iTerm2 exists)
+  if [ -d "/Applications/iTerm.app" ]; then
+    mkdir -p "$profile_dir"
+
+    if cp "$profile_json" "$profile_file"; then
+      # Verify file was copied
+      if [ -f "$profile_file" ]; then
+        echo "  ✅ $MSG_ITERM2_PROFILE_APPLIED"
+        echo "  💡 $MSG_ITERM2_PROFILE_HINT"
+        return 0
+      else
+        echo "  ⚠️  Profile file copy failed"
+        return 1
+      fi
+    else
+      echo "  ⚠️  Failed to copy profile file"
+      return 1
+    fi
+  else
+    echo "  ⚠️  iTerm2 not found, skipping profile setup"
+    return 1
+  fi
+}
+
 # Multi-select checkbox menu
 # Usage: MULTI_DEFAULTS="0 2" DISABLED_ITEMS="3" select_multi "Option A" "Option B" "Option C" "Option D"
 # Result: MULTI_RESULT array of selected indices (0-based)
@@ -470,31 +522,7 @@ case "$MENU_RESULT" in
     ;;
   1)
     # iTerm2 only
-    if [ -d "/Applications/iTerm.app" ]; then
-      echo "  iTerm2: $MSG_ALREADY_INSTALLED"
-    else
-      if brew install --cask iterm2; then
-        sleep 2  # Wait for installation to complete
-        if [ -d "/Applications/iTerm.app" ]; then
-          echo "  ✅ $MSG_ITERM2_INSTALLED"
-        else
-          echo "  ⚠️  Installation succeeded but app not found in /Applications/"
-          echo "      Check: brew --prefix --cask iterm2"
-        fi
-      else
-        echo "  ❌ $MSG_ITERM2_INSTALL_FAILED"
-        echo "      Try: brew install --cask iterm2"
-      fi
-    fi
-    # Apply Dev profile (only if iTerm2 exists)
-    if [ -d "/Applications/iTerm.app" ]; then
-      mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-      cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
-      echo "  ✅ $MSG_ITERM2_PROFILE_APPLIED"
-      echo "  💡 $MSG_ITERM2_PROFILE_HINT"
-    else
-      echo "  ⚠️  iTerm2 not found, skipping profile setup"
-    fi
+    install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json"
     ;;
   2)
     # Both
@@ -505,31 +533,7 @@ case "$MENU_RESULT" in
       echo "  📋 Please import manually: Terminal > Settings > Profiles > Import"
     fi
 
-    if [ -d "/Applications/iTerm.app" ]; then
-      echo "  iTerm2: $MSG_ALREADY_INSTALLED"
-    else
-      if brew install --cask iterm2; then
-        sleep 2  # Wait for installation to complete
-        if [ -d "/Applications/iTerm.app" ]; then
-          echo "  ✅ iTerm2: $MSG_ITERM2_INSTALLED"
-        else
-          echo "  ⚠️  iTerm2: Installation succeeded but app not found"
-          echo "      Check: brew --prefix --cask iterm2"
-        fi
-      else
-        echo "  ❌ iTerm2: $MSG_ITERM2_INSTALL_FAILED"
-        echo "      Try: brew install --cask iterm2"
-      fi
-    fi
-    # Apply Dev profile to iTerm2 (only if iTerm2 exists)
-    if [ -d "/Applications/iTerm.app" ]; then
-      mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-      cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
-      echo "  ✅ iTerm2: $MSG_ITERM2_PROFILE_APPLIED"
-      echo "  💡 $MSG_BOTH_TERMINAL_HINT"
-    else
-      echo "  ⚠️  iTerm2 not found, skipping profile setup"
-    fi
+    install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json"
     ;;
   3)
     skip_msg
