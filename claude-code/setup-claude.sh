@@ -472,7 +472,7 @@ EOF
     project_path="$(cd "$project_path" && pwd)"
 
     # Check duplicate: already connected in this session
-    local is_dup=false
+    is_dup=false
     for connected in "${CONNECTED_PATHS[@]}"; do
       if [ "$connected" = "$project_path" ]; then
         is_dup=true
@@ -482,7 +482,6 @@ EOF
 
     # Check duplicate: already linked from previous session
     if [ "$is_dup" = false ] && [ -L "$project_path/.claude" ]; then
-      local link_target
       link_target="$(readlink "$project_path/.claude")"
       if [[ "$link_target" == *"$WORKSPACE/projects/"* ]]; then
         is_dup=true
