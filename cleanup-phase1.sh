@@ -6,9 +6,6 @@
 
 set -e
 
-# Redirect stdin to terminal (allows interactive input when run via curl | bash)
-exec < /dev/tty
-
 # Color codes
 color_bold_cyan="\033[1;36m"
 color_reset="\033[0m"
@@ -22,8 +19,11 @@ select_menu() {
   local selected=0
   local key
 
+  # Open /dev/tty for reading (allows interactive input when run via curl | bash)
+  exec 3</dev/tty
+
   tput civis 2>/dev/null
-  trap 'tput cnorm 2>/dev/null' EXIT
+  trap 'tput cnorm 2>/dev/null; exec 3<&-' EXIT
 
   for i in "${!options[@]}"; do
     if [ "$i" -eq $selected ]; then
@@ -34,10 +34,10 @@ select_menu() {
   done
 
   while true; do
-    IFS= read -rsn1 key
+    IFS= read -rsn1 key <&3
     case "$key" in
       $'\x1b')
-        IFS= read -rsn2 key
+        IFS= read -rsn2 key <&3
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
