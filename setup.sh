@@ -21,7 +21,6 @@ source "$SCRIPT_DIR/lib/installer.sh"
 source "$SCRIPT_DIR/modules/xcode.sh"
 source "$SCRIPT_DIR/modules/homebrew.sh"
 source "$SCRIPT_DIR/modules/packages.sh"
-source "$SCRIPT_DIR/modules/fonts.sh"
 source "$SCRIPT_DIR/modules/terminal.sh"
 source "$SCRIPT_DIR/modules/shell.sh"
 source "$SCRIPT_DIR/modules/tmux.sh"
@@ -68,8 +67,8 @@ install_essential_packages
 # --- 4. Terminal + Shell Setup ---
 step "$MSG_STEP_TERMINAL"
 
-# Fonts → Terminal → Shell → tmux
-install_fonts
+# Terminal → Shell → tmux (Font installed in Step 3)
+SELECTED_FONT="d2coding"  # D2Coding installed via Brewfile in Step 3
 setup_terminal "$SELECTED_FONT"
 TERMINAL_MENU_CHOICE=$MENU_RESULT  # Save for verification display
 setup_shell

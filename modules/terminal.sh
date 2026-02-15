@@ -36,11 +36,10 @@ import_terminal_profile() {
 }
 
 # Install iTerm2 and apply Dev profile
-# Usage: install_and_setup_iterm2 <profile_json> <selected_font>
+# Usage: install_and_setup_iterm2 <profile_json>
 # Returns: 0 on success, 1 on failure
 install_and_setup_iterm2() {
   local profile_json="$1"
-  local selected_font="$2"
   local profile_dir="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
   local profile_file="$profile_dir/iterm2-dev-profile.json"
 
@@ -70,11 +69,6 @@ install_and_setup_iterm2() {
     mkdir -p "$profile_dir"
 
     if cp "$profile_json" "$profile_file"; then
-      # Update font if Nerd Font was selected
-      if [ "$selected_font" = "nerd" ]; then
-        sed -i '' 's/"Normal Font": "D2Coding 11"/"Normal Font": "D2CodingLigature Nerd Font 11"/' "$profile_file"
-      fi
-
       # Verify file was copied
       if [ -f "$profile_file" ]; then
         echo "  ✅ $MSG_ITERM2_PROFILE_APPLIED"
@@ -95,10 +89,8 @@ install_and_setup_iterm2() {
 }
 
 # Set up terminal applications (Terminal.app and/or iTerm2)
-# Parameters: $1 = selected_font (from fonts module)
+# Note: D2Coding font is installed via Brewfile in Step 3
 setup_terminal() {
-  local selected_font="$1"
-
   echo ""
   select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG_TERMINAL_OPT4"
 
@@ -119,7 +111,7 @@ setup_terminal() {
       ;;
     1)
       # iTerm2 only
-      install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$selected_font"
+      install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json"
       ;;
     2)
       # Both
@@ -132,7 +124,7 @@ setup_terminal() {
         echo "  📋 Please import manually: Terminal > Settings > Profiles > Import"
       fi
 
-      install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$selected_font"
+      install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json"
       ;;
     3)
       skip_msg
