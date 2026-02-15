@@ -265,20 +265,13 @@ echo ""
 
 # 7. Phase 2 관련 파일 제거
 echo "[7/7] Phase 2 관련 파일 제거..."
-if [ -d "$HOME/claude-code-setup" ] || [ -f "$HOME/.dev-setup-lang" ]; then
+if [ -d "$HOME/claude-code-setup" ]; then
   echo "Phase 2 관련 파일을 제거하시겠습니까?"
-  echo "(~/claude-code-setup/, ~/.dev-setup-lang)"
+  echo "(~/claude-code-setup/ - includes .dev-setup-lang)"
   select_menu "제거" "유지"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    if [ -d "$HOME/claude-code-setup" ]; then
-      rm -rf "$HOME/claude-code-setup"
-      echo "  ✅ ~/claude-code-setup/ 제거 완료"
-    fi
-
-    if [ -f "$HOME/.dev-setup-lang" ]; then
-      rm "$HOME/.dev-setup-lang"
-      echo "  ✅ ~/.dev-setup-lang 제거 완료"
-    fi
+    rm -rf "$HOME/claude-code-setup"
+    echo "  ✅ ~/claude-code-setup/ 제거 완료"
   else
     echo "  ⏭️  유지"
   fi
