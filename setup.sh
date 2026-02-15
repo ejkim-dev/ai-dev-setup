@@ -40,8 +40,12 @@ case "$MENU_RESULT" in
   *) USER_LANG="en" ;;
 esac
 
+# Create Phase 2 directory early to save language setting
+CLAUDE_CODE_DIR="$HOME/claude-code-setup"
+mkdir -p "$CLAUDE_CODE_DIR"
+
 # Save language selection for Phase 2 (Claude Code setup)
-echo "$USER_LANG" > "$HOME/.dev-setup-lang"
+echo "$USER_LANG" > "$CLAUDE_CODE_DIR/.dev-setup-lang"
 
 # Load locale file
 if [ -f "$SCRIPT_DIR/claude-code/locale/$USER_LANG.sh" ]; then
@@ -115,9 +119,8 @@ install_ai_tools
 # === Cleanup ===
 # Copy claude-code/ for later setup, then remove entire install directory
 # This handles both ZIP download (install.sh) and git clone cases cleanly
-CLAUDE_CODE_DIR="$HOME/claude-code-setup"
+# Note: $CLAUDE_CODE_DIR already exists (created during language selection)
 if [ -d "$SCRIPT_DIR/claude-code" ]; then
-  mkdir -p "$CLAUDE_CODE_DIR"
   cp "$SCRIPT_DIR/claude-code/setup-claude.sh" "$CLAUDE_CODE_DIR/"
   cp "$SCRIPT_DIR/claude-code/README.md" "$CLAUDE_CODE_DIR/" 2>/dev/null || true
   cp -r "$SCRIPT_DIR/claude-code/agents" "$CLAUDE_CODE_DIR/"
@@ -161,33 +164,33 @@ rm -rf "$SCRIPT_DIR"
 # === Done ===
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "✨ ${color_green}Phase 1 Complete!${color_reset}"
+echo -e "✨ ${color_green}$MSG_PHASE1_COMPLETE${color_reset}"
 echo ""
-echo "  Next: Phase 2 - Claude Code Setup (optional)"
+echo "  $MSG_PHASE2_NEXT"
 echo ""
-echo "  • Workspace management (central config)"
-echo "  • Global agents (workspace-manager, translate, doc-writer)"
-echo "  • MCP servers (document search)"
-echo "  • Git + GitHub (recommended for Claude features)"
+echo "  $MSG_PHASE2_DESC_1"
+echo "  $MSG_PHASE2_DESC_2"
+echo "  $MSG_PHASE2_DESC_3"
+echo "  $MSG_PHASE2_DESC_4"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-echo "Continue to Phase 2 now?"
-select_menu "Yes, continue" "No, skip for now"
+echo "$MSG_PHASE2_ASK"
+select_menu "$MSG_PHASE2_OPT_YES" "$MSG_PHASE2_OPT_NO"
 
 if [ "$MENU_RESULT" -eq 0 ]; then
   echo ""
-  echo "  ⚠️  Terminal restart required for Phase 2"
-  echo "     (to load updated PATH and shell config)"
+  echo "  $MSG_PHASE2_RESTART_WARN"
+  echo "$MSG_PHASE2_RESTART_REASON"
   echo ""
 
-  echo "Open new terminal and start Phase 2?"
-  select_menu "Yes, open new terminal" "No, I'll run it manually later"
+  echo "$MSG_PHASE2_OPEN_TERM_ASK"
+  select_menu "$MSG_PHASE2_OPEN_OPT_YES" "$MSG_PHASE2_OPEN_OPT_NO"
 
   if [ "$MENU_RESULT" -eq 0 ]; then
     echo ""
-    echo "  🚀 Opening new terminal..."
+    echo "  $MSG_PHASE2_OPENING"
     echo ""
 
     # Open new terminal with setup-claude.sh
@@ -198,16 +201,16 @@ tell application "Terminal"
 end tell
 EOF
 
-    echo "  ✅ New terminal opened with Phase 2 setup"
-    echo "  ℹ️  You can close this window after Phase 2 starts"
+    echo "  $MSG_PHASE2_OPENED"
+    echo "  $MSG_PHASE2_CLOSE_INFO"
   else
     echo ""
-    echo "  💡 Run Phase 2 later in a new terminal:"
+    echo "  $MSG_PHASE2_MANUAL"
     echo "     ~/claude-code-setup/setup-claude.sh"
   fi
 else
   echo ""
-  echo "  💡 You can run Phase 2 anytime:"
+  echo "  $MSG_PHASE2_MANUAL_LATER"
   echo "     ~/claude-code-setup/setup-claude.sh"
 fi
 

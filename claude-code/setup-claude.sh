@@ -207,8 +207,8 @@ echo ""
 
 # === 0. Language selection (always in English) ===
 # Check if language was already selected in Phase 1
-if [ -f "$HOME/.dev-setup-lang" ]; then
-  USER_LANG=$(cat "$HOME/.dev-setup-lang")
+if [ -f "$SCRIPT_DIR/.dev-setup-lang" ]; then
+  USER_LANG=$(cat "$SCRIPT_DIR/.dev-setup-lang")
   case "$USER_LANG" in
     ko)
       LANG_NAME="한국어"
