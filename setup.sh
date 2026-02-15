@@ -121,7 +121,35 @@ if [ -d "$SCRIPT_DIR/claude-code" ]; then
   cp -r "$SCRIPT_DIR/claude-code/examples" "$CLAUDE_CODE_DIR/"
   cp -r "$SCRIPT_DIR/claude-code/locale" "$CLAUDE_CODE_DIR/"
   chmod +x "$CLAUDE_CODE_DIR/setup-claude.sh"
+
+  # Verify critical Phase 2 files were copied successfully
+  if [ ! -f "$CLAUDE_CODE_DIR/setup-claude.sh" ] || \
+     [ ! -d "$CLAUDE_CODE_DIR/agents" ] || \
+     [ ! -d "$CLAUDE_CODE_DIR/templates" ] || \
+     [ ! -d "$CLAUDE_CODE_DIR/locale" ]; then
+    echo ""
+    echo "❌ Failed to copy Phase 2 files to ~/claude-code-setup/"
+    echo "   Please check disk space and permissions."
+    echo "   Installation directory preserved: $SCRIPT_DIR"
+    echo ""
+    exit 1
+  fi
 fi
+
+# Safety check: Prevent accidental deletion of critical directories
+if [[ -z "$SCRIPT_DIR" ]] || \
+   [[ "$SCRIPT_DIR" == "/" ]] || \
+   [[ "$SCRIPT_DIR" == "$HOME" ]] || \
+   [[ "$SCRIPT_DIR" == "/Users" ]] || \
+   [[ "$SCRIPT_DIR" == "/System" ]]; then
+  echo ""
+  echo "❌ Safety check failed: Invalid directory for deletion: '$SCRIPT_DIR'"
+  echo "   This should never happen. Please report this issue."
+  echo "   Installation directory preserved for safety."
+  echo ""
+  exit 1
+fi
+
 # Remove entire install directory (including .git if cloned)
 cd "$HOME"
 rm -rf "$SCRIPT_DIR"
