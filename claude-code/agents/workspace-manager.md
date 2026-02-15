@@ -25,22 +25,25 @@ Centrally manage from `~/claude-workspace/` and link to each project via symlink
 
 ```
 ~/claude-workspace/
+├── .gitignore                         # Git ignore patterns
 ├── config.json                        # User settings (language, OS, options)
-├── global/
-│   └── agents/                        # → ~/.claude/agents/ symlink
-│       ├── translate.md               # Global: Document translation
-│       ├── doc-writer.md              # Global: README, API docs
-│       └── workspace-manager.md       # Global: This agent
-├── projects/
-│   └── <project-name>/
-│       ├── .claude/                   # → Project's .claude/ symlink
-│       │   ├── agents/                # Project-specific agents
-│       │   └── settings.local.json    # Project permission settings
-│       ├── CLAUDE.md                  # → Project root CLAUDE.md symlink
-│       └── CLAUDE.local.md            # → Project root CLAUDE.local.md symlink
-└── templates/
-    ├── mcp-local-rag.json
-    └── CLAUDE.md
+├── shared/
+│   ├── agents/                        # Shared agents (no symlink)
+│   │   ├── translate.md               # Shared: Document translation
+│   │   ├── doc-writer.md              # Shared: README, API docs
+│   │   └── workspace-manager.md       # Shared: This agent
+│   ├── templates/                     # Project templates
+│   │   ├── .mcp.json.template
+│   │   ├── CLAUDE.md
+│   │   └── CLAUDE.local.md
+│   └── mcp/                           # Shared MCP servers (future)
+└── projects/
+    └── <project-name>/
+        ├── .claude/                   # → Project's .claude/ symlink
+        │   ├── agents/                # Project-specific agents
+        │   └── settings.local.json    # Project permission settings
+        ├── CLAUDE.md                  # → Project root CLAUDE.md symlink
+        └── CLAUDE.local.md            # → Project root CLAUDE.local.md symlink
 ```
 
 ## Symlink relationships
@@ -48,10 +51,12 @@ Centrally manage from `~/claude-workspace/` and link to each project via symlink
 ```
 Project actual files                   →  claude-workspace source
 ────────────────────────────────────   ──────────────────────────
-~/.claude/agents/                      →  ~/claude-workspace/global/agents/
 ~/projects/my-app/.claude/             →  ~/claude-workspace/projects/my-app/.claude/
 ~/projects/my-app/CLAUDE.md            →  ~/claude-workspace/projects/my-app/CLAUDE.md
 ~/projects/my-app/CLAUDE.local.md      →  ~/claude-workspace/projects/my-app/CLAUDE.local.md
+
+Note: Shared agents are NOT symlinked. They live in ~/claude-workspace/shared/agents/
+and can be referenced via relative paths or copied to project-specific locations.
 ```
 
 ## Files kept directly in projects (not symlinked)
@@ -95,9 +100,9 @@ When project already has `.mcp.json` and adding a new MCP:
 ```
 
 ### 4. Agent management
-- List global agents: check `~/claude-workspace/global/agents/`
+- List shared agents: check `~/claude-workspace/shared/agents/`
 - Add/remove project-specific agents
-- Edit global agents (affects all projects)
+- Edit shared agents (affects all projects)
 
 ### 5. Status check
 - List connected projects

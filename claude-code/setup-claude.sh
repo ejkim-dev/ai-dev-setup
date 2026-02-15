@@ -346,9 +346,10 @@ echo "  $MSG_WS_DESC_2"
 echo "  $MSG_WS_DESC_3"
 echo ""
 echo "  ~/claude-workspace/"
-echo "  ├── global/agents/    ← $MSG_WS_TREE_AGENTS"
-echo "  ├── projects/         ← $MSG_WS_TREE_PROJECTS"
-echo "  └── templates/        ← $MSG_WS_TREE_TEMPLATES"
+echo "  ├── setup-lang/       ← $MSG_WS_TREE_SETUP_LANG"
+echo "  ├── shared/agents/    ← $MSG_WS_TREE_AGENTS"
+echo "  ├── shared/templates/ ← $MSG_WS_TREE_TEMPLATES"
+echo "  └── projects/         ← $MSG_WS_TREE_PROJECTS"
 echo ""
 echo "  $MSG_WS_ASK"
 echo ""
@@ -357,47 +358,56 @@ select_menu "$MSG_YES" "$MSG_NO"
 if [ "$MENU_RESULT" -eq 0 ]; then
   OPT_WORKSPACE=true
 
-  mkdir -p "$WORKSPACE/global/agents"
-  mkdir -p "$WORKSPACE/projects"
-  mkdir -p "$WORKSPACE/templates"
+  # Copy setup language resources first (for Phase 2 UI messages)
+  mkdir -p "$WORKSPACE/setup-lang"
+  cp "$SCRIPT_DIR/locale/"*.sh "$WORKSPACE/setup-lang/" 2>/dev/null || true
+  echo "  → Setup language resources copied"
 
-  # Copy global agents
-  cp "$SCRIPT_DIR/agents/workspace-manager.md" "$WORKSPACE/global/agents/"
-  cp "$SCRIPT_DIR/agents/translate.md" "$WORKSPACE/global/agents/"
-  cp "$SCRIPT_DIR/agents/doc-writer.md" "$WORKSPACE/global/agents/"
+  # Create workspace structure
+  mkdir -p "$WORKSPACE/shared/agents"
+  mkdir -p "$WORKSPACE/shared/templates"
+  mkdir -p "$WORKSPACE/shared/mcp"
+  mkdir -p "$WORKSPACE/projects"
+
+  # Copy shared agents (NOT installation scripts)
+  cp "$SCRIPT_DIR/agents/workspace-manager.md" "$WORKSPACE/shared/agents/"
+  cp "$SCRIPT_DIR/agents/translate.md" "$WORKSPACE/shared/agents/"
+  cp "$SCRIPT_DIR/agents/doc-writer.md" "$WORKSPACE/shared/agents/"
   echo "  → $MSG_WS_AGENTS_DONE"
 
-  # Copy templates
-  cp "$SCRIPT_DIR/templates/"* "$WORKSPACE/templates/" 2>/dev/null || true
-  cp "$SCRIPT_DIR/examples/"* "$WORKSPACE/templates/" 2>/dev/null || true
+  # Copy templates and examples
+  cp "$SCRIPT_DIR/templates/"* "$WORKSPACE/shared/templates/" 2>/dev/null || true
+  cp "$SCRIPT_DIR/examples/"* "$WORKSPACE/shared/templates/" 2>/dev/null || true
   echo "  → $MSG_WS_TEMPLATES_DONE"
 
-  # Inject language into CLAUDE.local.md (copy from template, substitute on the copy)
-  if [ -f "$WORKSPACE/templates/CLAUDE.local.md" ]; then
-    # Export so perl can read it via $ENV{}, then use perl for safe multiline replacement
+  # Inject language into CLAUDE.local.md
+  if [ -f "$WORKSPACE/shared/templates/CLAUDE.local.md" ]; then
     export LANG_INSTRUCTION
-    perl -i -0pe 's/__LANGUAGE_INSTRUCTION__/$ENV{LANG_INSTRUCTION}/g' "$WORKSPACE/templates/CLAUDE.local.md"
+    perl -i -0pe 's/__LANGUAGE_INSTRUCTION__/$ENV{LANG_INSTRUCTION}/g' "$WORKSPACE/shared/templates/CLAUDE.local.md"
   fi
 
-  # Symlink ~/.claude/agents/
-  if [ -L "$HOME/.claude/agents" ]; then
-    echo "  $MSG_WS_SYMLINK_EXISTS"
-  elif [ -d "$HOME/.claude/agents" ]; then
-    echo "  ⚠️  $MSG_WS_FOLDER_EXISTS"
-    echo "  $MSG_WS_BACKUP_ASK"
-    echo ""
-    select_menu "$MSG_YES" "$MSG_NO"
-    if [ "$MENU_RESULT" -eq 0 ]; then
-      mv "$HOME/.claude/agents" "$HOME/.claude/agents.backup"
-      ln -s "$WORKSPACE/global/agents" "$HOME/.claude/agents"
-      echo "  → $MSG_WS_BACKUP_DONE"
-      echo "  → $MSG_WS_SYMLINK_DONE"
-    fi
-  else
-    mkdir -p "$HOME/.claude"
-    ln -s "$WORKSPACE/global/agents" "$HOME/.claude/agents"
-    echo "  → $MSG_WS_SYMLINK_DONE"
-  fi
+  # Create .gitignore for workspace
+  cat > "$WORKSPACE/.gitignore" << 'EOF'
+# Project-specific (managed separately)
+projects/*/
+
+# Setup files (temporary during installation)
+setup-lang/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Sensitive
+*.key
+*.pem
+*.env
+*.secret
+
+# Local overrides
+*.local
+EOF
+  echo "  → .gitignore created"
 
   done_msg
 
@@ -834,6 +844,35 @@ if [ "$OPT_WORKSPACE" = true ] && [ -d "$WORKSPACE" ]; then
   echo ""
   echo "  💡 $MSG_TIP_ADD_PROJECT"
   echo "     $MSG_TIP_ADD_CMD"
+  echo ""
+
+  # === Cleanup ===
+  # Remove setup language resources (no longer needed)
+  if [ -d "$WORKSPACE/setup-lang" ]; then
+    rm -rf "$WORKSPACE/setup-lang"
+    echo "  🧹 Setup language resources removed"
+  fi
+
+  # Remove installation directory
+  if [[ -n "$SCRIPT_DIR" ]] && \
+     [[ "$SCRIPT_DIR" != "/" ]] && \
+     [[ "$SCRIPT_DIR" != "$HOME" ]] && \
+     [[ "$SCRIPT_DIR" != "$HOME/.claude" ]] && \
+     [[ "$SCRIPT_DIR" != "$WORKSPACE" ]] && \
+     [[ -f "$SCRIPT_DIR/setup-claude.sh" ]]; then
+    cd "$HOME"
+    rm -rf "$SCRIPT_DIR"
+    echo "  🧹 Installation files removed: ~/claude-code-setup/"
+  else
+    echo "  ⚠️  Installation directory preserved for safety: $SCRIPT_DIR"
+  fi
+
+  echo ""
+  echo "  💡 Version control your workspace:"
+  echo "     cd ~/claude-workspace"
+  echo "     git init"
+  echo "     git add ."
+  echo "     git commit -m \"Initial Claude workspace\""
 fi
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
