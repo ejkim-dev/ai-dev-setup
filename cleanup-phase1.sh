@@ -150,14 +150,13 @@ echo ""
 # 3. Oh My Zsh 제거
 echo "[3/7] Oh My Zsh 제거..."
 if [ -d "$HOME/.oh-my-zsh" ]; then
-  # Oh My Zsh uninstall script 실행
-  if [ -f "$HOME/.oh-my-zsh/tools/uninstall.sh" ]; then
-    ZSH="$HOME/.oh-my-zsh" sh "$HOME/.oh-my-zsh/tools/uninstall.sh" --unattended 2>/dev/null || true
-    echo "  ✅ Oh My Zsh 제거 완료"
-  else
-    rm -rf "$HOME/.oh-my-zsh"
-    echo "  ✅ Oh My Zsh 폴더 삭제 완료"
-  fi
+  # 직접 삭제 (uninstall.sh는 입력 대기할 수 있음)
+  rm -rf "$HOME/.oh-my-zsh"
+
+  # custom 폴더도 제거
+  rm -rf "$HOME/.oh-my-zsh.custom" 2>/dev/null || true
+
+  echo "  ✅ Oh My Zsh 제거 완료"
 else
   echo "  ⏭️  Oh My Zsh 없음, 건너뜀"
 fi
