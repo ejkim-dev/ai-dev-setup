@@ -96,6 +96,8 @@ MSG_MCP_DESC_1="By default, Claude Code can only read/write files and use the te
 MSG_MCP_DESC_2="MCP servers let Claude directly use external services"
 MSG_MCP_DESC_3="like document search and Jira integration."
 MSG_MCP_ASK="Set up MCP servers?"
+MSG_MCP_NOW="Set up now"
+MSG_MCP_LATER="Later"
 
 # MCP Server options
 MSG_MCP_SERVER_LOCALRAG="local-rag - Search docs/code"

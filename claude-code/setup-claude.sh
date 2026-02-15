@@ -603,7 +603,7 @@ echo "  $MSG_MCP_DESC_3"
 echo ""
 echo "  $MSG_MCP_ASK"
 echo ""
-select_menu "$MSG_YES" "$MSG_NO"
+select_menu "$MSG_MCP_NOW" "$MSG_MCP_LATER"
 
 if [ "$MENU_RESULT" -eq 0 ]; then
   echo ""

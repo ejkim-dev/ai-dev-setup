@@ -96,6 +96,8 @@ MSG_MCP_DESC_1="기본 Claude Code는 파일 읽기/쓰기, 터미널만 사용�
 MSG_MCP_DESC_2="MCP 서버를 연결하면 문서 검색, Jira 연동 등"
 MSG_MCP_DESC_3="외부 서비스를 Claude가 직접 사용할 수 있습니다."
 MSG_MCP_ASK="MCP 서버를 설정하시겠습니까?"
+MSG_MCP_NOW="지금 설정"
+MSG_MCP_LATER="나중에"
 
 # MCP Server options
 MSG_MCP_SERVER_LOCALRAG="local-rag - 문서/코드 검색"

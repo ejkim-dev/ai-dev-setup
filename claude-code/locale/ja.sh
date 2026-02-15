@@ -96,6 +96,8 @@ MSG_MCP_DESC_1="デフォルトのClaude Codeはファイルの読み書きと�
 MSG_MCP_DESC_2="MCPサーバーを接続すると、ドキュメント検索やJira連携など、"
 MSG_MCP_DESC_3="外部サービスをClaudeが直接使用できます。"
 MSG_MCP_ASK="MCPサーバーをセットアップしますか？"
+MSG_MCP_NOW="今設定する"
+MSG_MCP_LATER="後で"
 
 # MCP Server options
 MSG_MCP_SERVER_LOCALRAG="local-rag - ドキュメント/コード検索"
