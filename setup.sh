@@ -88,7 +88,7 @@ select_menu() {
             ;;
         esac
         ;;
-      $'\n')
+      ''|$'\n'|$'\r')
         break
         ;;
     esac
@@ -182,7 +182,7 @@ select_multi() {
           checked[$selected]=1
         fi
         ;;
-      $'\n')
+      ''|$'\n'|$'\r')
         break
         ;;
     esac
