@@ -115,10 +115,6 @@ import_terminal_profile() {
   local dev_terminal="$1"
   local terminal_plist="$HOME/Library/Preferences/com.apple.Terminal.plist"
 
-  # Quit Terminal to ensure preferences can be written
-  osascript -e 'tell application "Terminal" to quit' 2>/dev/null || true
-  sleep 1
-
   # Backup
   cp "$terminal_plist" "${terminal_plist}.backup" 2>/dev/null || true
 
