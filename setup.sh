@@ -240,6 +240,9 @@ case "$MENU_RESULT" in
   *) USER_LANG="en" ;;
 esac
 
+# Save language selection for Phase 2 (Claude Code setup)
+echo "$USER_LANG" > "$HOME/.dev-setup-lang"
+
 # Load locale file
 if [ -f "$SCRIPT_DIR/claude-code/locale/$USER_LANG.sh" ]; then
   source "$SCRIPT_DIR/claude-code/locale/$USER_LANG.sh"

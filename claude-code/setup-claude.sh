@@ -97,35 +97,57 @@ echo -e "🤖 ${color_cyan}Claude Code Setup${color_reset}"
 echo ""
 
 # === 0. Language selection (always in English) ===
-echo "  Select your language:"
-echo ""
-select_menu "English" "한국어" "日本語" "Other"
-
-case "$MENU_RESULT" in
-  0)
-    USER_LANG="en"
-    LANG_NAME="English"
-    LANG_INSTRUCTION="- Respond in English"
-    ;;
-  1)
-    USER_LANG="ko"
-    LANG_NAME="한국어"
-    LANG_INSTRUCTION="- 한국어로 대답할 것
+# Check if language was already selected in Phase 1
+if [ -f "$HOME/.dev-setup-lang" ]; then
+  USER_LANG=$(cat "$HOME/.dev-setup-lang")
+  case "$USER_LANG" in
+    ko)
+      LANG_NAME="한국어"
+      LANG_INSTRUCTION="- 한국어로 대답할 것
 - 코드, 명령어, 기술 용어 등 필요한 경우에만 영어 사용"
-    ;;
-  2)
-    USER_LANG="ja"
-    LANG_NAME="日本語"
-    LANG_INSTRUCTION="- 日本語で回答すること
+      ;;
+    ja)
+      LANG_NAME="日本語"
+      LANG_INSTRUCTION="- 日本語で回答すること
 - コード、コマンド、技術用語は英語のまま使用"
-    ;;
-  3)
-    read -p "  Language code (e.g., zh, de, fr): " USER_LANG
-    read -p "  Language name (e.g., 中文, Deutsch): " LANG_NAME
-    read -p "  Instruction for Claude (e.g., Respond in Chinese): " custom_instr
-    LANG_INSTRUCTION="- $custom_instr"
-    ;;
-esac
+      ;;
+    *)
+      LANG_NAME="English"
+      LANG_INSTRUCTION="- Respond in English"
+      ;;
+  esac
+else
+  # No saved language, ask user
+  echo "  Select your language:"
+  echo ""
+  select_menu "English" "한국어" "日本語" "Other"
+
+  case "$MENU_RESULT" in
+    0)
+      USER_LANG="en"
+      LANG_NAME="English"
+      LANG_INSTRUCTION="- Respond in English"
+      ;;
+    1)
+      USER_LANG="ko"
+      LANG_NAME="한국어"
+      LANG_INSTRUCTION="- 한국어로 대답할 것
+- 코드, 명령어, 기술 용어 등 필요한 경우에만 영어 사용"
+      ;;
+    2)
+      USER_LANG="ja"
+      LANG_NAME="日本語"
+      LANG_INSTRUCTION="- 日本語で回答すること
+- コード、コマンド、技術用語は英語のまま使用"
+      ;;
+    3)
+      read -p "  Language code (e.g., zh, de, fr): " USER_LANG
+      read -p "  Language name (e.g., 中文, Deutsch): " LANG_NAME
+      read -p "  Instruction for Claude (e.g., Respond in Chinese): " custom_instr
+      LANG_INSTRUCTION="- $custom_instr"
+      ;;
+  esac
+fi
 
 # Load locale file
 if [ -f "$SCRIPT_DIR/locale/$USER_LANG.sh" ]; then
