@@ -92,6 +92,124 @@ select_menu() {
   MENU_RESULT=$selected
 }
 
+# Multi-select menu (Space to toggle, Enter to confirm)
+# Usage: MULTI_DEFAULTS="0 2" DISABLED_ITEMS="3" select_multi "Option A" "Option B" "Option C" "Option D"
+# Result: MULTI_RESULT array of selected indices (0-based)
+select_multi() {
+  local options=("$@")
+  local count=${#options[@]}
+  local selected=0
+  local key
+  local -a checked=()
+  local -a disabled=()
+
+  for i in "${!options[@]}"; do checked[$i]=0; done
+  for idx in $MULTI_DEFAULTS; do checked[$idx]=1; done
+  for i in "${!options[@]}"; do disabled[$i]=0; done
+  for idx in $DISABLED_ITEMS; do disabled[$idx]=1; done
+
+  tput civis 2>/dev/null
+  trap 'tput cnorm 2>/dev/null' EXIT
+
+  for i in "${!options[@]}"; do
+    local mark=" "
+    if [ "${disabled[$i]}" -eq 1 ]; then
+      mark="-"
+    elif [ "${checked[$i]}" -eq 1 ]; then
+      mark="x"
+    fi
+
+    if [ "$i" -eq $selected ]; then
+      if [ "${disabled[$i]}" -eq 1 ]; then
+        echo -e "  \033[1;90m▸ [$mark] ${options[$i]}\033[0m"
+      elif [ "${checked[$i]}" -eq 1 ]; then
+        echo -e "  \033[1;36m▸ [$mark] ${options[$i]}\033[0m"
+      else
+        echo -e "  \033[1m▸ [$mark] ${options[$i]}\033[0m"
+      fi
+    else
+      if [ "${disabled[$i]}" -eq 1 ]; then
+        echo -e "  \033[90m  [$mark] ${options[$i]}\033[0m"
+      elif [ "${checked[$i]}" -eq 1 ]; then
+        echo -e "    \033[36m[$mark] ${options[$i]}\033[0m"
+      else
+        echo -e "    [$mark] ${options[$i]}"
+      fi
+    fi
+  done
+
+  while true; do
+    IFS= read -rsn1 key
+    case "$key" in
+      $'\x1b')
+        IFS= read -rsn2 key
+        case "$key" in
+          '[A')
+            if [ $selected -gt 0 ]; then
+              selected=$((selected - 1))
+            fi
+            ;;
+          '[B')
+            if [ $selected -lt $((count - 1)) ]; then
+              selected=$((selected + 1))
+            fi
+            ;;
+        esac
+        ;;
+      ' ')
+        # Ignore Space key for disabled items
+        if [ "${disabled[$selected]}" -eq 1 ]; then
+          :
+        elif [ "${checked[$selected]}" -eq 1 ]; then
+          checked[$selected]=0
+        else
+          checked[$selected]=1
+        fi
+        ;;
+      ''|$'\n'|$'\r')
+        break
+        ;;
+    esac
+
+    tput cuu "$count" 2>/dev/null
+    for i in "${!options[@]}"; do
+      tput el 2>/dev/null
+      local mark=" "
+      if [ "${disabled[$i]}" -eq 1 ]; then
+        mark="-"
+      elif [ "${checked[$i]}" -eq 1 ]; then
+        mark="x"
+      fi
+
+      if [ "$i" -eq $selected ]; then
+        if [ "${disabled[$i]}" -eq 1 ]; then
+          echo -e "  \033[1;90m▸ [$mark] ${options[$i]}\033[0m"
+        elif [ "${checked[$i]}" -eq 1 ]; then
+          echo -e "  \033[1;36m▸ [$mark] ${options[$i]}\033[0m"
+        else
+          echo -e "  \033[1m▸ [$mark] ${options[$i]}\033[0m"
+        fi
+      else
+        if [ "${disabled[$i]}" -eq 1 ]; then
+          echo -e "  \033[90m  [$mark] ${options[$i]}\033[0m"
+        elif [ "${checked[$i]}" -eq 1 ]; then
+          echo -e "    \033[36m[$mark] ${options[$i]}\033[0m"
+        else
+          echo -e "    [$mark] ${options[$i]}"
+        fi
+      fi
+    done
+  done
+
+  tput cnorm 2>/dev/null
+  MULTI_RESULT=()
+  for i in "${!options[@]}"; do
+    if [ "${checked[$i]}" -eq 1 ]; then
+      MULTI_RESULT+=("$i")
+    fi
+  done
+}
+
 echo ""
 echo -e "🤖 ${color_cyan}Claude Code Setup${color_reset}"
 echo ""
@@ -163,6 +281,10 @@ echo -e "  → $MSG_LANG_SET ${color_green}$LANG_NAME${color_reset}"
 OPT_WORKSPACE=false
 OPT_OBSIDIAN=false
 OPT_MCP_RAG=false
+OPT_MCP_FILESYSTEM=false
+OPT_MCP_SERENA=false
+OPT_MCP_FETCH=false
+OPT_MCP_PUPPETEER=false
 CONNECTED_PROJECTS="[]"
 
 # --- Prerequisite checks ---
@@ -396,36 +518,170 @@ echo "  $MSG_MCP_DESC_3"
 echo ""
 
 if ask_yn "$MSG_MCP_ASK"; then
-
-  # --- local-rag ---
   echo ""
-  echo -e "  ${color_cyan}📚 $MSG_RAG_TITLE${color_reset}"
-  echo "  $MSG_RAG_DESC"
+  echo "  Select MCP servers to install:"
+  echo ""
+  echo "  📦 Recommended core setup (3):"
+  echo "     • local-rag    📚 Search your docs/code"
+  echo "     • filesystem   📝 Read/write files"
+  echo "     • serena       🌐 Web search"
+  echo ""
+  echo "  ⚪ Additional servers (optional):"
+  echo "     • fetch        🌐 HTTP requests"
+  echo "     • puppeteer    🤖 Browser automation"
+  echo ""
+  echo "  Use ↑/↓ to navigate, Space to toggle, Enter to confirm"
   echo ""
 
-  if ask_yn "$MSG_RAG_ASK"; then
-    OPT_MCP_RAG=true
-    read -p "  $MSG_RAG_PATH" rag_project
-    rag_project="${rag_project/#\~/$HOME}"
+  # Build option labels with recommended status
+  local opt_localrag="$MSG_MCP_SERVER_LOCALRAG $MSG_RECOMMENDED"
+  local opt_filesystem="$MSG_MCP_SERVER_FILESYSTEM $MSG_RECOMMENDED"
+  local opt_serena="$MSG_MCP_SERVER_SERENA $MSG_RECOMMENDED"
+  local opt_fetch="$MSG_MCP_SERVER_FETCH"
+  local opt_puppeteer="$MSG_MCP_SERVER_PUPPETEER"
 
-    if [ -d "$rag_project" ]; then
-      rag_data_dir="$rag_project/.claude-data"
-      mkdir -p "$rag_data_dir"
+  # Multi-select menu with recommended servers pre-checked
+  MULTI_DEFAULTS="0 1 2" DISABLED_ITEMS="" select_multi \
+    "$opt_localrag" \
+    "$opt_filesystem" \
+    "$opt_serena" \
+    "$opt_fetch" \
+    "$opt_puppeteer"
 
-      mcp_file="$rag_project/.mcp.json"
-      if [ -f "$mcp_file" ]; then
-        echo "  ⚠️  $MSG_MCP_FILE_EXISTS"
-        echo "  → $MSG_MCP_FILE_REF $SCRIPT_DIR/templates/mcp-local-rag.json"
+  # Process selected servers
+  echo ""
+  MCP_SERVERS=()
+  for i in "${MULTI_RESULT[@]}"; do
+    case $i in
+      0)
+        OPT_MCP_RAG=true
+        MCP_SERVERS+=("local-rag")
+        echo "  → Installing local-rag..."
+        ;;
+      1)
+        OPT_MCP_FILESYSTEM=true
+        MCP_SERVERS+=("filesystem")
+        echo "  → Installing filesystem..."
+        ;;
+      2)
+        OPT_MCP_SERENA=true
+        MCP_SERVERS+=("serena")
+        echo "  → Installing serena..."
+        ;;
+      3)
+        OPT_MCP_FETCH=true
+        MCP_SERVERS+=("fetch")
+        echo "  → Installing fetch..."
+        ;;
+      4)
+        OPT_MCP_PUPPETEER=true
+        MCP_SERVERS+=("puppeteer")
+        echo "  → Installing puppeteer..."
+        ;;
+    esac
+  done
+
+  # Install selected MCP servers
+  if [ ${#MCP_SERVERS[@]} -gt 0 ]; then
+    echo ""
+    echo "  Installing ${#MCP_SERVERS[@]} MCP server(s)..."
+
+    # Ask for project path to configure .mcp.json
+    echo ""
+    read -p "  Enter project path for .mcp.json (or press Enter to skip): " mcp_project
+
+    if [ -n "$mcp_project" ]; then
+      mcp_project="${mcp_project/#\~/$HOME}"
+
+      if [ -d "$mcp_project" ]; then
+        mcp_file="$mcp_project/.mcp.json"
+
+        if [ -f "$mcp_file" ]; then
+          echo "  ⚠️  $MSG_MCP_FILE_EXISTS"
+          echo "  → Skipping .mcp.json creation"
+        else
+          # Create .mcp.json with selected servers
+          echo "  → Creating $mcp_file..."
+
+          cat > "$mcp_file" << 'EOF_MCP'
+{
+  "mcpServers": {
+EOF_MCP
+
+          # Add each selected server to .mcp.json
+          local first=true
+          for server in "${MCP_SERVERS[@]}"; do
+            [ "$first" = false ] && echo "," >> "$mcp_file"
+            first=false
+
+            case $server in
+              local-rag)
+                rag_data_dir="$mcp_project/.claude-data"
+                mkdir -p "$rag_data_dir"
+                cat >> "$mcp_file" << EOF
+    "local-rag": {
+      "command": "npx",
+      "args": ["-y", "@local-rag/mcp-server"],
+      "env": {
+        "DATA_PATH": "$rag_data_dir"
+      }
+    }
+EOF
+                ;;
+              filesystem)
+                cat >> "$mcp_file" << EOF
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "$mcp_project"]
+    }
+EOF
+                ;;
+              serena)
+                cat >> "$mcp_file" << 'EOF'
+    "serena": {
+      "command": "npx",
+      "args": ["-y", "@serena/mcp-server"]
+    }
+EOF
+                ;;
+              fetch)
+                cat >> "$mcp_file" << 'EOF'
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    }
+EOF
+                ;;
+              puppeteer)
+                cat >> "$mcp_file" << 'EOF'
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    }
+EOF
+                ;;
+            esac
+          done
+
+          cat >> "$mcp_file" << 'EOF'
+
+  }
+}
+EOF
+
+          echo "  ✅ .mcp.json created with ${#MCP_SERVERS[@]} server(s)"
+        fi
       else
-        # Use perl for safe substitution (handles special chars in paths)
-        BASE_DIR="$rag_data_dir" perl -pe 's|__BASE_DIR__|$ENV{BASE_DIR}|g' "$SCRIPT_DIR/templates/mcp-local-rag.json" > "$mcp_file"
-        echo "  → $mcp_file $MSG_MCP_FILE_DONE"
+        echo "  ❌ Project not found: $mcp_project"
+        echo "  → You can manually create .mcp.json later"
       fi
-      done_msg
     else
-      echo "  ❌ $MSG_PROJ_NOT_FOUND $rag_project"
+      echo "  → Skipped .mcp.json creation (you can create it manually later)"
     fi
+
+    done_msg
   else
+    echo "  No MCP servers selected"
     skip_msg
   fi
 
@@ -446,7 +702,11 @@ if [ "$OPT_WORKSPACE" = true ]; then
     "workspace": $OPT_WORKSPACE,
     "obsidian": $OPT_OBSIDIAN,
     "mcp": {
-      "localRag": $OPT_MCP_RAG
+      "localRag": $OPT_MCP_RAG,
+      "filesystem": $OPT_MCP_FILESYSTEM,
+      "serena": $OPT_MCP_SERENA,
+      "fetch": $OPT_MCP_FETCH,
+      "puppeteer": $OPT_MCP_PUPPETEER
     }
   },
   "projects": $CONNECTED_PROJECTS

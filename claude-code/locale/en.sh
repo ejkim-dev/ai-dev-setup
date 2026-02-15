@@ -67,6 +67,14 @@ MSG_MCP_DESC_2="MCP servers let Claude directly use external services"
 MSG_MCP_DESC_3="like document search and Jira integration."
 MSG_MCP_ASK="Set up MCP servers?"
 
+# MCP Server options
+MSG_MCP_SERVER_LOCALRAG="local-rag - Search docs/code"
+MSG_MCP_SERVER_FILESYSTEM="filesystem - Read/write files"
+MSG_MCP_SERVER_SERENA="serena - Web search"
+MSG_MCP_SERVER_FETCH="fetch - HTTP requests"
+MSG_MCP_SERVER_PUPPETEER="puppeteer - Browser automation"
+MSG_RECOMMENDED="(recommended)"
+
 # local-rag
 MSG_RAG_TITLE="local-rag (Document Search)"
 MSG_RAG_DESC="Search PDFs, markdown, and other documents with Claude."
