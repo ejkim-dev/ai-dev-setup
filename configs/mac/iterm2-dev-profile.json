@@ -111,7 +111,7 @@
       "Use Bold Font": true,
       "Use Bright Bold": true,
       "Use Italic Font": true,
-      "Cursor Type": 0,
+      "Cursor Type": 2,
       "Cursor Guide Color": {
         "Red Component": 0.65,
         "Green Component": 0.65,
