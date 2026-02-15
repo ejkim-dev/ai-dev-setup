@@ -10,11 +10,25 @@ CLAUDE.local.md
 local.properties
 *.local
 
+# Environment / Secrets
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
 # Node
 node_modules/
 
+# Logs
+*.log
+
 # Obsidian
 .obsidian/
+
+# Test scripts
+test-*.sh
 
 # OS
 *.swp
