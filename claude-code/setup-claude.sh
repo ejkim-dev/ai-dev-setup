@@ -519,11 +519,11 @@ EOF
     mkdir -p "$ws_project/.claude/agents"
 
     if [ ! -f "$ws_project/CLAUDE.md" ]; then
-      cp "$WORKSPACE/templates/CLAUDE.md" "$ws_project/CLAUDE.md"
+      cp "$WORKSPACE/shared/templates/CLAUDE.md" "$ws_project/CLAUDE.md"
     fi
 
     if [ ! -f "$ws_project/CLAUDE.local.md" ]; then
-      cp "$WORKSPACE/templates/CLAUDE.local.md" "$ws_project/CLAUDE.local.md"
+      cp "$WORKSPACE/shared/templates/CLAUDE.local.md" "$ws_project/CLAUDE.local.md"
     fi
 
     # .claude/
