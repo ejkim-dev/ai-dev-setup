@@ -3,6 +3,7 @@
     {
       "Name": "Dev",
       "Guid": "dev-profile-00000000-0000-0000-0000-000000000001",
+      "Tags": ["dev-setup", "default"],
       "Normal Font": "D2Coding 11",
       "Non Ascii Font": "Monaco 12",
       "Background Color": {
@@ -95,11 +96,29 @@
         "Green Component": 0.931,
         "Blue Component": 0.926
       },
+      "Cursor Color": {
+        "Red Component": 0.945,
+        "Green Component": 0.945,
+        "Blue Component": 0.945
+      },
+      "Cursor Text Color": {
+        "Red Component": 0.117,
+        "Green Component": 0.122,
+        "Blue Component": 0.159
+      },
       "Transparency": 0.05,
       "Blur": false,
       "Use Bold Font": true,
       "Use Bright Bold": true,
-      "Use Italic Font": true
+      "Use Italic Font": true,
+      "Cursor Type": 0,
+      "Cursor Guide Color": {
+        "Red Component": 0.65,
+        "Green Component": 0.65,
+        "Blue Component": 0.65,
+        "Alpha Component": 0.25
+      },
+      "Smart Cursor Color": false
     }
   ]
 }
