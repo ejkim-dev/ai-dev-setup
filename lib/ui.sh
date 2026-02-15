@@ -34,10 +34,10 @@ run_with_spinner() {
   local result=$?
   set -e
 
-  kill $spinner_pid 2>/dev/null
-  wait $spinner_pid 2>/dev/null
+  kill $spinner_pid 2>/dev/null || true
+  wait $spinner_pid 2>/dev/null || true
   printf "\r\033[K"
-  tput cnorm 2>/dev/null
+  tput cnorm 2>/dev/null || true
 
   return $result
 }
