@@ -49,7 +49,7 @@ setup_shell() {
       echo "     $MSG_OHMYZSH_THEME_SKIP"
     fi
     echo ""
-    MULTI_DEFAULTS="" select_multi "$MSG_ZSHRC_OPT_THEME" "$MSG_ZSHRC_OPT_PLUGINS" "$MSG_ZSHRC_OPT_ALIAS"
+    MULTI_DEFAULTS="0 1" select_multi "$MSG_ZSHRC_OPT_THEME" "$MSG_ZSHRC_OPT_PLUGINS" "$MSG_ZSHRC_OPT_ALIAS"
 
     if [ ${#MULTI_RESULT[@]} -gt 0 ]; then
       # Prepare .zshrc
