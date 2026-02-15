@@ -16,8 +16,9 @@ color_reset="\033[0m"
 select_menu() {
   local options=("$@")
   local count=${#options[@]}
-  local selected=0
+  local selected=${MENU_DEFAULT:-0}
   local key
+  MENU_DEFAULT=""
 
   # Open /dev/tty for reading (allows interactive input when run via curl | bash)
   exec 3</dev/tty
@@ -316,8 +317,8 @@ echo ""
 # iTerm2 제거
 if [ -d "/Applications/iTerm.app" ]; then
   echo "iTerm2를 제거하시겠습니까?"
-  select_menu "유지" "제거"
-  if [ "$MENU_RESULT" -eq 1 ]; then
+  MENU_DEFAULT=1 select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     brew uninstall --cask iterm2 2>/dev/null || true
     rm -rf "/Applications/iTerm.app" 2>/dev/null || true
     echo "  ✅ iTerm2 제거 완료"
@@ -332,8 +333,8 @@ fi
 if command -v brew &>/dev/null; then
   echo ""
   echo "Homebrew를 완전히 제거하시겠습니까?"
-  select_menu "유지" "제거"
-  if [ "$MENU_RESULT" -eq 1 ]; then
+  MENU_DEFAULT=1 select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     echo "  Homebrew 제거 중... (시간이 걸릴 수 있습니다)"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)" -- --force
 
@@ -357,8 +358,8 @@ fi
 if xcode-select -p &>/dev/null; then
   echo ""
   echo "Xcode Command Line Tools를 제거하시겠습니까?"
-  select_menu "유지" "제거"
-  if [ "$MENU_RESULT" -eq 1 ]; then
+  MENU_DEFAULT=1 select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     echo "  Xcode Command Line Tools 제거 중..."
     sudo rm -rf /Library/Developer/CommandLineTools
     echo "  ✅ Xcode Command Line Tools 제거 완료"
