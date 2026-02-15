@@ -7,9 +7,23 @@ A public repo for setting up development environments in one step. Supports macO
 ## Structure
 
 ```
-setup.sh              — macOS install (bash, 9 steps)
+setup.sh              — [177 lines] Main orchestration only (macOS)
 setup.ps1             — Windows install (PowerShell, 8 steps)
 Brewfile              — Homebrew packages (macOS only)
+lib/                  — Shared utilities (macOS)
+├── colors.sh         — [16 lines] Terminal color codes
+├── core.sh           — [46 lines] Global variables, step(), done_msg(), skip_msg(), ask_yn()
+├── ui.sh             — [220 lines] UI components (spinner, select_menu, select_multi)
+└── installer.sh      — [81 lines] Package installation wrappers
+modules/              — Domain-specific logic (macOS)
+├── xcode.sh          — [20 lines] Xcode CLI Tools installation
+├── homebrew.sh       — [86 lines] Homebrew setup with error handling
+├── packages.sh       — [42 lines] Essential packages via Brewfile
+├── fonts.sh          — [40 lines] Font installation (D2Coding)
+├── terminal.sh       — [153 lines] Terminal.app and iTerm2 configuration
+├── shell.sh          — [141 lines] Oh My Zsh and .zshrc customization
+├── tmux.sh           — [36 lines] tmux configuration
+└── ai-tools.sh       — [112 lines] AI CLI tools (Claude Code, Gemini CLI, etc.)
 configs/
 ├── mac/              — Terminal.app profile
 ├── windows/          — Windows Terminal theme
@@ -31,8 +45,9 @@ CLAUDE.local.md       — (gitignored) Personal local settings and notes
 
 ## Core Design Principles
 
-- **Every step is optional**: Everything except essential tools asks [Y/n]
-- **Beginner-friendly**: Minimal technical jargon, clear explanations
+- **Every step is optional**: Interactive menus (select_menu, select_multi) with clear options
+- **Beginner-friendly**: Minimal technical jargon, clear explanations, visual progress (spinners)
+- **Modular architecture**: lib/ (utilities) + modules/ (domain logic) for testability (macOS)
 - **OS-specific separation**: macOS (setup.sh) / Windows (setup.ps1) as separate scripts
 - **Two-phase setup**: Basic environment → Claude Code additional setup runs separately
 - **Template substitution**: MCP templates use `__PLACEHOLDER__` replaced by sed/PowerShell
@@ -51,12 +66,14 @@ CLAUDE.local.md       — (gitignored) Personal local settings and notes
 
 ## Script Rules
 
-- macOS: `set -e`, bash
+- macOS: `set -e`, bash, modular architecture (lib/ + modules/)
 - Windows: `$ErrorActionPreference = "Stop"`, PowerShell 5.1+
-- Common: Color output (cyan=step, green=done, yellow=skip)
+- Common: Color output (cyan=step, green=done, yellow=skip) via lib/colors.sh
 - Common: Auto-detect already-installed tools and skip
-- Common: `ask_yn()` / `Ask-YN()` for unified Y/n prompts
+- Common: UI components (select_menu, select_multi, spinner) via lib/ui.sh
+- Common: `ask_yn()` in lib/core.sh for legacy Y/n prompts (prefer select_menu)
 - Common: Locale files sourced after language selection for all UI strings
+- Modules: Each module = single responsibility, clear dependencies, independently testable
 
 ## Project-specific Claude Settings
 
