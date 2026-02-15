@@ -16,6 +16,11 @@
         "Green Component": 0.931,
         "Blue Component": 0.926
       },
+      "Bold Color": {
+        "Red Component": 0.931,
+        "Green Component": 0.931,
+        "Blue Component": 0.926
+      },
       "Ansi 0 Color": {
         "Red Component": 0,
         "Green Component": 0,
