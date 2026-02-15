@@ -519,6 +519,7 @@ EOF
       fi
     fi
 
+    # Create workspace files (skip if using existing)
     if [ "$use_existing" = false ]; then
       mkdir -p "$ws_project/.claude/agents"
 
@@ -529,40 +530,38 @@ EOF
       if [ ! -f "$ws_project/CLAUDE.local.md" ]; then
         cp "$WORKSPACE/shared/templates/CLAUDE.local.md" "$ws_project/CLAUDE.local.md"
       fi
+    fi
 
-      # .claude/
-      if [ -e "$project_path/.claude" ]; then
-        echo "  ⚠️  $project_path/.claude $MSG_PROJ_EXISTS"
-      else
-        ln -s "$ws_project/.claude" "$project_path/.claude"
-        echo "  → $MSG_PROJ_LINK_CLAUDE"
-      fi
+    # Symlinks (always create if missing)
+    if [ -e "$project_path/.claude" ]; then
+      echo "  ⚠️  $project_path/.claude $MSG_PROJ_EXISTS"
+    else
+      ln -s "$ws_project/.claude" "$project_path/.claude"
+      echo "  → $MSG_PROJ_LINK_CLAUDE"
+    fi
 
-      # CLAUDE.md
-      if [ -e "$project_path/CLAUDE.md" ]; then
-        echo "  ⚠️  $project_path/CLAUDE.md $MSG_PROJ_EXISTS"
-      else
-        ln -s "$ws_project/CLAUDE.md" "$project_path/CLAUDE.md"
-        echo "  → $MSG_PROJ_LINK_CLAUDEMD"
-      fi
+    if [ -e "$project_path/CLAUDE.md" ]; then
+      echo "  ⚠️  $project_path/CLAUDE.md $MSG_PROJ_EXISTS"
+    else
+      ln -s "$ws_project/CLAUDE.md" "$project_path/CLAUDE.md"
+      echo "  → $MSG_PROJ_LINK_CLAUDEMD"
+    fi
 
-      # CLAUDE.local.md
-      if [ -e "$project_path/CLAUDE.local.md" ]; then
-        echo "  ⚠️  $project_path/CLAUDE.local.md $MSG_PROJ_EXISTS"
-      else
-        ln -s "$ws_project/CLAUDE.local.md" "$project_path/CLAUDE.local.md"
-        echo "  → $MSG_PROJ_LINK_LOCALMD"
-      fi
+    if [ -e "$project_path/CLAUDE.local.md" ]; then
+      echo "  ⚠️  $project_path/CLAUDE.local.md $MSG_PROJ_EXISTS"
+    else
+      ln -s "$ws_project/CLAUDE.local.md" "$project_path/CLAUDE.local.md"
+      echo "  → $MSG_PROJ_LINK_LOCALMD"
+    fi
 
-      # .gitignore
-      if [ -f "$project_path/.gitignore" ]; then
-        for entry in ".claude/" "CLAUDE.local.md" ".claude-data/"; do
-          if ! grep -q "$entry" "$project_path/.gitignore"; then
-            echo "$entry" >> "$project_path/.gitignore"
-          fi
-        done
-        echo "  → $MSG_PROJ_GITIGNORE"
-      fi
+    # .gitignore
+    if [ -f "$project_path/.gitignore" ]; then
+      for entry in ".claude/" "CLAUDE.local.md" ".claude-data/"; do
+        if ! grep -q "$entry" "$project_path/.gitignore"; then
+          echo "$entry" >> "$project_path/.gitignore"
+        fi
+      done
+      echo "  → $MSG_PROJ_GITIGNORE"
     fi
 
     if [ -n "$project_list" ]; then
