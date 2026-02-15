@@ -38,21 +38,35 @@ setup_tmux() {
     fi
 
     # Apply configuration
+    if [ ! -f "$SCRIPT_DIR/configs/shared/.tmux.conf" ]; then
+      echo "  ❌ tmux configuration file not found: $SCRIPT_DIR/configs/shared/.tmux.conf"
+      return 1
+    fi
+
     spinner "$MSG_TMUX_INSTALLING_CONFIG" &
     spinner_pid=$!
 
     if [ -f "$HOME/.tmux.conf" ]; then
-      cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup" 2>/dev/null
+      cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup" 2>/dev/null || true
     fi
-    cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf" 2>/dev/null
-    sleep 0.5
 
-    kill $spinner_pid 2>/dev/null
-    wait $spinner_pid 2>/dev/null
-    printf "\r\033[K"
-    tput cnorm 2>/dev/null
-
-    echo "  ✅ $MSG_TMUX_DONE"
+    if cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf" 2>/dev/null; then
+      sleep 0.5
+      kill $spinner_pid 2>/dev/null || true
+      wait $spinner_pid 2>/dev/null || true
+      printf "\r\033[K"
+      tput cnorm 2>/dev/null || true
+      echo "  ✅ $MSG_TMUX_DONE"
+    else
+      kill $spinner_pid 2>/dev/null || true
+      wait $spinner_pid 2>/dev/null || true
+      printf "\r\033[K"
+      tput cnorm 2>/dev/null || true
+      echo "  ❌ Failed to copy tmux configuration"
+      echo "     Source: $SCRIPT_DIR/configs/shared/.tmux.conf"
+      echo "     Target: $HOME/.tmux.conf"
+      return 1
+    fi
   else
     echo "  $MSG_TMUX_SKIP"
   fi
