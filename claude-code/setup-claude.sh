@@ -506,32 +506,9 @@ else
   skip_msg
 fi
 
-# === 2. Obsidian ===
+# === 2. MCP Servers ===
 echo ""
-echo -e "${color_cyan}[2/4] $MSG_OBS_TITLE${color_reset}"
-echo ""
-echo "  $MSG_OBS_DESC_1"
-echo "  $MSG_OBS_DESC_2"
-echo ""
-echo "  $MSG_OBS_ASK"
-echo ""
-select_menu "$MSG_YES" "$MSG_NO"
-
-if [ "$MENU_RESULT" -eq 0 ]; then
-  OPT_OBSIDIAN=true
-  if command -v brew &>/dev/null; then
-    brew install --cask obsidian || echo "  ⚠️  Installation failed."
-  else
-    echo "  → $MSG_BREW_NOT_FOUND_OBSIDIAN"
-  fi
-  done_msg
-else
-  skip_msg
-fi
-
-# === 3. MCP Servers ===
-echo ""
-echo -e "${color_cyan}[3/4] $MSG_MCP_TITLE${color_reset}"
+echo -e "${color_cyan}[2/4] $MSG_MCP_TITLE${color_reset}"
 echo ""
 echo "  $MSG_MCP_DESC_1"
 echo "  $MSG_MCP_DESC_2"
@@ -709,6 +686,29 @@ EOF
     skip_msg
   fi
 
+else
+  skip_msg
+fi
+
+# === 3. Obsidian ===
+echo ""
+echo -e "${color_cyan}[3/4] $MSG_OBS_TITLE${color_reset}"
+echo ""
+echo "  $MSG_OBS_DESC_1"
+echo "  $MSG_OBS_DESC_2"
+echo ""
+echo "  $MSG_OBS_ASK"
+echo ""
+select_menu "$MSG_YES" "$MSG_NO"
+
+if [ "$MENU_RESULT" -eq 0 ]; then
+  OPT_OBSIDIAN=true
+  if command -v brew &>/dev/null; then
+    brew install --cask obsidian || echo "  ⚠️  Installation failed."
+  else
+    echo "  → $MSG_BREW_NOT_FOUND_OBSIDIAN"
+  fi
+  done_msg
 else
   skip_msg
 fi
