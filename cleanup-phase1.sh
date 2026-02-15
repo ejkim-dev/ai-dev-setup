@@ -84,7 +84,8 @@ echo "  3. .zshrc 설정"
 echo "  4. .tmux.conf"
 echo "  5. Terminal.app Dev 프로필"
 echo "  6. AI CLI 도구 (Claude Code, Gemini CLI 등)"
-echo "  7. Phase 2 관련 파일 (~/claude-code-setup/)"
+echo "  7. Phase 2 관련 파일 (~/claude-code-setup/, ~/claude-workspace/)"
+echo "  8. Obsidian"
 echo ""
 echo "  ❌ Homebrew 자체는 제거하지 않습니다 (시스템에서 사용 중일 수 있음)"
 echo "  ❌ Xcode Command Line Tools는 제거하지 않습니다"
@@ -103,7 +104,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 # 1. AI CLI 도구 제거
-echo "[1/7] AI CLI 도구 제거..."
+echo "[1/8] AI CLI 도구 제거..."
 if command -v npm &>/dev/null || command -v gh &>/dev/null; then
   echo "AI CLI 도구를 제거하시겠습니까?"
   select_menu "제거" "건너뛰기"
@@ -127,7 +128,7 @@ fi
 echo ""
 
 # 2. Homebrew 패키지 제거
-echo "[2/7] Homebrew 패키지 제거..."
+echo "[2/8] Homebrew 패키지 제거..."
 if command -v brew &>/dev/null; then
   echo "Homebrew 패키지를 제거하시겠습니까?"
   echo "(폰트, zsh plugins, tmux, ripgrep 등)"
@@ -164,7 +165,7 @@ fi
 echo ""
 
 # 3. Oh My Zsh 제거
-echo "[3/7] Oh My Zsh 제거..."
+echo "[3/8] Oh My Zsh 제거..."
 if [ -d "$HOME/.oh-my-zsh" ]; then
   echo "Oh My Zsh를 제거하시겠습니까?"
   select_menu "제거" "유지"
@@ -186,7 +187,7 @@ fi
 echo ""
 
 # 4. .zshrc 백업 및 복원
-echo "[4/7] .zshrc 정리..."
+echo "[4/8] .zshrc 정리..."
 if [ -f "$HOME/.zshrc" ]; then
   # ai-dev-setup 추가 부분 제거
   if grep -q "=== ai-dev-setup ===" "$HOME/.zshrc" 2>/dev/null; then
@@ -220,7 +221,7 @@ fi
 echo ""
 
 # 5. .tmux.conf 제거
-echo "[5/7] .tmux.conf 제거..."
+echo "[5/8] .tmux.conf 제거..."
 if [ -f "$HOME/.tmux.conf" ]; then
   echo ".tmux.conf를 제거하시겠습니까?"
   select_menu "제거" "유지"
@@ -240,7 +241,7 @@ fi
 echo ""
 
 # 6. Terminal.app Dev 프로필 제거
-echo "[6/7] Terminal.app Dev 프로필 제거..."
+echo "[6/8] Terminal.app Dev 프로필 제거..."
 if defaults read com.apple.Terminal "Window Settings" &>/dev/null; then
   if defaults read com.apple.Terminal "Window Settings" | grep -q "Dev" 2>/dev/null; then
     echo "Terminal.app Dev 프로필을 제거하시겠습니까?"
@@ -267,14 +268,15 @@ fi
 echo ""
 
 # 7. Phase 2 관련 파일 제거
-echo "[7/7] Phase 2 관련 파일 제거..."
-if [ -d "$HOME/claude-code-setup" ]; then
+echo "[7/8] Phase 2 관련 파일 제거..."
+if [ -d "$HOME/claude-code-setup" ] || [ -d "$HOME/claude-workspace" ]; then
   echo "Phase 2 관련 파일을 제거하시겠습니까?"
-  echo "(~/claude-code-setup/ - includes .dev-setup-lang)"
+  echo "(~/claude-code-setup/, ~/claude-workspace/)"
   select_menu "제거" "유지"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    rm -rf "$HOME/claude-code-setup"
-    echo "  ✅ ~/claude-code-setup/ 제거 완료"
+    rm -rf "$HOME/claude-code-setup" 2>/dev/null || true
+    rm -rf "$HOME/claude-workspace" 2>/dev/null || true
+    echo "  ✅ Phase 2 파일 제거 완료"
   else
     echo "  ⏭️  유지"
   fi
@@ -284,7 +286,24 @@ fi
 
 echo ""
 
-# 8. 추가 정리 옵션
+# 8. Obsidian 제거
+echo "[8/8] Obsidian 제거..."
+if [ -d "/Applications/Obsidian.app" ]; then
+  echo "Obsidian을 제거하시겠습니까?"
+  select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
+    rm -rf "/Applications/Obsidian.app"
+    echo "  ✅ Obsidian 제거 완료"
+  else
+    echo "  ⏭️  유지"
+  fi
+else
+  echo "  ⏭️  Obsidian 없음"
+fi
+
+echo ""
+
+# 추가 정리 옵션
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "추가 정리 옵션"
