@@ -9,27 +9,50 @@
 # Sets: INSTALLED_CLAUDE variable for Phase 2 transition
 install_ai_tools() {
   step "$MSG_STEP_AI_TOOLS"
+  echo ""
+
+  # Show spinner while checking installation and updates
+  check_ai_tools_status() {
+    # Check installation status
+    claude_installed=0
+    gemini_installed=0
+    codex_installed=0
+    copilot_installed=0
+
+    command -v claude >/dev/null 2>&1 && claude_installed=1
+    command -v gemini >/dev/null 2>&1 && gemini_installed=1
+    command -v codex >/dev/null 2>&1 && codex_installed=1
+    gh extension list 2>/dev/null | grep -q "gh-copilot" && copilot_installed=1
+
+    # Check for Claude Code updates (if installed)
+    claude_update_available=0
+    if [ $claude_installed -eq 1 ]; then
+      # Use timeout to prevent hanging on network issues
+      if timeout 5 npm outdated -g @anthropic-ai/claude-code 2>/dev/null | grep -q "@anthropic-ai/claude-code"; then
+        claude_update_available=1
+      fi
+    fi
+  }
+
+  # Run checks with spinner
+  run_with_spinner "$MSG_CHECKING_UPDATES" "check_ai_tools_status"
+
   echo "  $MSG_AI_TOOLS_HINT"
   echo ""
 
-  # Check installation status
-  local claude_installed=0
-  local gemini_installed=0
-  local codex_installed=0
-  local copilot_installed=0
-
-  command -v claude >/dev/null 2>&1 && claude_installed=1
-  command -v gemini >/dev/null 2>&1 && gemini_installed=1
-  command -v codex >/dev/null 2>&1 && codex_installed=1
-  gh extension list 2>/dev/null | grep -q "gh-copilot" && copilot_installed=1
-
-  # Build disabled items (installed tools + missing dependencies)
+  # Build disabled items
   local disabled=""
-  [ $claude_installed -eq 1 ] && disabled="$disabled 0"
+
+  # Claude Code: disable only if installed AND no updates available
+  if [ $claude_installed -eq 1 ] && [ $claude_update_available -eq 0 ]; then
+    disabled="$disabled 0"
+  fi
+
+  # Other tools: disable if installed
   [ $gemini_installed -eq 1 ] && disabled="$disabled 1"
   [ $codex_installed -eq 1 ] && disabled="$disabled 2"
 
-  # Disable GitHub Copilot if gh not available OR already installed
+  # GitHub Copilot: disable if installed OR gh not available
   if [ $copilot_installed -eq 1 ] || ! command -v gh &>/dev/null; then
     disabled="$disabled 3"
   fi
@@ -40,7 +63,14 @@ install_ai_tools() {
   local opt_codex="Codex CLI"
   local opt_copilot="GitHub Copilot CLI (requires gh)"
 
-  [ $claude_installed -eq 1 ] && opt_claude="$opt_claude - $MSG_ALREADY_INSTALLED"
+  if [ $claude_installed -eq 1 ]; then
+    if [ $claude_update_available -eq 1 ]; then
+      opt_claude="$opt_claude - $MSG_ALREADY_INSTALLED ($MSG_UPDATE_AVAILABLE)"
+    else
+      opt_claude="$opt_claude - $MSG_ALREADY_INSTALLED ($MSG_LATEST_VERSION)"
+    fi
+  fi
+
   [ $gemini_installed -eq 1 ] && opt_gemini="$opt_gemini - $MSG_ALREADY_INSTALLED"
   [ $codex_installed -eq 1 ] && opt_codex="$opt_codex - $MSG_ALREADY_INSTALLED"
   [ $copilot_installed -eq 1 ] && opt_copilot="$opt_copilot - $MSG_ALREADY_INSTALLED"
@@ -71,11 +101,9 @@ install_ai_tools() {
           echo "  $MSG_INSTALLING Claude Code..."
           npm install -g @anthropic-ai/claude-code || echo "  ⚠️  Installation failed."
         else
-          # Already installed - offer to update
-          if ask_yn "$MSG_CLAUDE_UPDATE_ASK"; then
-            echo "  $MSG_UPDATING"
-            npm update -g @anthropic-ai/claude-code || echo "  ⚠️  Update failed."
-          fi
+          # Already installed and user selected it - must be for update
+          echo "  $MSG_UPDATING Claude Code..."
+          npm update -g @anthropic-ai/claude-code || echo "  ⚠️  Update failed."
         fi
         ;;
       1) # Gemini CLI
