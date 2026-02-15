@@ -19,22 +19,27 @@ curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup
 bash /tmp/cleanup.sh
 ```
 
-### 제거되는 항목
+### 제거 옵션 (각 항목별로 선택 가능)
 
+스크립트는 각 항목마다 제거 여부를 물어봅니다:
+
+**기본 항목**:
+- AI CLI 도구 (Claude Code, Gemini CLI, GitHub Copilot 등)
+- Homebrew 패키지 (D2Coding 폰트, ripgrep, tmux, zsh plugins)
+- Node.js (별도 확인)
 - Oh My Zsh (`~/.oh-my-zsh/`)
-- 셸 설정 (`~/.zshrc`)
+- 셸 설정 (`.zshrc`에서 ai-dev-setup 섹션 제거)
 - tmux 설정 (`~/.tmux.conf`)
 - Terminal.app Dev 프로필
-- Phase 2 파일 (`~/claude-code-setup/`)
-- 언어 설정 (`~/.dev-setup-lang`)
+- Phase 2 파일 (`~/claude-code-setup/`, `.dev-setup-lang` 포함)
 
-### 제거되지 않는 항목
+**추가 정리 옵션**:
+- iTerm2 애플리케이션
+- Homebrew 완전 제거
 
-다른 앱에서 사용 중일 수 있음:
-- Homebrew
-- Xcode Command Line Tools
-- D2Coding 폰트
-- 설치된 패키지 (Node.js, ripgrep 등)
+### 자동으로 제거되지 않는 항목
+
+- Xcode Command Line Tools (시스템에서 필요할 수 있음)
 
 ---
 

@@ -19,22 +19,27 @@ curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup
 bash /tmp/cleanup.sh
 ```
 
-### What Gets Removed
+### Removal Options (User choice for each item)
 
+The script prompts you for each item:
+
+**Main Items**:
+- AI CLI tools (Claude Code, Gemini CLI, GitHub Copilot, etc.)
+- Homebrew packages (D2Coding font, ripgrep, tmux, zsh plugins)
+- Node.js (separate confirmation)
 - Oh My Zsh (`~/.oh-my-zsh/`)
-- Shell configuration (`~/.zshrc`)
+- Shell configuration (removes ai-dev-setup section from `.zshrc`)
 - tmux configuration (`~/.tmux.conf`)
 - Terminal.app Dev profile
-- Phase 2 files (`~/claude-code-setup/`)
-- Language settings (`~/.dev-setup-lang`)
+- Phase 2 files (`~/claude-code-setup/`, includes `.dev-setup-lang`)
 
-### What is NOT Removed
+**Additional Cleanup Options**:
+- iTerm2 application
+- Complete Homebrew removal
 
-May be used by other apps:
-- Homebrew
-- Xcode Command Line Tools
-- D2Coding font
-- Installed packages (Node.js, ripgrep, etc.)
+### What is NOT Removed Automatically
+
+- Xcode Command Line Tools (may be required by your system)
 
 ---
 
