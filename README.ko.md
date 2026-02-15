@@ -193,26 +193,58 @@ ai-dev-setup/
 
 ```
 install.sh
-  ↓ ZIP 다운로드 + 압축 해제
+  ↓ ZIP 다운로드 + ~/ai-dev-setup/에 압축 해제
 setup.sh (Phase 1)
-  ↓ 언어 선택 → 도구 설치 → 설정
+  ↓ 언어 선택 (English/한국어/日本語)
+  ↓ 언어 설정 저장 → ~/claude-code-setup/.dev-setup-lang
+  ↓ 도구 설치 → 터미널/셸 설정
   ↓ claude-code/ 복사 → ~/claude-code-setup/
-  ↓ 설치 디렉토리 삭제 (.git 포함)
-  ✅ Phase 1 완료!
+  ↓ ~/ai-dev-setup/ 삭제 (설치 파일 정리)
+  ✅ Phase 1 완료! (선택한 언어로 메시지 표시)
 
-  ↓ "Phase 2 계속 진행?" [Y/n]
-  ├─ Yes → "새 터미널 열기?" [Y/n]
-  │         ├─ Yes → Phase 2로 새 터미널 자동 열림
-  │         └─ No → 나중에 수동 실행 안내
-  └─ No → Phase 2 건너뛰기 (언제든 나중에 실행 가능)
+  ↓ "Phase 2 진행하시겠습니까?" (선택한 언어로 표시)
+  ├─ 예 → "새 터미널 열기?" [Y/n]
+  │         ├─ 예 → Phase 2로 새 터미널 자동 열림
+  │         └─ 아니오 → 나중에 수동 실행 안내
+  └─ 아니오 → Phase 2 건너뛰기 (언제든 나중에 실행 가능)
 
 ~/claude-code-setup/setup-claude.sh (Phase 2, 선택)
-  ↓ 새 터미널에서 자동 실행 (위에서 Yes 선택 시)
+  ↓ 새 터미널에서 자동 실행 (위에서 예 선택 시)
   ↓ 또는 언제든 수동 실행: ~/claude-code-setup/setup-claude.sh
-  ↓ 언어 선택 → Git 설정 → workspace → agents → MCP → Obsidian
+  ↓ ~/claude-code-setup/.dev-setup-lang에서 언어 로드
+  ↓ Git 설정 → workspace → agents → MCP → Obsidian
   ↓ 설정을 ~/claude-workspace/config.json에 저장
-  완료!
+  ✅ 완료!
 ```
+
+## 정리 & 재설치
+
+Phase 1 설치를 제거하고 처음부터 다시 시작하려면:
+
+**macOS**:
+```bash
+# 정리 스크립트 직접 실행
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
+
+# 또는 레포가 있다면
+./cleanup-phase1.sh
+```
+
+**제거되는 항목**:
+1. Oh My Zsh (`~/.oh-my-zsh/`)
+2. 설치된 패키지 (Node.js, ripgrep 등)
+3. 셸 설정 (`~/.zshrc`)
+4. tmux 설정 (`~/.tmux.conf`)
+5. Terminal.app Dev 프로필
+6. AI CLI 도구 (Claude Code, Gemini CLI, GitHub Copilot CLI)
+7. Phase 2 파일 (`~/claude-code-setup/` 언어 설정 포함)
+
+**제거되지 않는 항목** (다른 앱에서 사용 중일 수 있음):
+- ❌ Homebrew
+- ❌ Xcode Command Line Tools
+- ❌ D2Coding 폰트
+
+각 단계마다 인터랙티브 메뉴로 확인을 요청합니다.
 
 ## 커스터마이징
 

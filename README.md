@@ -193,14 +193,16 @@ ai-dev-setup/
 
 ```
 install.sh
-  ↓ download ZIP + extract
+  ↓ download ZIP + extract to ~/ai-dev-setup/
 setup.sh (Phase 1)
-  ↓ language selection → install tools → configure
+  ↓ language selection (English/한국어/日本語)
+  ↓ save language to ~/claude-code-setup/.dev-setup-lang
+  ↓ install tools → configure terminal/shell
   ↓ copy claude-code/ → ~/claude-code-setup/
-  ↓ delete install directory (including .git if cloned)
-  ✅ Phase 1 Complete!
+  ↓ delete ~/ai-dev-setup/ (cleanup install files)
+  ✅ Phase 1 Complete! (message in selected language)
 
-  ↓ "Continue to Phase 2 now?" [Y/n]
+  ↓ "Continue to Phase 2 now?" (in selected language)
   ├─ Yes → "Open new terminal?" [Y/n]
   │         ├─ Yes → automatically opens new terminal with Phase 2
   │         └─ No → instructions to run manually later
@@ -209,10 +211,40 @@ setup.sh (Phase 1)
 ~/claude-code-setup/setup-claude.sh (Phase 2, optional)
   ↓ runs automatically in new terminal (if you chose Yes above)
   ↓ OR run manually anytime: ~/claude-code-setup/setup-claude.sh
-  ↓ language selection → Git setup → workspace → agents → MCP → Obsidian
+  ↓ loads language from ~/claude-code-setup/.dev-setup-lang
+  ↓ Git setup → workspace → agents → MCP → Obsidian
   ↓ save config to ~/claude-workspace/config.json
-  Done!
+  ✅ Done!
 ```
+
+## Cleanup & Reinstall
+
+If you want to remove Phase 1 installation and start over:
+
+**macOS**:
+```bash
+# Run cleanup script directly
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
+
+# Or if you still have the repo
+./cleanup-phase1.sh
+```
+
+**What gets removed**:
+1. Oh My Zsh (`~/.oh-my-zsh/`)
+2. Installed packages (Node.js, ripgrep, etc.)
+3. Shell configuration (`~/.zshrc`)
+4. tmux configuration (`~/.tmux.conf`)
+5. Terminal.app Dev profile
+6. AI CLI tools (Claude Code, Gemini CLI, GitHub Copilot CLI)
+7. Phase 2 files (`~/claude-code-setup/` including language settings)
+
+**What is NOT removed** (may be used by other applications):
+- ❌ Homebrew
+- ❌ Xcode Command Line Tools
+- ❌ D2Coding font
+
+Each step asks for confirmation with an interactive menu.
 
 ## Customization
 
