@@ -39,7 +39,7 @@ Includes optional [Claude Code](https://claude.ai/code) setup with central works
 **Step 5: Terminal + Shell Environment**
 - **Terminal.app + iTerm2** (macOS):
   - Auto-apply Dev dark theme profile
-  - Install Meslo Nerd Font (icon support)
+  - D2Coding font with Korean support
   - Optional iTerm2 installation
 - **Windows Terminal** (Windows):
   - Auto-configure dark theme + fonts

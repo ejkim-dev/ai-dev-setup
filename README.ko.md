@@ -39,7 +39,7 @@
 **Step 5: 터미널 + 쉘 환경**
 - **Terminal.app + iTerm2** (macOS):
   - Dev 다크 테마 프로필 자동 적용
-  - Meslo Nerd Font 설치 (아이콘 지원)
+  - D2Coding 폰트 (한글 지원)
   - iTerm2 설치 여부 선택 가능
 - **Windows Terminal** (Windows):
   - 다크 테마 + 폰트 자동 설정
