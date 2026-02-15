@@ -52,6 +52,9 @@ switch ($langChoice) {
     default { $UserLang = "en" }
 }
 
+# Save language selection for Phase 2 (Claude Code setup)
+$UserLang | Set-Content "$env:USERPROFILE\.dev-setup-lang"
+
 # Load locale file
 $localeFile = "$ScriptDir\claude-code\locale\$UserLang.ps1"
 if (Test-Path $localeFile) {

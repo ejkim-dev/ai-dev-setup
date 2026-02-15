@@ -47,41 +47,62 @@ Write-Host "🤖 Claude Code Setup" -ForegroundColor Cyan
 Write-Host ""
 
 # === 0. Language selection (always in English) ===
-Write-Host "  Select your language:"
-Write-Host ""
-Write-Host "  1. English"
-Write-Host "  2. 한국어"
-Write-Host "  3. 日本語"
-Write-Host "  4. Other"
-Write-Host ""
-$langChoice = Read-Host "  Selection (1-4)"
+# Check if language was already selected in Phase 1
+$langFile = "$env:USERPROFILE\.dev-setup-lang"
+if (Test-Path $langFile) {
+    $UserLang = Get-Content $langFile
+    switch ($UserLang) {
+        "ko" {
+            $LangName = "한국어"
+            $LangInstruction = "- 한국어로 대답할 것`n- 코드, 명령어, 기술 용어 등 필요한 경우에만 영어 사용"
+        }
+        "ja" {
+            $LangName = "日本語"
+            $LangInstruction = "- 日本語で回答すること`n- コード、コマンド、技術用語は英語のまま使用"
+        }
+        default {
+            $LangName = "English"
+            $LangInstruction = "- Respond in English"
+        }
+    }
+} else {
+    # No saved language, ask user
+    Write-Host "  Select your language:"
+    Write-Host ""
+    Write-Host "  1. English"
+    Write-Host "  2. 한국어"
+    Write-Host "  3. 日本語"
+    Write-Host "  4. Other"
+    Write-Host ""
+    $langChoice = Read-Host "  Selection (1-4)"
 
-switch ($langChoice) {
-    "1" {
-        $UserLang = "en"
-        $LangName = "English"
-        $LangInstruction = "- Respond in English"
-    }
-    "2" {
-        $UserLang = "ko"
-        $LangName = "한국어"
-        $LangInstruction = "- 한국어로 대답할 것`n- 코드, 명령어, 기술 용어 등 필요한 경우에만 영어 사용"
-    }
-    "3" {
-        $UserLang = "ja"
-        $LangName = "日本語"
-        $LangInstruction = "- 日本語で回答すること`n- コード、コマンド、技術用語は英語のまま使用"
-    }
-    "4" {
-        $UserLang = Read-Host "  Language code (e.g., zh, de, fr)"
-        $LangName = Read-Host "  Language name (e.g., 中文, Deutsch)"
-        $customInstr = Read-Host "  Instruction for Claude (e.g., Respond in Chinese)"
-        $LangInstruction = "- $customInstr"
-    }
-    default {
-        $UserLang = "en"
-        $LangName = "English"
-        $LangInstruction = "- Respond in English"
+    switch ($langChoice) {
+        "1" {
+            $UserLang = "en"
+            $LangName = "English"
+            $LangInstruction = "- Respond in English"
+        }
+        "2" {
+            $UserLang = "ko"
+            $LangName = "한국어"
+            $LangInstruction = "- 한국어로 대답할 것`n- 코드, 명령어, 기술 용어 등 필요한 경우에만 영어 사용"
+        }
+        "3" {
+            $UserLang = "ja"
+            $LangName = "日本語"
+            $LangInstruction = "- 日本語で回答すること`n- コード、コマンド、技術用語は英語のまま使用"
+        }
+        "4" {
+            $UserLang = Read-Host "  Language code (e.g., zh, de, fr)"
+            $LangName = Read-Host "  Language name (e.g., 中文, Deutsch)"
+            $customInstr = Read-Host "  Instruction for Claude (e.g., Respond in Chinese)"
+            $LangInstruction = "- $customInstr"
+        }
+        default {
+            $UserLang = "en"
+            $LangName = "English"
+            $LangInstruction = "- Respond in English"
+        }
     }
 }
 
