@@ -192,15 +192,15 @@ echo "[4/8] .zshrc 정리..."
 if [ -f "$HOME/.zshrc" ]; then
   # ai-dev-setup 추가 부분 제거
   if grep -q "=== ai-dev-setup ===" "$HOME/.zshrc" 2>/dev/null; then
-    # 백업
-    cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+    # 백업 (이전 백업 덮어쓰기)
+    cp "$HOME/.zshrc" "$HOME/.zshrc.backup"
 
     # ai-dev-setup 섹션 제거
     sed -i.tmp '/# === ai-dev-setup ===/,/# === End ai-dev-setup ===/d' "$HOME/.zshrc" 2>/dev/null || true
     rm -f "$HOME/.zshrc.tmp"
 
     echo "  ✅ .zshrc에서 ai-dev-setup 설정 제거"
-    echo "  📝 백업: ~/.zshrc.backup.*"
+    echo "  📝 백업: ~/.zshrc.backup"
   else
     echo "  ℹ️  .zshrc에 ai-dev-setup 설정 없음"
   fi
@@ -227,11 +227,11 @@ if [ -f "$HOME/.tmux.conf" ]; then
   echo ".tmux.conf를 제거하시겠습니까?"
   select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    # 백업
-    cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
+    # 백업 (이전 백업 덮어쓰기)
+    cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup"
     rm "$HOME/.tmux.conf"
     echo "  ✅ .tmux.conf 제거 완료"
-    echo "  📝 백업: ~/.tmux.conf.backup.*"
+    echo "  📝 백업: ~/.tmux.conf.backup"
   else
     echo "  ⏭️  건너뜀"
   fi
@@ -368,15 +368,36 @@ if xcode-select -p &>/dev/null; then
   fi
 fi
 
+# 백업 파일 정리
+backup_files=()
+for f in "$HOME"/.zshrc.backup* "$HOME"/.tmux.conf.backup* "$HOME"/.zshrc.pre-oh-my-zsh; do
+  [ -f "$f" ] && backup_files+=("$f")
+done
+
+if [ ${#backup_files[@]} -gt 0 ]; then
+  echo ""
+  echo "📝 백업 파일이 ${#backup_files[@]}개 있습니다:"
+  for f in "${backup_files[@]}"; do
+    echo "  - ${f/#$HOME/~}"
+  done
+  echo ""
+  echo "백업 파일을 삭제하시겠습니까?"
+  select_menu "삭제" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
+    for f in "${backup_files[@]}"; do
+      rm -f "$f"
+    done
+    echo "  ✅ 백업 파일 삭제 완료"
+  else
+    echo "  ⏭️  백업 유지"
+  fi
+fi
+
 # 완료
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "✅ 정리 완료!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-echo "📝 백업 파일:"
-echo "  - ~/.zshrc.backup.*"
-echo "  - ~/.tmux.conf.backup.*"
 echo ""
 echo "🔄 이제 ./setup.sh를 다시 실행하여 깨끗한 상태에서 테스트할 수 있습니다."
 echo ""
