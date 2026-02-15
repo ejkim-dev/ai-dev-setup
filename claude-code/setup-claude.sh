@@ -372,21 +372,18 @@ if [ "$MENU_RESULT" -eq 0 ]; then
   mkdir -p "$WORKSPACE/shared/mcp"
   mkdir -p "$WORKSPACE/projects"
 
-  # Copy shared agents (NOT installation scripts)
-  cp "$SCRIPT_DIR/agents/workspace-manager.md" "$WORKSPACE/shared/agents/"
-  cp "$SCRIPT_DIR/agents/translate.md" "$WORKSPACE/shared/agents/"
-  cp "$SCRIPT_DIR/agents/doc-writer.md" "$WORKSPACE/shared/agents/"
+  # Copy shared agents
+  for agent_file in workspace-manager.md translate.md doc-writer.md; do
+    if [ -f "$SCRIPT_DIR/agents/$agent_file" ]; then
+      cp "$SCRIPT_DIR/agents/$agent_file" "$WORKSPACE/shared/agents/"
+    fi
+  done
   echo "  → $MSG_WS_AGENTS_DONE"
 
   # Copy templates and examples
   cp "$SCRIPT_DIR/templates/"* "$WORKSPACE/shared/templates/" 2>/dev/null || true
   cp "$SCRIPT_DIR/examples/"* "$WORKSPACE/shared/templates/" 2>/dev/null || true
   echo "  → $MSG_WS_TEMPLATES_DONE"
-
-  # Copy documentation
-  mkdir -p "$WORKSPACE/doc"
-  cp "$SCRIPT_DIR/doc/"*.md "$WORKSPACE/doc/" 2>/dev/null || true
-  echo "  → $MSG_WS_DOC_DONE"
 
   # Inject language into CLAUDE.local.md
   if [ -f "$WORKSPACE/shared/templates/CLAUDE.local.md" ]; then
