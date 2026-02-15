@@ -65,10 +65,6 @@ select_menu() {
   while true; do
     IFS= read -rsn1 key
     case "$key" in
-      '')
-        # Ignore empty string (happens on read failure/EOF)
-        continue
-        ;;
       $'\x1b')
         IFS= read -rsn2 key
         case "$key" in
@@ -84,7 +80,7 @@ select_menu() {
             ;;
         esac
         ;;
-      $'\n'|$'\r')
+      ''|$'\n'|$'\r')
         break
         ;;
     esac
@@ -153,10 +149,6 @@ select_multi() {
   while true; do
     IFS= read -rsn1 key
     case "$key" in
-      '')
-        # Ignore empty string (happens on read failure/EOF)
-        continue
-        ;;
       $'\x1b')
         IFS= read -rsn2 key
         case "$key" in
@@ -182,7 +174,7 @@ select_multi() {
           checked[$selected]=1
         fi
         ;;
-      $'\n'|$'\r')
+      ''|$'\n'|$'\r')
         break
         ;;
     esac
