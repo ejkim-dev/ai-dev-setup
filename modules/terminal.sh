@@ -102,30 +102,30 @@ setup_terminal() {
 
   if [ $font_installed -eq 0 ]; then
     echo ""
-    echo "  ⚠️  D2Coding 폰트가 설치되지 않았습니다!"
-    echo "  💡 터미널 테마를 적용하려면 폰트가 필요합니다."
+    echo "  ⚠️  $MSG_FONT_NOT_INSTALLED"
+    echo "  💡 $MSG_FONT_REQUIRED"
     echo ""
-    echo "폰트를 지금 설치하시겠습니까?"
-    select_menu "설치" "건너뛰기 (테마 적용 안 함)"
+    echo "$MSG_FONT_INSTALL_ASK"
+    select_menu "$MSG_FONT_INSTALL_OPT" "$MSG_FONT_SKIP_OPT"
 
     if [ "$MENU_RESULT" -eq 0 ]; then
       if command -v brew &>/dev/null; then
         echo ""
-        run_with_spinner "D2Coding 폰트 설치 중..." "brew install --cask font-d2coding"
+        run_with_spinner "$MSG_INSTALLING D2Coding..." "brew install --cask font-d2coding"
         if [ $? -eq 0 ]; then
-          echo "  ✅ D2Coding 폰트 설치 완료"
+          echo "  ✅ $MSG_FONT_INSTALLED"
           font_installed=1
         else
-          echo "  ❌ 폰트 설치 실패"
-          echo "     수동 설치: brew install --cask font-d2coding"
+          echo "  ❌ $MSG_FONT_INSTALL_FAILED"
+          echo "     $MSG_FONT_MANUAL_INSTALL"
           return 1
         fi
       else
-        echo "  ❌ Homebrew가 없어서 폰트를 설치할 수 없습니다"
+        echo "  ❌ $MSG_FONT_NO_BREW"
         return 1
       fi
     else
-      echo "  ⏭️  터미널 테마 설정을 건너뜁니다"
+      echo "  ⏭️  $MSG_TERMINAL_THEME_SKIP"
       return 0
     fi
   fi

@@ -20,6 +20,18 @@ MSG_INSTALLING="Installing..."
 MSG_UPDATING="Updating..."
 MSG_APPLIED="Applied"
 
+# Font
+MSG_FONT_NOT_INSTALLED="D2Coding font is not installed!"
+MSG_FONT_REQUIRED="Font is required to apply terminal theme."
+MSG_FONT_INSTALL_ASK="Install font now?"
+MSG_FONT_INSTALL_OPT="Install"
+MSG_FONT_SKIP_OPT="Skip (no theme)"
+MSG_FONT_INSTALLED="D2Coding font installed"
+MSG_FONT_INSTALL_FAILED="Font installation failed"
+MSG_FONT_MANUAL_INSTALL="Manual install: brew install --cask font-d2coding"
+MSG_FONT_NO_BREW="Cannot install font without Homebrew"
+MSG_TERMINAL_THEME_SKIP="Skipping terminal theme setup"
+
 # Workspace
 MSG_WS_TITLE="claude-workspace Setup"
 MSG_WS_DESC_1="Manage all Claude Code settings in one place."

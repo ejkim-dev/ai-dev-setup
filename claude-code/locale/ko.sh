@@ -20,6 +20,18 @@ MSG_INSTALLING="설치 중..."
 MSG_UPDATING="업데이트 중..."
 MSG_APPLIED="적용됨"
 
+# Font
+MSG_FONT_NOT_INSTALLED="D2Coding 폰트가 설치되지 않았습니다!"
+MSG_FONT_REQUIRED="터미널 테마를 적용하려면 폰트가 필요합니다."
+MSG_FONT_INSTALL_ASK="폰트를 지금 설치하시겠습니까?"
+MSG_FONT_INSTALL_OPT="설치"
+MSG_FONT_SKIP_OPT="건너뛰기 (테마 적용 안 함)"
+MSG_FONT_INSTALLED="D2Coding 폰트 설치 완료"
+MSG_FONT_INSTALL_FAILED="폰트 설치 실패"
+MSG_FONT_MANUAL_INSTALL="수동 설치: brew install --cask font-d2coding"
+MSG_FONT_NO_BREW="Homebrew가 없어서 폰트를 설치할 수 없습니다"
+MSG_TERMINAL_THEME_SKIP="터미널 테마 설정을 건너뜁니다"
+
 # Workspace
 MSG_WS_TITLE="claude-workspace 설정"
 MSG_WS_DESC_1="Claude Code의 모든 설정을 한 곳에서 관리합니다."
