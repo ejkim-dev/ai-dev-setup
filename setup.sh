@@ -115,10 +115,6 @@ import_terminal_profile() {
   local dev_terminal="$1"
   local terminal_plist="$HOME/Library/Preferences/com.apple.Terminal.plist"
 
-  # Quit Terminal.app to ensure plist changes are applied
-  osascript -e 'tell application "Terminal" to quit' 2>/dev/null || true
-  sleep 1
-
   # Backup
   cp "$terminal_plist" "${terminal_plist}.backup" 2>/dev/null || true
 
@@ -156,14 +152,17 @@ import_terminal_profile() {
   # Convert back to binary
   plutil -convert binary1 "$terminal_plist" 2>/dev/null
 
-  # Restart cfprefsd
+  # Restart cfprefsd to reload preferences
   killall cfprefsd 2>/dev/null || true
+
+  # Force sync settings (reads plist and updates cache)
+  defaults read com.apple.Terminal >/dev/null 2>&1
 
   # Cleanup
   rm -f "$temp_dev"
 
   # Verify: Check both profile exists AND is set as default
-  sleep 1
+  sleep 2
   if /usr/libexec/PlistBuddy -c "Print :Window\ Settings:Dev" "$terminal_plist" >/dev/null 2>&1 && \
      defaults read com.apple.Terminal "Default Window Settings" 2>/dev/null | grep -q "Dev"; then
     return 0
