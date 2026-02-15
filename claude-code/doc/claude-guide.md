@@ -9,7 +9,8 @@ This guide explains key Claude Code concepts and files.
 3. [.claude/ Directory](#claude-directory)
 4. [Task.md](#taskmd)
 5. [Agents](#agents)
-6. [MCP (Model Context Protocol)](#mcp-model-context-protocol)
+6. [Slash Commands](#slash-commands)
+7. [MCP (Model Context Protocol)](#mcp-model-context-protocol)
 
 ---
 
@@ -209,7 +210,9 @@ Brief description of what this agent does
 Detailed instructions for the agent
 ```
 
-### Slash Commands
+---
+
+## Slash Commands
 
 Claude Code provides built-in slash commands for common operations:
 

@@ -9,7 +9,8 @@ Claude Code의 주요 개념과 파일들을 설명합니다.
 3. [.claude/ 디렉토리](#claude-디렉토리)
 4. [Task.md](#taskmd)
 5. [에이전트 (Agents)](#에이전트-agents)
-6. [MCP (Model Context Protocol)](#mcp-model-context-protocol)
+6. [슬래시 커맨드](#슬래시-커맨드)
+7. [MCP (Model Context Protocol)](#mcp-model-context-protocol)
 
 ---
 
@@ -209,7 +210,9 @@ Claude Code의 주요 개념과 파일들을 설명합니다.
 에이전트에 대한 상세 지시사항
 ```
 
-### 슬래시 커맨드
+---
+
+## 슬래시 커맨드
 
 Claude Code는 일반적인 작업을 위한 내장 슬래시 커맨드를 제공합니다:
 
