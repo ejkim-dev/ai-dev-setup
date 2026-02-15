@@ -25,19 +25,9 @@ skip_msg() {
   echo -e "  ${color_yellow}⏭  $MSG_SKIP${color_reset}"
 }
 
-# Utility: Ask Y/n question
-ask_yn() {
-  local prompt="$1"
-  local default="${2:-Y}"
-  if [ "$default" = "Y" ]; then
-    read -p "  $prompt [Y/n]: " answer
-    answer="${answer:-Y}"
-  else
-    read -p "  $prompt [y/N]: " answer
-    answer="${answer:-N}"
-  fi
-  [[ "$answer" =~ ^[Yy] ]]
-}
+# DEPRECATED: ask_yn() - Use select_menu instead
+# This function is removed as part of UI consistency improvement
+# Use: select_menu "Yes" "No" and check MENU_RESULT
 
 # Utility: Expand ~ to $HOME
 expand_path() {

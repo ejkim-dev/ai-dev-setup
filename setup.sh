@@ -173,13 +173,19 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-if ask_yn "Continue to Phase 2 now?"; then
+echo "Continue to Phase 2 now?"
+select_menu "Yes, continue" "No, skip for now"
+
+if [ "$MENU_RESULT" -eq 0 ]; then
   echo ""
   echo "  ⚠️  Terminal restart required for Phase 2"
   echo "     (to load updated PATH and shell config)"
   echo ""
 
-  if ask_yn "Open new terminal and start Phase 2?"; then
+  echo "Open new terminal and start Phase 2?"
+  select_menu "Yes, open new terminal" "No, I'll run it manually later"
+
+  if [ "$MENU_RESULT" -eq 0 ]; then
     echo ""
     echo "  🚀 Opening new terminal..."
     echo ""

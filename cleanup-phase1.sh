@@ -6,6 +6,13 @@
 
 set -e
 
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Load dependencies
+source "$SCRIPT_DIR/lib/colors.sh"
+source "$SCRIPT_DIR/lib/ui.sh"
+
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "🧹 Phase 1 설치 항목 정리"
@@ -25,8 +32,8 @@ echo "  ❌ Homebrew 자체는 제거하지 않습니다 (시스템에서 사용
 echo "  ❌ Xcode Command Line Tools는 제거하지 않습니다"
 echo ""
 
-read -p "정말 진행하시겠습니까? [y/N]: " confirm
-if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+select_menu "진행" "취소"
+if [ "$MENU_RESULT" -ne 0 ]; then
   echo "취소되었습니다."
   exit 0
 fi
@@ -68,8 +75,10 @@ if command -v brew &>/dev/null; then
   brew uninstall ripgrep 2>/dev/null || true
 
   # Node.js는 선택적으로 (다른 용도로 사용 중일 수 있음)
-  read -p "  Node.js도 제거하시겠습니까? [y/N]: " remove_node
-  if [[ "$remove_node" =~ ^[Yy]$ ]]; then
+  echo ""
+  echo "  Node.js도 제거하시겠습니까?"
+  select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     brew uninstall node 2>/dev/null || true
     echo "  ✅ Node.js 제거됨"
   else
@@ -120,8 +129,10 @@ if [ -f "$HOME/.zshrc" ]; then
 
   # .zshrc.pre-oh-my-zsh 복원
   if [ -f "$HOME/.zshrc.pre-oh-my-zsh" ]; then
-    read -p "  원래 .zshrc로 복원하시겠습니까? [y/N]: " restore_zshrc
-    if [[ "$restore_zshrc" =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "  원래 .zshrc로 복원하시겠습니까?"
+    select_menu "복원" "건너뛰기"
+    if [ "$MENU_RESULT" -eq 0 ]; then
       mv "$HOME/.zshrc.pre-oh-my-zsh" "$HOME/.zshrc"
       echo "  ✅ 원래 .zshrc 복원 완료"
     fi
@@ -194,8 +205,9 @@ echo ""
 
 # iTerm2 제거
 if [ -d "/Applications/iTerm.app" ]; then
-  read -p "iTerm2를 제거하시겠습니까? [y/N]: " remove_iterm
-  if [[ "$remove_iterm" =~ ^[Yy]$ ]]; then
+  echo "iTerm2를 제거하시겠습니까?"
+  select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     rm -rf "/Applications/iTerm.app"
     echo "  ✅ iTerm2 제거 완료"
   else
@@ -208,8 +220,9 @@ fi
 # Homebrew 제거
 if command -v brew &>/dev/null; then
   echo ""
-  read -p "Homebrew를 완전히 제거하시겠습니까? [y/N]: " remove_brew
-  if [[ "$remove_brew" =~ ^[Yy]$ ]]; then
+  echo "Homebrew를 완전히 제거하시겠습니까?"
+  select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     echo "  Homebrew 제거 중... (시간이 걸릴 수 있습니다)"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)" -- --force
 
@@ -232,8 +245,9 @@ fi
 # Xcode Command Line Tools 제거
 if xcode-select -p &>/dev/null; then
   echo ""
-  read -p "Xcode Command Line Tools를 제거하시겠습니까? [y/N]: " remove_xcode
-  if [[ "$remove_xcode" =~ ^[Yy]$ ]]; then
+  echo "Xcode Command Line Tools를 제거하시겠습니까?"
+  select_menu "제거" "유지"
+  if [ "$MENU_RESULT" -eq 0 ]; then
     echo "  Xcode Command Line Tools 제거 중..."
     sudo rm -rf /Library/Developer/CommandLineTools
     echo "  ✅ Xcode Command Line Tools 제거 완료"
