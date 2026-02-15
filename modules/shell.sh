@@ -123,6 +123,10 @@ EOF
         esac
       done
 
+      # Add end marker for cleanup script
+      echo "" >> "$HOME/.zshrc"
+      echo "# === End ai-dev-setup ===" >> "$HOME/.zshrc"
+
       echo "  $MSG_ZSHRC_DONE"
     else
       echo "  $MSG_ZSHRC_SKIP"
