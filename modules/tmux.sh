@@ -4,7 +4,7 @@
 # Dependencies: colors.sh, core.sh, ui.sh
 # Usage: Source this file after dependencies, then call setup_tmux
 
-# Set up tmux configuration
+# Set up tmux (install + configure)
 setup_tmux() {
   echo ""
   echo "  💡 $MSG_TMUX_DESC"
@@ -15,7 +15,22 @@ setup_tmux() {
 
   if [ "$MENU_RESULT" -eq 0 ]; then
     echo ""
-    spinner "$MSG_TMUX_INSTALLING" &
+
+    # Install tmux if not already installed
+    if ! command -v tmux >/dev/null 2>&1; then
+      if run_with_spinner "$MSG_TMUX_INSTALLING_PKG" "brew install tmux"; then
+        echo "  ✅ tmux $MSG_INSTALLED"
+      else
+        echo "  ❌ tmux installation failed"
+        echo "     Try manually: brew install tmux"
+        return 1
+      fi
+    else
+      echo "  tmux: $MSG_ALREADY_INSTALLED"
+    fi
+
+    # Apply configuration
+    spinner "$MSG_TMUX_INSTALLING_CONFIG" &
     spinner_pid=$!
 
     if [ -f "$HOME/.tmux.conf" ]; then

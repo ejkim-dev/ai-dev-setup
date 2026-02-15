@@ -1,7 +1,6 @@
 # Essential tools
 brew "node"
 brew "ripgrep"
-brew "tmux"
 
 # Font (for terminal theme)
 cask "font-d2coding"
