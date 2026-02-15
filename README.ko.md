@@ -90,7 +90,9 @@ Phase 2 이후 완전한 Claude Code 워크스페이스가 구성됩니다:
 Phase 1 설치 제거:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh -o /tmp/cleanup.sh
+
+bash /tmp/cleanup.sh
 ```
 
 **[→ 완전 제거 가이드](docs/ko/UNINSTALL.md)**
