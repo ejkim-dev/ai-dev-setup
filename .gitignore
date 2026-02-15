@@ -3,6 +3,9 @@ Thumbs.db
 
 # Claude Code
 .claude/
+!.claude/tools/
+!.claude/notes/
+!.claude/skills/
 CLAUDE.local.md
 .claude-data/
 
