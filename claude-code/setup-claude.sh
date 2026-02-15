@@ -346,6 +346,7 @@ echo "  $MSG_WS_DESC_2"
 echo "  $MSG_WS_DESC_3"
 echo ""
 echo "  ~/claude-workspace/"
+echo "  ├── doc/              ← $MSG_WS_TREE_DOC"
 echo "  ├── setup-lang/       ← $MSG_WS_TREE_SETUP_LANG"
 echo "  ├── shared/agents/    ← $MSG_WS_TREE_AGENTS"
 echo "  ├── shared/templates/ ← $MSG_WS_TREE_TEMPLATES"
@@ -379,6 +380,11 @@ if [ "$MENU_RESULT" -eq 0 ]; then
   cp "$SCRIPT_DIR/templates/"* "$WORKSPACE/shared/templates/" 2>/dev/null || true
   cp "$SCRIPT_DIR/examples/"* "$WORKSPACE/shared/templates/" 2>/dev/null || true
   echo "  → $MSG_WS_TEMPLATES_DONE"
+
+  # Copy documentation
+  mkdir -p "$WORKSPACE/doc"
+  cp "$SCRIPT_DIR/doc/"*.md "$WORKSPACE/doc/" 2>/dev/null || true
+  echo "  → $MSG_WS_DOC_DONE"
 
   # Inject language into CLAUDE.local.md
   if [ -f "$WORKSPACE/shared/templates/CLAUDE.local.md" ]; then
@@ -834,16 +840,26 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "✨ ${color_green}$MSG_COMPLETE${color_reset}"
 echo ""
-echo "  $MSG_USAGE"
-echo ""
 if [ "$OPT_WORKSPACE" = true ] && [ -d "$WORKSPACE" ]; then
   echo "  📁 $MSG_INFO_WORKSPACE ~/claude-workspace/"
   echo "  🤖 $MSG_INFO_AGENTS"
   echo "  🌐 $MSG_INFO_LANGUAGE $LANG_NAME"
   echo "  ⚙️  $MSG_INFO_CONFIG ~/claude-workspace/config.json"
   echo ""
-  echo "  💡 $MSG_TIP_ADD_PROJECT"
-  echo "     $MSG_TIP_ADD_CMD"
+  echo "  $MSG_NEXT_STEPS"
+  echo ""
+  echo "  $MSG_STEP_1_TITLE"
+  echo "     $MSG_STEP_1_DESC"
+  echo "     $MSG_STEP_1_NOTE"
+  echo ""
+  echo "  $MSG_STEP_2_TITLE"
+  echo "     $MSG_STEP_2_DESC"
+  echo ""
+  echo "  $MSG_STEP_3_TITLE"
+  echo "     $MSG_STEP_3_DESC"
+  echo "     $MSG_STEP_3_NOTE"
+  echo ""
+  echo "  $MSG_DOCS_AVAILABLE"
   echo ""
 
   # === Cleanup ===
