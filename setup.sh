@@ -395,13 +395,27 @@ select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG
 case "$MENU_RESULT" in
   0)
     # Terminal.app - import Dev theme and set as default
+    # Quit Terminal to ensure preferences can be written
+    osascript -e 'tell application "Terminal" to quit' 2>/dev/null || true
+    sleep 1
+
+    # Open and import the profile
     open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 2
-    defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
-    defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
-    killall cfprefsd 2>/dev/null || true
-    echo "  $MSG_TERMINAL_APPLIED"
-    echo "  💡 $MSG_TERMINAL_RESTART_HINT"
+    sleep 3  # Wait for Terminal to import the profile
+
+    # Verify profile was imported before setting as default
+    if defaults read com.apple.Terminal "Window Settings" 2>/dev/null | grep -q '"Dev"'; then
+      defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
+      defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
+      killall cfprefsd 2>/dev/null || true
+      echo "  ✅ $MSG_TERMINAL_APPLIED"
+      echo "  💡 $MSG_TERMINAL_RESTART_HINT"
+    else
+      echo "  ⚠️  Terminal profile import failed"
+      echo "  📋 Please import manually:"
+      echo "     Terminal > Settings (⌘,) > Profiles > Import..."
+      echo "     Select: $SCRIPT_DIR/configs/mac/Dev.terminal"
+    fi
     ;;
   1)
     # iTerm2 only
@@ -409,43 +423,73 @@ case "$MENU_RESULT" in
       echo "  iTerm2: $MSG_ALREADY_INSTALLED"
     else
       if brew install --cask iterm2; then
-        echo "  $MSG_ITERM2_INSTALLED"
+        sleep 2  # Wait for installation to complete
+        if [ -d "/Applications/iTerm.app" ]; then
+          echo "  ✅ $MSG_ITERM2_INSTALLED"
+        else
+          echo "  ⚠️  Installation succeeded but app not found in /Applications/"
+          echo "      Check: brew --prefix --cask iterm2"
+        fi
       else
-        echo "  ⚠️  $MSG_ITERM2_INSTALL_FAILED"
+        echo "  ❌ $MSG_ITERM2_INSTALL_FAILED"
+        echo "      Try: brew install --cask iterm2"
       fi
     fi
     # Apply Dev profile (only if iTerm2 exists)
     if [ -d "/Applications/iTerm.app" ]; then
       mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
       cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
-      echo "  $MSG_ITERM2_PROFILE_APPLIED"
+      echo "  ✅ $MSG_ITERM2_PROFILE_APPLIED"
       echo "  💡 $MSG_ITERM2_PROFILE_HINT"
+    else
+      echo "  ⚠️  iTerm2 not found, skipping profile setup"
     fi
     ;;
   2)
     # Both
+    # Quit Terminal to ensure preferences can be written
+    osascript -e 'tell application "Terminal" to quit' 2>/dev/null || true
+    sleep 1
+
+    # Open and import the profile
     open "$SCRIPT_DIR/configs/mac/Dev.terminal"
-    sleep 2
-    defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
-    defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
-    killall cfprefsd 2>/dev/null || true
-    echo "  Terminal.app: $MSG_TERMINAL_APPLIED"
+    sleep 3  # Wait for Terminal to import the profile
+
+    # Verify profile was imported before setting as default
+    if defaults read com.apple.Terminal "Window Settings" 2>/dev/null | grep -q '"Dev"'; then
+      defaults write com.apple.Terminal "Default Window Settings" -string "Dev"
+      defaults write com.apple.Terminal "Startup Window Settings" -string "Dev"
+      killall cfprefsd 2>/dev/null || true
+      echo "  ✅ Terminal.app: $MSG_TERMINAL_APPLIED"
+    else
+      echo "  ⚠️  Terminal.app: Profile import failed"
+      echo "  📋 Please import manually: Terminal > Settings > Profiles > Import"
+    fi
 
     if [ -d "/Applications/iTerm.app" ]; then
       echo "  iTerm2: $MSG_ALREADY_INSTALLED"
     else
       if brew install --cask iterm2; then
-        echo "  $MSG_ITERM2_INSTALLED"
+        sleep 2  # Wait for installation to complete
+        if [ -d "/Applications/iTerm.app" ]; then
+          echo "  ✅ iTerm2: $MSG_ITERM2_INSTALLED"
+        else
+          echo "  ⚠️  iTerm2: Installation succeeded but app not found"
+          echo "      Check: brew --prefix --cask iterm2"
+        fi
       else
-        echo "  ⚠️  $MSG_ITERM2_INSTALL_FAILED"
+        echo "  ❌ iTerm2: $MSG_ITERM2_INSTALL_FAILED"
+        echo "      Try: brew install --cask iterm2"
       fi
     fi
     # Apply Dev profile to iTerm2 (only if iTerm2 exists)
     if [ -d "/Applications/iTerm.app" ]; then
       mkdir -p "$HOME/Library/Application Support/iTerm2/DynamicProfiles"
       cp "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/"
-      echo "  iTerm2: $MSG_ITERM2_PROFILE_APPLIED"
+      echo "  ✅ iTerm2: $MSG_ITERM2_PROFILE_APPLIED"
       echo "  💡 $MSG_BOTH_TERMINAL_HINT"
+    else
+      echo "  ⚠️  iTerm2 not found, skipping profile setup"
     fi
     ;;
   3)
