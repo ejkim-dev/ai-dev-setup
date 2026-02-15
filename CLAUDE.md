@@ -31,7 +31,13 @@ configs/
 claude-code/
 ├── setup-claude.sh   — Claude Code setup (macOS)
 ├── setup-claude.ps1  — Claude Code setup (Windows)
-├── agents/           — Global agents (workspace-manager, translate, doc-writer)
+├── README.md         — Main guide (simplified with links to doc/)
+├── README.ko.md      — Korean version of README
+├── doc/              — Comprehensive documentation
+│   ├── getting-started.md / .ko.md    — Quick start guide
+│   ├── claude-guide.md / .ko.md       — Complete concepts (CLAUDE.md, agents, MCP, Task.md)
+│   └── workspace-philosophy.md / .ko.md — Design philosophy and expansion strategies
+├── agents/           — Shared agents (workspace-manager, translate, doc-writer)
 ├── locale/           — i18n strings (en, ko, ja)
 ├── templates/        — .mcp.json templates (placeholder substitution)
 └── examples/         — CLAUDE.md, MEMORY.md examples
@@ -49,9 +55,12 @@ CLAUDE.local.md       — (gitignored) Personal local settings and notes
 - **Beginner-friendly**: Minimal technical jargon, clear explanations, visual progress (spinners)
 - **Modular architecture**: lib/ (utilities) + modules/ (domain logic) for testability (macOS)
 - **OS-specific separation**: macOS (setup.sh) / Windows (setup.ps1) as separate scripts
-- **Two-phase setup**: Basic environment → Claude Code additional setup runs separately
+- **Two-phase setup**: Basic environment (Phase 1) → Claude Code workspace setup (Phase 2)
+- **Language persistence**: Phase 1 saves language choice to `.dev-setup-lang`, Phase 2 auto-reads it
+- **Workspace centralization**: `~/claude-workspace/` with shared/ (agents, templates, mcp, doc) + projects/
 - **Template substitution**: MCP templates use `__PLACEHOLDER__` replaced by sed/PowerShell
 - **i18n support**: Language selected at setup start, all messages switch to that language via locale files
+- **Comprehensive documentation**: Bilingual guides (en/ko) for getting-started, concepts, and design philosophy
 
 ## OS Differences
 
@@ -109,6 +118,39 @@ local opt_item="$MSG_ITEM"
 2. Add locale messages first (en, ko, ja)
 3. Use variables for all options
 4. Run check scripts before committing
+
+## Claude Workspace Structure
+
+After Phase 2 setup, users get `~/claude-workspace/`:
+
+```
+~/claude-workspace/
+├── .gitignore              — Excludes projects/*, setup-lang/, secrets
+├── config.json             — User preferences (language, connected projects)
+├── doc/                    — Documentation (committed to git)
+│   ├── getting-started.md / .ko.md
+│   ├── claude-guide.md / .ko.md
+│   └── workspace-philosophy.md / .ko.md
+├── shared/                 — Shared across all projects (committed to git)
+│   ├── agents/            — Reusable AI assistants
+│   ├── templates/         — Project starter files
+│   └── mcp/               — MCP server configurations
+└── projects/              — Project-specific settings (gitignored)
+    └── <project-name>/
+        └── .claude/       — Symlinked from actual project
+```
+
+**Key concepts**:
+- **Shared agents**: Available in all projects (workspace-manager, translate, doc-writer)
+- **Team agents**: Project `.claude/agents/` committed to git for team sharing
+- **Symlink-based**: Projects link to workspace, update once → apply everywhere
+- **Git-ready**: Workspace can be versioned and synced across machines
+- **Language persistence**: `.dev-setup-lang` (Phase 1) → auto-loaded in Phase 2
+
+**Documentation**:
+- `getting-started`: Quick start for new users
+- `claude-guide`: Complete reference (CLAUDE.md, agents, MCP, Task.md, slash commands)
+- `workspace-philosophy`: Design decisions, why centralization, expansion strategies
 
 ## Project-specific Claude Settings
 
