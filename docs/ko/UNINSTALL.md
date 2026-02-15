@@ -14,7 +14,9 @@ ai-dev-setup을 부분적으로 또는 완전히 제거하는 방법입니다.
 **자동화 스크립트 사용 가능**:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/cleanup-phase1.sh -o /tmp/cleanup.sh
+
+bash /tmp/cleanup.sh
 ```
 
 ### 제거되는 항목
