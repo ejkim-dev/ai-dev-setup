@@ -499,13 +499,16 @@ EOF
     project_name="${raw_name##*.}"
 
     # Auto-number if duplicate: myproject → myproject_1 → myproject_2
+    use_existing=false
     ws_project="$WORKSPACE/projects/$project_name"
     if [ -d "$ws_project" ]; then
       echo "  ⚠️  '$project_name' $MSG_PROJ_NAME_CONFLICT"
       echo "  $MSG_PROJ_USE_EXISTING"
       select_menu "$MSG_PROJ_USE_EXISTING_YES" "$MSG_PROJ_NEW"
 
-      if [ "$MENU_RESULT" -eq 1 ]; then
+      if [ "$MENU_RESULT" -eq 0 ]; then
+        use_existing=true
+      else
         counter=1
         while [ -d "$WORKSPACE/projects/${project_name}_${counter}" ]; do
           counter=$((counter + 1))
@@ -516,48 +519,50 @@ EOF
       fi
     fi
 
-    mkdir -p "$ws_project/.claude/agents"
+    if [ "$use_existing" = false ]; then
+      mkdir -p "$ws_project/.claude/agents"
 
-    if [ ! -f "$ws_project/CLAUDE.md" ]; then
-      cp "$WORKSPACE/shared/templates/CLAUDE.md" "$ws_project/CLAUDE.md"
-    fi
+      if [ ! -f "$ws_project/CLAUDE.md" ]; then
+        cp "$WORKSPACE/shared/templates/CLAUDE.md" "$ws_project/CLAUDE.md"
+      fi
 
-    if [ ! -f "$ws_project/CLAUDE.local.md" ]; then
-      cp "$WORKSPACE/shared/templates/CLAUDE.local.md" "$ws_project/CLAUDE.local.md"
-    fi
+      if [ ! -f "$ws_project/CLAUDE.local.md" ]; then
+        cp "$WORKSPACE/shared/templates/CLAUDE.local.md" "$ws_project/CLAUDE.local.md"
+      fi
 
-    # .claude/
-    if [ -e "$project_path/.claude" ]; then
-      echo "  ⚠️  $project_path/.claude $MSG_PROJ_EXISTS"
-    else
-      ln -s "$ws_project/.claude" "$project_path/.claude"
-      echo "  → $MSG_PROJ_LINK_CLAUDE"
-    fi
+      # .claude/
+      if [ -e "$project_path/.claude" ]; then
+        echo "  ⚠️  $project_path/.claude $MSG_PROJ_EXISTS"
+      else
+        ln -s "$ws_project/.claude" "$project_path/.claude"
+        echo "  → $MSG_PROJ_LINK_CLAUDE"
+      fi
 
-    # CLAUDE.md
-    if [ -e "$project_path/CLAUDE.md" ]; then
-      echo "  ⚠️  $project_path/CLAUDE.md $MSG_PROJ_EXISTS"
-    else
-      ln -s "$ws_project/CLAUDE.md" "$project_path/CLAUDE.md"
-      echo "  → $MSG_PROJ_LINK_CLAUDEMD"
-    fi
+      # CLAUDE.md
+      if [ -e "$project_path/CLAUDE.md" ]; then
+        echo "  ⚠️  $project_path/CLAUDE.md $MSG_PROJ_EXISTS"
+      else
+        ln -s "$ws_project/CLAUDE.md" "$project_path/CLAUDE.md"
+        echo "  → $MSG_PROJ_LINK_CLAUDEMD"
+      fi
 
-    # CLAUDE.local.md
-    if [ -e "$project_path/CLAUDE.local.md" ]; then
-      echo "  ⚠️  $project_path/CLAUDE.local.md $MSG_PROJ_EXISTS"
-    else
-      ln -s "$ws_project/CLAUDE.local.md" "$project_path/CLAUDE.local.md"
-      echo "  → $MSG_PROJ_LINK_LOCALMD"
-    fi
+      # CLAUDE.local.md
+      if [ -e "$project_path/CLAUDE.local.md" ]; then
+        echo "  ⚠️  $project_path/CLAUDE.local.md $MSG_PROJ_EXISTS"
+      else
+        ln -s "$ws_project/CLAUDE.local.md" "$project_path/CLAUDE.local.md"
+        echo "  → $MSG_PROJ_LINK_LOCALMD"
+      fi
 
-    # .gitignore
-    if [ -f "$project_path/.gitignore" ]; then
-      for entry in ".claude/" "CLAUDE.local.md" ".claude-data/"; do
-        if ! grep -q "$entry" "$project_path/.gitignore"; then
-          echo "$entry" >> "$project_path/.gitignore"
-        fi
-      done
-      echo "  → $MSG_PROJ_GITIGNORE"
+      # .gitignore
+      if [ -f "$project_path/.gitignore" ]; then
+        for entry in ".claude/" "CLAUDE.local.md" ".claude-data/"; do
+          if ! grep -q "$entry" "$project_path/.gitignore"; then
+            echo "$entry" >> "$project_path/.gitignore"
+          fi
+        done
+        echo "  → $MSG_PROJ_GITIGNORE"
+      fi
     fi
 
     if [ -n "$project_list" ]; then
