@@ -63,31 +63,44 @@ install_essential_packages() {
       case $i in
         0)
           if [ $node_installed -eq 0 ]; then
-            install_brew_package "node" "Node.js"
+            install_brew_package "node" "Node.js" || {
+              echo "  ⚠️  Node.js installation returned error, continuing..."
+            }
           fi
           ;;
         1)
           if [ $ripgrep_installed -eq 0 ]; then
-            install_brew_package "ripgrep" "ripgrep"
+            install_brew_package "ripgrep" "ripgrep" || {
+              echo "  ⚠️  ripgrep installation returned error, continuing..."
+            }
           fi
           ;;
         2)
           if [ $font_installed -eq 0 ]; then
-            install_brew_cask "font-d2coding" "D2Coding Font"
+            install_brew_cask "font-d2coding" "D2Coding Font" || {
+              echo "  ⚠️  font installation returned error, continuing..."
+            }
           fi
           ;;
         3)
           if [ $zsh_auto_installed -eq 0 ]; then
-            install_brew_package "zsh-autosuggestions" "zsh-autosuggestions"
+            install_brew_package "zsh-autosuggestions" "zsh-autosuggestions" || {
+              echo "  ⚠️  zsh-autosuggestions installation returned error, continuing..."
+            }
           fi
           ;;
         4)
           if [ $zsh_syntax_installed -eq 0 ]; then
-            install_brew_package "zsh-syntax-highlighting" "zsh-syntax-highlighting"
+            install_brew_package "zsh-syntax-highlighting" "zsh-syntax-highlighting" || {
+              echo "  ⚠️  zsh-syntax-highlighting installation returned error, continuing..."
+            }
           fi
           ;;
       esac
     done
+
+    echo ""
+    echo "  [DEBUG] Verifying Node.js installation..."
 
     # Verify Node.js (critical for AI tools)
     if ! command -v node &>/dev/null; then
@@ -104,6 +117,8 @@ install_essential_packages() {
       echo ""
       exit 1
     fi
+
+    echo "  [DEBUG] Node.js verification passed: $(node --version)"
 
     done_msg
   else
