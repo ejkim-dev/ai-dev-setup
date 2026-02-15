@@ -569,11 +569,11 @@ if [ "$MENU_RESULT" -eq 0 ]; then
   echo ""
 
   # Build option labels with recommended status
-  local opt_localrag="$MSG_MCP_SERVER_LOCALRAG $MSG_RECOMMENDED"
-  local opt_filesystem="$MSG_MCP_SERVER_FILESYSTEM $MSG_RECOMMENDED"
-  local opt_serena="$MSG_MCP_SERVER_SERENA $MSG_RECOMMENDED"
-  local opt_fetch="$MSG_MCP_SERVER_FETCH"
-  local opt_puppeteer="$MSG_MCP_SERVER_PUPPETEER"
+  opt_localrag="$MSG_MCP_SERVER_LOCALRAG $MSG_RECOMMENDED"
+  opt_filesystem="$MSG_MCP_SERVER_FILESYSTEM $MSG_RECOMMENDED"
+  opt_serena="$MSG_MCP_SERVER_SERENA $MSG_RECOMMENDED"
+  opt_fetch="$MSG_MCP_SERVER_FETCH"
+  opt_puppeteer="$MSG_MCP_SERVER_PUPPETEER"
 
   # Multi-select menu with recommended servers pre-checked
   MULTI_DEFAULTS="0 1 2" DISABLED_ITEMS="" select_multi \
@@ -644,7 +644,7 @@ if [ "$MENU_RESULT" -eq 0 ]; then
 EOF_MCP
 
           # Add each selected server to .mcp.json
-          local first=true
+          first=true
           for server in "${MCP_SERVERS[@]}"; do
             [ "$first" = false ] && echo "," >> "$mcp_file"
             first=false
