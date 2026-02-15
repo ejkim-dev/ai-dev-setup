@@ -344,7 +344,7 @@ fi
 
 # === 1. claude-workspace ===
 echo ""
-echo -e "${color_cyan}[1/4] $MSG_WS_TITLE${color_reset}"
+echo -e "${color_cyan}[1/3] $MSG_WS_TITLE${color_reset}"
 echo ""
 echo "  $MSG_WS_DESC_1"
 echo "  $MSG_WS_DESC_2"
@@ -563,16 +563,6 @@ EOF
       echo "  → $MSG_PROJ_LINK_LOCALMD"
     fi
 
-    # .gitignore
-    if [ -f "$project_path/.gitignore" ]; then
-      for entry in ".claude/" "CLAUDE.local.md" ".claude-data/"; do
-        if ! grep -q "$entry" "$project_path/.gitignore"; then
-          echo "$entry" >> "$project_path/.gitignore"
-        fi
-      done
-      echo "  → $MSG_PROJ_GITIGNORE"
-    fi
-
     project_entry="{\"name\": \"$project_name\", \"path\": \"$project_path\"}"
     if [ -n "$project_list" ]; then
       project_list="$project_list, $project_entry"
@@ -595,7 +585,7 @@ fi
 
 # === 2. MCP Servers ===
 echo ""
-echo -e "${color_cyan}[2/4] $MSG_MCP_TITLE${color_reset}"
+echo -e "${color_cyan}[2/3] $MSG_MCP_TITLE${color_reset}"
 echo ""
 echo "  $MSG_MCP_DESC_1"
 echo "  $MSG_MCP_DESC_2"
@@ -778,7 +768,7 @@ fi
 
 # === 3. Obsidian ===
 echo ""
-echo -e "${color_cyan}[3/4] $MSG_OBS_TITLE${color_reset}"
+echo -e "${color_cyan}[3/3] $MSG_OBS_TITLE${color_reset}"
 echo ""
 
 if [ -d "/Applications/Obsidian.app" ]; then
@@ -829,98 +819,6 @@ if [ "$OPT_WORKSPACE" = true ]; then
   "projects": $CONNECTED_PROJECTS
 }
 EOF
-fi
-
-# === 4. Git + SSH (Optional) ===
-echo ""
-echo -e "${color_cyan}[4/4] $MSG_GIT_TITLE${color_reset}"
-echo ""
-echo "  $MSG_GIT_DESC_1"
-echo "  $MSG_GIT_DESC_2"
-echo "  $MSG_GIT_DESC_3"
-echo "  $MSG_GIT_DESC_4"
-echo "  $MSG_GIT_DESC_5"
-echo ""
-echo "  $MSG_GIT_DESC_NOTE"
-echo ""
-
-if command -v git &>/dev/null; then
-  echo "  $MSG_ALREADY_INSTALLED"
-  done_msg
-else
-  echo "  $MSG_GIT_INSTALL_ASK"
-  echo ""
-  select_menu "$MSG_YES" "$MSG_NO"
-  if [ "$MENU_RESULT" -eq 0 ]; then
-    echo "  $MSG_INSTALLING"
-    if command -v brew &>/dev/null; then
-      # macOS - use Homebrew
-      if brew install git && brew install gh; then
-        done_msg
-      else
-        echo "  ⚠️  $MSG_GIT_INSTALL_FAILED"
-        skip_msg
-      fi
-    else
-      echo "  ⚠️  Homebrew not found. Install Git manually: https://git-scm.com"
-      skip_msg
-    fi
-  else
-    skip_msg
-  fi
-fi
-
-# Git config (if Git is available)
-if command -v git &>/dev/null; then
-  echo ""
-  echo "  $MSG_GIT_CONFIG_ASK"
-  echo ""
-  select_menu "$MSG_GIT_CONFIG_NOW" "$MSG_GIT_CONFIG_LATER"
-  if [ "$MENU_RESULT" -eq 0 ]; then
-    read -p "  $MSG_GIT_NAME" git_name
-    read -p "  $MSG_GIT_EMAIL" git_email
-    git config --global user.name "$git_name"
-    git config --global user.email "$git_email"
-    echo "  $MSG_GIT_CONFIG_DONE"
-    done_msg
-  fi
-
-  # SSH key (if Git is configured)
-  if [ -f "$HOME/.ssh/id_ed25519" ]; then
-    echo ""
-    echo "  $MSG_SSH_EXISTS"
-    echo "  $MSG_SSH_REGISTER"
-    echo ""
-    select_menu "$MSG_YES" "$MSG_NO"
-    if [ "$MENU_RESULT" -eq 0 ]; then
-      cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
-      echo ""
-      echo "  📋 $MSG_SSH_COPIED"
-      echo "  $MSG_SSH_GITHUB_URL"
-      echo ""
-      read -p "  $MSG_SSH_ENTER "
-    fi
-  else
-    echo ""
-    echo "  $MSG_SSH_GENERATE"
-    echo ""
-    select_menu "$MSG_YES" "$MSG_NO"
-    if [ "$MENU_RESULT" -eq 0 ]; then
-      read -p "  $MSG_SSH_EMAIL" ssh_email
-      if ssh-keygen -t ed25519 -C "$ssh_email" -f "$HOME/.ssh/id_ed25519"; then
-        eval "$(ssh-agent -s)" &>/dev/null || true
-        ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
-        cat "$HOME/.ssh/id_ed25519.pub" | pbcopy
-        echo ""
-        echo "  📋 $MSG_SSH_COPIED"
-        echo "  $MSG_SSH_GITHUB_URL"
-        echo ""
-        read -p "  $MSG_SSH_ENTER "
-      else
-        echo "  ⚠️  SSH key generation cancelled."
-      fi
-    fi
-  fi
 fi
 
 echo ""
