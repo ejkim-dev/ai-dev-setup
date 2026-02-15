@@ -66,10 +66,16 @@ install_ai_tools() {
 
         INSTALLED_CLAUDE=true
 
-        # Only install if not already installed
         if [ $claude_installed -eq 0 ]; then
+          # Not installed - install it
           echo "  $MSG_INSTALLING Claude Code..."
           npm install -g @anthropic-ai/claude-code || echo "  ⚠️  Installation failed."
+        else
+          # Already installed - offer to update
+          if ask_yn "$MSG_CLAUDE_UPDATE_ASK"; then
+            echo "  $MSG_UPDATING"
+            npm update -g @anthropic-ai/claude-code || echo "  ⚠️  Update failed."
+          fi
         fi
         ;;
       1) # Gemini CLI
