@@ -663,6 +663,35 @@ fi
 
 done_msg
 
+# Terminal theme verification guide
+if [ "$MENU_RESULT" -ne 3 ]; then
+  echo ""
+  echo "${color_cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${color_reset}"
+  echo "${color_bold_cyan}📋 $MSG_TERMINAL_VERIFY_HEADER${color_reset}"
+  echo "${color_cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${color_reset}"
+  echo ""
+  echo "  💡 $MSG_TERMINAL_VERIFY_DESC"
+  echo ""
+  echo "  $MSG_TERMINAL_MANUAL_SETUP"
+  echo ""
+
+  # Show relevant manual setup instructions
+  if [ "$MENU_RESULT" -eq 0 ] || [ "$MENU_RESULT" -eq 2 ]; then
+    echo "  ${color_yellow}Terminal.app:${color_reset}"
+    echo "     $MSG_TERMINAL_MANUAL_TERMINAL"
+    echo ""
+  fi
+
+  if [ "$MENU_RESULT" -eq 1 ] || [ "$MENU_RESULT" -eq 2 ]; then
+    echo "  ${color_yellow}iTerm2:${color_reset}"
+    echo "     $MSG_TERMINAL_MANUAL_ITERM2"
+    echo ""
+  fi
+
+  echo "${color_cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${color_reset}"
+  echo ""
+fi
+
 # --- 6. AI Coding Tools ---
 step "$MSG_STEP_AI_TOOLS"
 echo "  $MSG_AI_TOOLS_HINT"

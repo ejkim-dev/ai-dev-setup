@@ -183,6 +183,11 @@ MSG_ITERM2_PROFILE_HINT="Set as default: Settings(⌘,) → Profiles → Select 
 MSG_BOTH_TERMINAL_HINT="Dev theme will be applied when you open a new Terminal/iTerm2 window"
 MSG_ITERM2_INSTALLED="iTerm2 installed"
 MSG_ITERM2_INSTALL_FAILED="iTerm2 installation failed (optional, skipping profile setup)"
+MSG_TERMINAL_VERIFY_HEADER="Verify Terminal Theme"
+MSG_TERMINAL_VERIFY_DESC="Open a new terminal window and check if Dev theme is applied"
+MSG_TERMINAL_MANUAL_SETUP="If theme is not applied, follow manual setup below:"
+MSG_TERMINAL_MANUAL_TERMINAL="Terminal.app: Settings(⌘,) → Profiles → Import → Select Dev.terminal → Set as Default"
+MSG_TERMINAL_MANUAL_ITERM2="iTerm2: Settings(⌘,) → Profiles → Select Dev → Other Actions → Set as Default"
 
 # Oh My Zsh
 MSG_OHMYZSH_INSTALL="Install Oh My Zsh?"

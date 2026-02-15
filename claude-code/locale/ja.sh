@@ -183,6 +183,11 @@ MSG_ITERM2_PROFILE_HINT="デフォルトに設定: Settings(⌘,) → Profiles �
 MSG_BOTH_TERMINAL_HINT="新しいターミナル/iTerm2ウィンドウを開くとDevテーマが適用されます"
 MSG_ITERM2_INSTALLED="iTerm2 インストール完了"
 MSG_ITERM2_INSTALL_FAILED="iTerm2 インストール失敗（オプション、プロファイル設定をスキップ）"
+MSG_TERMINAL_VERIFY_HEADER="ターミナルテーマ確認"
+MSG_TERMINAL_VERIFY_DESC="新しいターミナルウィンドウを開いてDevテーマが適用されているか確認してください"
+MSG_TERMINAL_MANUAL_SETUP="テーマが適用されていない場合は、以下の手動設定を行ってください："
+MSG_TERMINAL_MANUAL_TERMINAL="Terminal.app: Settings(⌘,) → Profiles → Import → Dev.terminal 選択 → Defaultに設定"
+MSG_TERMINAL_MANUAL_ITERM2="iTerm2: Settings(⌘,) → Profiles → Dev 選択 → Other Actions → Set as Default"
 
 # Oh My Zsh
 MSG_OHMYZSH_INSTALL="Oh My Zshをインストールしますか？"
