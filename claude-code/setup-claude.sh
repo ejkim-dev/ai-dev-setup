@@ -348,8 +348,6 @@ echo "  $MSG_WS_DESC_2"
 echo "  $MSG_WS_DESC_3"
 echo ""
 echo "  ~/claude-workspace/"
-echo "  ├── doc/              ← $MSG_WS_TREE_DOC"
-echo "  ├── setup-lang/       ← $MSG_WS_TREE_SETUP_LANG"
 echo "  ├── shared/agents/    ← $MSG_WS_TREE_AGENTS"
 echo "  ├── shared/templates/ ← $MSG_WS_TREE_TEMPLATES"
 echo "  └── projects/         ← $MSG_WS_TREE_PROJECTS"
@@ -487,8 +485,8 @@ EOF
         else
           # Broken symlink from deleted workspace — clean up stale links
           rm -f "$project_path/.claude"
-          rm -f "$project_path/CLAUDE.md"
-          rm -f "$project_path/CLAUDE.local.md"
+          [ -L "$project_path/CLAUDE.md" ] && rm -f "$project_path/CLAUDE.md"
+          [ -L "$project_path/CLAUDE.local.md" ] && rm -f "$project_path/CLAUDE.local.md"
         fi
       fi
     fi
