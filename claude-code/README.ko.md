@@ -26,8 +26,10 @@ claude
 
 설치되는 것들:
 - **claude-workspace** — 모든 프로젝트를 중앙에서 관리
+- **프로젝트 연결** — 심볼릭 링크로 프로젝트를 워크스페이스에 연결
 - **공유 에이전트** — 재사용 가능한 AI 어시스턴트 (workspace-manager, translate, doc-writer)
-- **MCP 서버** — 외부 도구 통합 (local-rag, filesystem 등)
+- **MCP 서버** — 프로젝트별 외부 도구 통합 (local-rag, filesystem 등)
+- **Obsidian** — 마크다운 메모 앱 (선택, local-rag 연동)
 - **템플릿** — CLAUDE.md 및 .mcp.json 템플릿
 - **문서** — 상세 가이드
 

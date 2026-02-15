@@ -26,8 +26,10 @@ claude
 
 This sets up:
 - **claude-workspace** — Centralized management for all projects
+- **Project connection** — Link projects to workspace via symlinks
 - **Shared agents** — Reusable AI assistants (workspace-manager, translate, doc-writer)
-- **MCP servers** — External tool integrations (local-rag, filesystem, etc.)
+- **MCP servers** — Per-project external tool integrations (local-rag, filesystem, etc.)
+- **Obsidian** — Markdown note-taking app (optional, integrates with local-rag)
 - **Templates** — CLAUDE.md and .mcp.json templates
 - **Documentation** — Comprehensive guides
 
