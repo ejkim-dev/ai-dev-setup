@@ -292,7 +292,8 @@ if [ -d "/Applications/Obsidian.app" ]; then
   echo "Obsidian을 제거하시겠습니까?"
   select_menu "제거" "유지"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    rm -rf "/Applications/Obsidian.app"
+    brew uninstall --cask obsidian 2>/dev/null || true
+    rm -rf "/Applications/Obsidian.app" 2>/dev/null || true
     echo "  ✅ Obsidian 제거 완료"
   else
     echo "  ⏭️  유지"
@@ -315,23 +316,24 @@ echo ""
 # iTerm2 제거
 if [ -d "/Applications/iTerm.app" ]; then
   echo "iTerm2를 제거하시겠습니까?"
-  select_menu "제거" "유지"
-  if [ "$MENU_RESULT" -eq 0 ]; then
-    rm -rf "/Applications/iTerm.app"
+  select_menu "유지" "제거"
+  if [ "$MENU_RESULT" -eq 1 ]; then
+    brew uninstall --cask iterm2 2>/dev/null || true
+    rm -rf "/Applications/iTerm.app" 2>/dev/null || true
     echo "  ✅ iTerm2 제거 완료"
   else
     echo "  ⏭️  iTerm2 유지"
   fi
 else
-  echo "  ℹ️  iTerm2 설치되지 않음"
+  echo "  ⏭️  iTerm2 없음"
 fi
 
 # Homebrew 제거
 if command -v brew &>/dev/null; then
   echo ""
   echo "Homebrew를 완전히 제거하시겠습니까?"
-  select_menu "제거" "유지"
-  if [ "$MENU_RESULT" -eq 0 ]; then
+  select_menu "유지" "제거"
+  if [ "$MENU_RESULT" -eq 1 ]; then
     echo "  Homebrew 제거 중... (시간이 걸릴 수 있습니다)"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)" -- --force
 
@@ -355,8 +357,8 @@ fi
 if xcode-select -p &>/dev/null; then
   echo ""
   echo "Xcode Command Line Tools를 제거하시겠습니까?"
-  select_menu "제거" "유지"
-  if [ "$MENU_RESULT" -eq 0 ]; then
+  select_menu "유지" "제거"
+  if [ "$MENU_RESULT" -eq 1 ]; then
     echo "  Xcode Command Line Tools 제거 중..."
     sudo rm -rf /Library/Developer/CommandLineTools
     echo "  ✅ Xcode Command Line Tools 제거 완료"
