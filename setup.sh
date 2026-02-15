@@ -531,40 +531,35 @@ esac
 
 # Fonts (independent of terminal choice)
 echo ""
-if ask_yn "$MSG_FONT_ASK"; then
-  echo ""
-  echo "  $MSG_FONT_SELECT"
-  echo "  $MSG_FONT_HINT"
-  echo ""
-  MULTI_DEFAULTS="" DISABLED_ITEMS="" select_multi "$MSG_FONT_OPT1" "$MSG_FONT_OPT2"
+echo "$MSG_FONT_ASK"
+echo "  $MSG_FONT_HINT"
+echo ""
+MULTI_DEFAULTS="" DISABLED_ITEMS="" select_multi "$MSG_FONT_OPT1" "$MSG_FONT_OPT2"
 
-  if [ ${#MULTI_RESULT[@]} -gt 0 ]; then
-    echo ""
-    echo "  $MSG_FONT_INSTALLING"
-    for idx in "${MULTI_RESULT[@]}"; do
-      case "$idx" in
-        0)
-          # D2Coding
-          if brew install font-d2coding 2>/dev/null; then
-            echo "  ✅ D2Coding"
-          else
-            echo "  ⚠️  D2Coding installation failed"
-          fi
-          ;;
-        1)
-          # D2Coding Nerd Font
-          if brew install font-d2coding-nerd-font 2>/dev/null; then
-            echo "  ✅ D2Coding Nerd Font"
-          else
-            echo "  ⚠️  D2Coding Nerd Font installation failed"
-          fi
-          ;;
-      esac
-    done
-    echo "  $MSG_FONT_DONE"
-  else
-    echo "  $MSG_FONT_SKIP"
-  fi
+if [ ${#MULTI_RESULT[@]} -gt 0 ]; then
+  echo ""
+  echo "  $MSG_FONT_INSTALLING"
+  for idx in "${MULTI_RESULT[@]}"; do
+    case "$idx" in
+      0)
+        # D2Coding
+        if brew install font-d2coding 2>/dev/null; then
+          echo "  ✅ D2Coding"
+        else
+          echo "  ⚠️  D2Coding installation failed"
+        fi
+        ;;
+      1)
+        # D2Coding Nerd Font
+        if brew install font-d2coding-nerd-font 2>/dev/null; then
+          echo "  ✅ D2Coding Nerd Font"
+        else
+          echo "  ⚠️  D2Coding Nerd Font installation failed"
+        fi
+        ;;
+    esac
+  done
+  echo "  $MSG_FONT_DONE"
 else
   echo "  $MSG_FONT_SKIP"
 fi

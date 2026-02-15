@@ -190,8 +190,8 @@ MSG_TERMINAL_MANUAL_TERMINAL="Terminal.app: Settings(⌘,) → Profiles → Impo
 MSG_TERMINAL_MANUAL_ITERM2="iTerm2: Settings(⌘,) → Profiles → Select Dev → Other Actions → Set as Default"
 
 # Fonts
-MSG_FONT_ASK="Install coding fonts?"
-MSG_FONT_SELECT="Select fonts to install (multi-select, skip if none selected)"
+MSG_FONT_ASK="Font installation (multi-select, Enter without selection to skip)"
+MSG_FONT_SELECT="Select fonts to install (multi-select, skip if none selected)"  # Not used
 MSG_FONT_HINT="↑↓ move | Space select/deselect | Enter confirm"
 MSG_FONT_OPT1="D2Coding (coding font with Korean support)"
 MSG_FONT_OPT2="D2Coding Nerd Font (Korean + icons, recommended for agnoster theme)"
