@@ -6,7 +6,7 @@
 
 # Step counter
 STEP=0
-TOTAL=5
+TOTAL=7
 
 # Utility: Display step header
 step() {
