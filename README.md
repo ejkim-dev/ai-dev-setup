@@ -6,6 +6,68 @@ Set up a new development environment in one step. Supports macOS and Windows.
 
 Includes optional [Claude Code](https://claude.ai/code) setup with central workspace management, MCP servers, and global agents.
 
+## 📋 Who Is This For?
+
+- **Terminal beginners**: New to commands but want to set up an AI-powered terminal development environment
+- **AI tool users**: Want to use Claude Code, Gemini CLI, and other AI tools directly in the terminal
+- **Quick setup**: Want to set up an AI-powered terminal development environment on a new Mac/Windows without complex configuration
+- **Consistent environment**: Want to maintain the same terminal environment across multiple computers
+
+## 🎯 What This Does
+
+### 1️⃣ Basic Installation & Terminal Environment Setup (`setup.sh` / `setup.ps1`)
+
+**Step 1: Xcode Command Line Tools (macOS only)**
+- Includes Git, make, gcc, and other development tools
+- Essential foundation for macOS development
+
+**Step 2: Package Manager**
+- macOS: Homebrew installation (foundation for all subsequent tool installations)
+- Windows: winget verification (built-in on Windows 11)
+
+**Step 3: Essential Packages**
+- **Node.js**: JavaScript runtime (required for Claude Code and other AI tools)
+- **ripgrep**: Fast code search tool
+- **tmux** (macOS only): Terminal multiplexer for split panes and session management
+- **zsh-autosuggestions**: Command auto-completion suggestions
+- **zsh-syntax-highlighting**: Command syntax highlighting
+
+**Step 4: D2Coding Font**
+- Coding font with excellent Korean character support
+- Readable monospace font
+
+**Step 5: Terminal + Shell Environment**
+- **Terminal.app + iTerm2** (macOS):
+  - Auto-apply Dev dark theme profile
+  - Install Meslo Nerd Font (icon support)
+  - Optional iTerm2 installation
+- **Windows Terminal** (Windows):
+  - Auto-configure dark theme + fonts
+- **Oh My Zsh** (macOS):
+  - Apply agnoster theme (displays Git branch)
+  - Plugins: git, zsh-autosuggestions, zsh-syntax-highlighting
+- **Oh My Posh** (Windows):
+  - PowerShell prompt theme
+- **Auto-apply .zshrc / .tmux.conf** configuration files
+
+**Step 6: AI Coding Tools (multi-select)**
+- **Claude Code**: Anthropic's AI coding assistant
+- **Gemini CLI**: Google's AI CLI tool
+- **Codex CLI**: OpenAI's code generation tool
+- **GitHub Copilot CLI**: Only available when GitHub CLI (gh) is installed
+
+**Wrap-up:**
+- Copy claude-code setup files to ~/claude-code-setup/
+- Choose whether to proceed to Phase 2 (Claude Code setup)
+
+### 2️⃣ Claude Code Setup (Optional, `claude-code/setup-claude.sh` / `setup-claude.ps1`)
+
+**AI development environment:**
+- Claude Code CLI installation
+- Additional AI CLI tools (Gemini CLI, Codex CLI, etc.)
+- MCP server configuration (filesystem, memory, etc.)
+- Global agent installation (workspace-manager, translate, doc-writer)
+
 ## Quick Start (one line)
 
 No Git required. Just copy and paste.

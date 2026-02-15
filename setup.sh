@@ -11,7 +11,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 STEP=0
-TOTAL=6
+TOTAL=5
 
 # === Utilities ===
 color_green="\033[0;32m"
@@ -493,17 +493,7 @@ else
   skip_msg
 fi
 
-# --- 4. D2Coding font ---
-step "$MSG_STEP_D2CODING"
-# Check font directories
-if ls ~/Library/Fonts/*D2Coding* /Library/Fonts/*D2Coding* 2>/dev/null | head -1 | grep -q .; then
-  echo "  $MSG_ALREADY_INSTALLED"
-else
-  echo "  $MSG_STEP_FONT_D2CODING_BREW"
-fi
-done_msg
-
-# --- 5. Terminal + Shell Setup ---
+# --- 4. Terminal + Shell Setup ---
 step "$MSG_STEP_TERMINAL"
 select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG_TERMINAL_OPT4"
 
@@ -543,14 +533,56 @@ case "$MENU_RESULT" in
     ;;
 esac
 
-# Oh My Zsh (if terminal was selected)
-if [ "$MENU_RESULT" -ne 3 ]; then
+# Fonts (independent of terminal choice)
+echo ""
+if ask_yn "$MSG_FONT_ASK"; then
   echo ""
-  OMZ_INSTALLED=false
-  if [ -d "$HOME/.oh-my-zsh" ]; then
-    echo "  Oh My Zsh: $MSG_ALREADY_INSTALLED"
-    OMZ_INSTALLED=true
-  elif ask_yn "$MSG_OHMYZSH_INSTALL"; then
+  echo "  $MSG_FONT_SELECT"
+  echo "  $MSG_FONT_HINT"
+  echo ""
+  MULTI_DEFAULTS="" DISABLED_ITEMS="" select_multi "$MSG_FONT_OPT1" "$MSG_FONT_OPT2"
+
+  if [ ${#MULTI_RESULT[@]} -gt 0 ]; then
+    echo ""
+    echo "  $MSG_FONT_INSTALLING"
+    for idx in "${MULTI_RESULT[@]}"; do
+      case "$idx" in
+        0)
+          # D2Coding
+          if brew install font-d2coding 2>/dev/null; then
+            echo "  ✅ D2Coding"
+          else
+            echo "  ⚠️  D2Coding installation failed"
+          fi
+          ;;
+        1)
+          # D2Coding Nerd Font
+          if brew install font-d2coding-nerd-font 2>/dev/null; then
+            echo "  ✅ D2Coding Nerd Font"
+          else
+            echo "  ⚠️  D2Coding Nerd Font installation failed"
+          fi
+          ;;
+      esac
+    done
+    echo "  $MSG_FONT_DONE"
+  else
+    echo "  $MSG_FONT_SKIP"
+  fi
+else
+  echo "  $MSG_FONT_SKIP"
+fi
+
+# Oh My Zsh (independent of terminal choice)
+echo ""
+OMZ_INSTALLED=false
+if [ -d "$HOME/.oh-my-zsh" ]; then
+  echo "  Oh My Zsh: $MSG_ALREADY_INSTALLED"
+  OMZ_INSTALLED=true
+else
+  echo "  💡 $MSG_OHMYZSH_DESC"
+  echo ""
+  if ask_yn "$MSG_OHMYZSH_INSTALL"; then
     if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
       OMZ_INSTALLED=true
     else
@@ -559,8 +591,9 @@ if [ "$MENU_RESULT" -ne 3 ]; then
       echo "     $MSG_OHMYZSH_INSTALL_CMD"
     fi
   fi
+fi
 
-  # zshrc customization
+# zshrc customization
   if [ -f "$HOME/.zshrc" ] && grep -q "# === ai-dev-setup ===" "$HOME/.zshrc"; then
     echo "  .zshrc: $MSG_ALREADY_INSTALLED"
   else
@@ -615,7 +648,7 @@ EOF
 # === agnoster emoji prompt ===
 prompt_context() {
   emojis=("🔥" "👑" "😎" "🍺" "🐵" "🦄" "🌈" "🚀" "🐧" "🎉" "🐱" "🐶" "🦋" "🔅")
-  RAND_EMOJI_N=$(( $RANDOM % ${#emojis[@]} + 1))
+  RAND_EMOJI_N=$(( $RANDOM % ${#emojis[@]} ))
   prompt_segment black default "%(!.%{%F{yellow}%}.) $USER ${emojis[$RAND_EMOJI_N]} "
 }
 EOF
@@ -648,17 +681,23 @@ EOF
       done
 
       echo "  $MSG_ZSHRC_DONE"
+    else
+      echo "  $MSG_ZSHRC_SKIP"
     fi
   fi
 
-  # tmux
-  if ask_yn "$MSG_TMUX_ASK"; then
-    if [ -f "$HOME/.tmux.conf" ]; then
-      cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup"
-    fi
-    cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf"
-    echo "  $MSG_TMUX_DONE"
+# tmux
+echo ""
+echo "  💡 $MSG_TMUX_DESC"
+echo ""
+if ask_yn "$MSG_TMUX_ASK"; then
+  if [ -f "$HOME/.tmux.conf" ]; then
+    cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup"
   fi
+  cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf"
+  echo "  $MSG_TMUX_DONE"
+else
+  echo "  $MSG_TMUX_SKIP"
 fi
 
 done_msg
@@ -692,7 +731,7 @@ if [ "$MENU_RESULT" -ne 3 ]; then
   echo ""
 fi
 
-# --- 6. AI Coding Tools ---
+# --- 5. AI Coding Tools ---
 step "$MSG_STEP_AI_TOOLS"
 echo "  $MSG_AI_TOOLS_HINT"
 echo ""
