@@ -63,10 +63,14 @@ select_menu() {
   done
 
   while true; do
-    IFS= read -rsn1 key </dev/tty || continue  # Force read from terminal, retry on failure
+    IFS= read -rsn1 key
     case "$key" in
+      '')
+        # Ignore empty string (happens on read failure/EOF)
+        continue
+        ;;
       $'\x1b')
-        IFS= read -rsn2 key </dev/tty
+        IFS= read -rsn2 key
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -80,7 +84,7 @@ select_menu() {
             ;;
         esac
         ;;
-      $'\n'|$'\r')  # Only newline/return, not empty string
+      $'\n'|$'\r')
         break
         ;;
     esac
@@ -147,10 +151,14 @@ select_multi() {
   done
 
   while true; do
-    IFS= read -rsn1 key </dev/tty || continue  # Force read from terminal, retry on failure
+    IFS= read -rsn1 key
     case "$key" in
+      '')
+        # Ignore empty string (happens on read failure/EOF)
+        continue
+        ;;
       $'\x1b')
-        IFS= read -rsn2 key </dev/tty
+        IFS= read -rsn2 key
         case "$key" in
           '[A')
             if [ $selected -gt 0 ]; then
@@ -174,7 +182,7 @@ select_multi() {
           checked[$selected]=1
         fi
         ;;
-      $'\n'|$'\r')  # Only newline/return, not empty string
+      $'\n'|$'\r')
         break
         ;;
     esac
