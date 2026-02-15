@@ -12,13 +12,45 @@ install_ai_tools() {
   echo "  $MSG_AI_TOOLS_HINT"
   echo ""
 
-  # Check if gh CLI is available for GitHub Copilot CLI
-  DISABLED_ITEMS=""
-  if ! command -v gh &>/dev/null; then
-    DISABLED_ITEMS="3"  # Disable GitHub Copilot CLI (index 3)
+  # Check installation status
+  local claude_installed=0
+  local gemini_installed=0
+  local codex_installed=0
+  local copilot_installed=0
+
+  command -v claude >/dev/null 2>&1 && claude_installed=1
+  command -v gemini >/dev/null 2>&1 && gemini_installed=1
+  command -v codex >/dev/null 2>&1 && codex_installed=1
+  gh extension list 2>/dev/null | grep -q "gh-copilot" && copilot_installed=1
+
+  # Build disabled items (installed tools + missing dependencies)
+  local disabled=""
+  [ $claude_installed -eq 1 ] && disabled="$disabled 0"
+  [ $gemini_installed -eq 1 ] && disabled="$disabled 1"
+  [ $codex_installed -eq 1 ] && disabled="$disabled 2"
+
+  # Disable GitHub Copilot if gh not available OR already installed
+  if [ $copilot_installed -eq 1 ] || ! command -v gh &>/dev/null; then
+    disabled="$disabled 3"
   fi
 
-  MULTI_DEFAULTS="0" select_multi "Claude Code" "Gemini CLI" "Codex CLI" "GitHub Copilot CLI (requires gh)"
+  # Build option labels with status
+  local opt_claude="Claude Code"
+  local opt_gemini="Gemini CLI"
+  local opt_codex="Codex CLI"
+  local opt_copilot="GitHub Copilot CLI (requires gh)"
+
+  [ $claude_installed -eq 1 ] && opt_claude="$opt_claude - $MSG_ALREADY_INSTALLED"
+  [ $gemini_installed -eq 1 ] && opt_gemini="$opt_gemini - $MSG_ALREADY_INSTALLED"
+  [ $codex_installed -eq 1 ] && opt_codex="$opt_codex - $MSG_ALREADY_INSTALLED"
+  [ $copilot_installed -eq 1 ] && opt_copilot="$opt_copilot - $MSG_ALREADY_INSTALLED"
+
+  # Show menu
+  DISABLED_ITEMS="$disabled" MULTI_DEFAULTS="0" select_multi \
+    "$opt_claude" \
+    "$opt_gemini" \
+    "$opt_codex" \
+    "$opt_copilot"
 
   INSTALLED_CLAUDE=false
   for idx in "${MULTI_RESULT[@]}"; do
@@ -33,13 +65,9 @@ install_ai_tools() {
         fi
 
         INSTALLED_CLAUDE=true
-        if command -v claude &>/dev/null; then
-          echo "  Claude Code: $MSG_ALREADY_INSTALLED"
-          if ask_yn "$MSG_CLAUDE_UPDATE_ASK"; then
-            echo "  $MSG_UPDATING"
-            npm update -g @anthropic-ai/claude-code || echo "  ⚠️  Update failed."
-          fi
-        else
+
+        # Only install if not already installed
+        if [ $claude_installed -eq 0 ]; then
           echo "  $MSG_INSTALLING Claude Code..."
           npm install -g @anthropic-ai/claude-code || echo "  ⚠️  Installation failed."
         fi
@@ -53,9 +81,8 @@ install_ai_tools() {
           continue
         fi
 
-        if command -v gemini &>/dev/null; then
-          echo "  Gemini CLI: $MSG_ALREADY_INSTALLED"
-        else
+        # Only install if not already installed
+        if [ $gemini_installed -eq 0 ]; then
           echo "  $MSG_INSTALLING Gemini CLI..."
           npm install -g @google/gemini-cli || echo "  ⚠️  Installation failed."
         fi
@@ -69,9 +96,8 @@ install_ai_tools() {
           continue
         fi
 
-        if command -v codex &>/dev/null; then
-          echo "  Codex CLI: $MSG_ALREADY_INSTALLED"
-        else
+        # Only install if not already installed
+        if [ $codex_installed -eq 0 ]; then
           echo "  $MSG_INSTALLING Codex CLI..."
           npm install -g @openai/codex || echo "  ⚠️  Installation failed."
         fi
@@ -85,9 +111,8 @@ install_ai_tools() {
           continue
         fi
 
-        if gh extension list 2>/dev/null | grep -q "gh-copilot"; then
-          echo "  GitHub Copilot CLI: $MSG_ALREADY_INSTALLED"
-        else
+        # Only install if not already installed
+        if [ $copilot_installed -eq 0 ]; then
           echo "  $MSG_INSTALLING GitHub Copilot CLI..."
           gh extension install github/gh-copilot || echo "  ⚠️  Installation failed."
         fi
