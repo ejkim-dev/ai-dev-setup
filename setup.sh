@@ -50,6 +50,40 @@ ask_yn() {
   [[ "$answer" =~ ^[Yy] ]]
 }
 
+# Spinner animation
+# Usage: spinner "Installing..." & spinner_pid=$!; long_command; kill $spinner_pid 2>/dev/null; wait $spinner_pid 2>/dev/null
+spinner() {
+  local message="$1"
+  local spinstr='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+  tput civis 2>/dev/null
+  while true; do
+    local temp=${spinstr#?}
+    printf "\r  %s %s" "${spinstr:0:1}" "$message"
+    spinstr=$temp${spinstr%"$temp"}
+    sleep 0.1
+  done
+}
+
+# Run command with spinner
+# Usage: run_with_spinner "Installing..." "command to run"
+run_with_spinner() {
+  local message="$1"
+  local command="$2"
+
+  spinner "$message" &
+  local spinner_pid=$!
+
+  eval "$command" > /tmp/spinner_output_$$ 2>&1
+  local result=$?
+
+  kill $spinner_pid 2>/dev/null
+  wait $spinner_pid 2>/dev/null
+  printf "\r\033[K"
+  tput cnorm 2>/dev/null
+
+  return $result
+}
+
 # Arrow key menu selector
 # Usage: select_menu "Option 1" "Option 2" "Option 3"
 # Result: MENU_RESULT (0-based index)
@@ -120,19 +154,18 @@ select_menu() {
 import_terminal_profile() {
   local dev_terminal="$1"
 
-  # 1. Import profile using open (Terminal.app recognizes it immediately)
+  # Import profile using open
   if ! open "$dev_terminal" 2>/dev/null; then
     return 1
   fi
 
-  # Wait for Terminal.app to process the import
-  sleep 1
+  sleep 2
 
-  # 2. Set as default profile using defaults write (applied after restart)
+  # Set as default profile
   defaults write com.apple.Terminal "Default Window Settings" -string "Dev" 2>/dev/null || return 1
   defaults write com.apple.Terminal "Startup Window Settings" -string "Dev" 2>/dev/null || return 1
 
-  # 3. Verify settings were written to plist
+  # Verify
   if defaults read com.apple.Terminal "Default Window Settings" 2>/dev/null | grep -q "Dev"; then
     return 0
   else
@@ -141,9 +174,11 @@ import_terminal_profile() {
 }
 
 # Install iTerm2 and apply Dev profile
+# Usage: install_and_setup_iterm2 <profile_json> <selected_font>
 # Returns: 0 on success, 1 on failure
 install_and_setup_iterm2() {
   local profile_json="$1"
+  local selected_font="$2"
   local profile_dir="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
   local profile_file="$profile_dir/iterm2-dev-profile.json"
 
@@ -173,6 +208,11 @@ install_and_setup_iterm2() {
     mkdir -p "$profile_dir"
 
     if cp "$profile_json" "$profile_file"; then
+      # Update font if Nerd Font was selected
+      if [ "$selected_font" = "nerd" ]; then
+        sed -i '' 's/"Normal Font": "D2Coding 11"/"Normal Font": "D2CodingLigature Nerd Font 11"/' "$profile_file"
+      fi
+
       # Verify file was copied
       if [ -f "$profile_file" ]; then
         echo "  ✅ $MSG_ITERM2_PROFILE_APPLIED"
@@ -464,35 +504,73 @@ fi
 
 # --- 4. Terminal + Shell Setup ---
 step "$MSG_STEP_TERMINAL"
+
+# Fonts first (required for terminal theme)
+echo ""
+echo "$MSG_FONT_ASK"
+echo "  $MSG_FONT_HINT"
+echo ""
+MULTI_DEFAULTS="0" DISABLED_ITEMS="" select_multi "$MSG_FONT_OPT1" "$MSG_FONT_OPT_SKIP"
+
+SELECTED_FONT="none"
+if [ ${#MULTI_RESULT[@]} -gt 0 ]; then
+  echo ""
+  for idx in "${MULTI_RESULT[@]}"; do
+    case "$idx" in
+      0)
+        # D2Coding
+        run_with_spinner "Installing D2Coding..." "brew install font-d2coding"
+        if [ $? -eq 0 ]; then
+          echo "  ✅ D2Coding"
+          SELECTED_FONT="d2coding"
+        else
+          echo "  ⚠️  D2Coding installation failed"
+        fi
+        ;;
+      1)
+        # Skip
+        echo "  $MSG_FONT_SKIP"
+        ;;
+    esac
+  done
+else
+  echo "  $MSG_FONT_SKIP"
+fi
+
+echo ""
 select_menu "$MSG_TERMINAL_OPT1" "$MSG_TERMINAL_OPT2" "$MSG_TERMINAL_OPT3" "$MSG_TERMINAL_OPT4"
 
 case "$MENU_RESULT" in
   0)
     # Terminal.app - import Dev theme and set as default
-    if import_terminal_profile "$SCRIPT_DIR/configs/mac/Dev.terminal"; then
+    TERMINAL_FILE="$SCRIPT_DIR/configs/mac/Dev.terminal"
+
+    if import_terminal_profile "$TERMINAL_FILE"; then
       echo "  ✅ $MSG_TERMINAL_APPLIED"
       echo "  💡 $MSG_TERMINAL_RESTART_HINT"
     else
       echo "  ⚠️  Terminal profile import failed"
       echo "  📋 Please import manually:"
       echo "     Terminal > Settings (⌘,) > Profiles > Import..."
-      echo "     Select: $SCRIPT_DIR/configs/mac/Dev.terminal"
+      echo "     Select: $TERMINAL_FILE"
     fi
     ;;
   1)
     # iTerm2 only
-    install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json"
+    install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$SELECTED_FONT"
     ;;
   2)
     # Both
-    if import_terminal_profile "$SCRIPT_DIR/configs/mac/Dev.terminal"; then
+    TERMINAL_FILE="$SCRIPT_DIR/configs/mac/Dev.terminal"
+
+    if import_terminal_profile "$TERMINAL_FILE"; then
       echo "  ✅ Terminal.app: $MSG_TERMINAL_APPLIED"
     else
       echo "  ⚠️  Terminal.app: Profile import failed"
       echo "  📋 Please import manually: Terminal > Settings > Profiles > Import"
     fi
 
-    install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json"
+    install_and_setup_iterm2 "$SCRIPT_DIR/configs/mac/iterm2-dev-profile.json" "$SELECTED_FONT"
     ;;
   3)
     skip_msg
@@ -501,41 +579,6 @@ case "$MENU_RESULT" in
     skip_msg
     ;;
 esac
-
-# Fonts (independent of terminal choice)
-echo ""
-echo "$MSG_FONT_ASK"
-echo "  $MSG_FONT_HINT"
-echo ""
-MULTI_DEFAULTS="" DISABLED_ITEMS="" select_multi "$MSG_FONT_OPT1" "$MSG_FONT_OPT2"
-
-if [ ${#MULTI_RESULT[@]} -gt 0 ]; then
-  echo ""
-  echo "  $MSG_FONT_INSTALLING"
-  for idx in "${MULTI_RESULT[@]}"; do
-    case "$idx" in
-      0)
-        # D2Coding
-        if brew install font-d2coding 2>/dev/null; then
-          echo "  ✅ D2Coding"
-        else
-          echo "  ⚠️  D2Coding installation failed"
-        fi
-        ;;
-      1)
-        # D2Coding Nerd Font
-        if brew install font-d2coding-nerd-font 2>/dev/null; then
-          echo "  ✅ D2Coding Nerd Font"
-        else
-          echo "  ⚠️  D2Coding Nerd Font installation failed"
-        fi
-        ;;
-    esac
-  done
-  echo "  $MSG_FONT_DONE"
-else
-  echo "  $MSG_FONT_SKIP"
-fi
 
 # Oh My Zsh (independent of terminal choice)
 echo ""
@@ -546,14 +589,23 @@ if [ -d "$HOME/.oh-my-zsh" ]; then
 else
   echo "  💡 $MSG_OHMYZSH_DESC"
   echo ""
-  if ask_yn "$MSG_OHMYZSH_INSTALL"; then
-    if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
+  echo "$MSG_OHMYZSH_ASK"
+  echo ""
+  select_menu "$MSG_OHMYZSH_OPT_INSTALL" "$MSG_OHMYZSH_OPT_SKIP"
+
+  if [ "$MENU_RESULT" -eq 0 ]; then
+    echo ""
+    run_with_spinner "$MSG_OHMYZSH_INSTALLING" "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
+    if [ $? -eq 0 ]; then
+      echo "  ✅ $MSG_OHMYZSH_DONE"
       OMZ_INSTALLED=true
     else
       echo "  ⚠️  Oh My Zsh installation failed."
       echo "     $MSG_OHMYZSH_INSTALL_HINT"
       echo "     $MSG_OHMYZSH_INSTALL_CMD"
     fi
+  else
+    echo "  $MSG_OHMYZSH_SKIP"
   fi
 fi
 
@@ -654,12 +706,27 @@ EOF
 echo ""
 echo "  💡 $MSG_TMUX_DESC"
 echo ""
-if ask_yn "$MSG_TMUX_ASK"; then
+echo "$MSG_TMUX_ASK"
+echo ""
+select_menu "$MSG_TMUX_OPT_INSTALL" "$MSG_TMUX_OPT_SKIP"
+
+if [ "$MENU_RESULT" -eq 0 ]; then
+  echo ""
+  spinner "$MSG_TMUX_INSTALLING" &
+  spinner_pid=$!
+
   if [ -f "$HOME/.tmux.conf" ]; then
-    cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup"
+    cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup" 2>/dev/null
   fi
-  cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf"
-  echo "  $MSG_TMUX_DONE"
+  cp "$SCRIPT_DIR/configs/shared/.tmux.conf" "$HOME/.tmux.conf" 2>/dev/null
+  sleep 0.5
+
+  kill $spinner_pid 2>/dev/null
+  wait $spinner_pid 2>/dev/null
+  printf "\r\033[K"
+  tput cnorm 2>/dev/null
+
+  echo "  ✅ $MSG_TMUX_DONE"
 else
   echo "  $MSG_TMUX_SKIP"
 fi
