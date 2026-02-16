@@ -60,13 +60,13 @@ After Phase 2, you'll have a complete Claude Code workspace:
 ### macOS
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 ```
 
 ### Windows
 
 ```powershell
-irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.ps1 | iex
 ```
 
 Interactive setup with arrow-key menus. Supports English, Korean, and Japanese.
@@ -89,7 +89,7 @@ Interactive setup with arrow-key menus. Supports English, Korean, and Japanese.
 Remove Phase 1 installation:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/cleanup.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/uninstall-tools.sh -o /tmp/cleanup.sh
 
 bash /tmp/cleanup.sh
 ```

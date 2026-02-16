@@ -85,7 +85,7 @@ Navigate with ↑↓, select with Enter. No typing required.
 
 If you see `[Y/n]` prompts, you're using an outdated version. Update to latest:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 ```
 
 ---
@@ -115,7 +115,7 @@ echo "ja" > ~/.dev-setup-lang  # Japanese
 See **[Uninstall Guide](UNINSTALL.md)** for cleanup instructions. To reinstall after cleanup:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 ```
 
 ---
@@ -160,13 +160,13 @@ If you have a different Node.js version (from nvm, etc.), the installer detects 
 **Same setup on all computers**:
 ```bash
 # Computer 1
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 
 # Computer 2
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 
 # Computer 3
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 ```
 
 Each installation is independent, but follows the same configuration pattern.
