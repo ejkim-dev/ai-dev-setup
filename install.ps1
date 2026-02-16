@@ -5,16 +5,26 @@
 #
 
 $ErrorActionPreference = "Stop"
-$version = "1.0.0"
-$repoUrl = "https://github.com/ejkim-dev/ai-dev-setup/archive/refs/tags/v$version.zip"
-$expectedSha256 = "031b7c84dab1c3bbd49c02315669ba476d6bf4444aaab7b46d0d9f4d6cb2662f"
+$repo = "ejkim-dev/ai-dev-setup"
 $downloadDir = "$env:TEMP\ai-dev-setup"
 $zipFile = "$downloadDir\ai-dev-setup.zip"
-$extractDir = "$downloadDir\ai-dev-setup-$version"
 $installDir = "$env:USERPROFILE\ai-dev-setup"
 
 Write-Host ""
 Write-Host "🔧 Downloading ai-dev-setup..." -ForegroundColor Cyan
+
+# Get latest release tag
+$release = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/latest" -UseBasicParsing
+$version = $release.tag_name
+if (-not $version) {
+    Write-Host "  ❌ Failed to fetch latest release version." -ForegroundColor Red
+    exit 1
+}
+$versionNum = $version.TrimStart("v")
+Write-Host "  📦 Version: $version"
+
+$repoUrl = "https://github.com/$repo/archive/refs/tags/$version.zip"
+$extractDir = "$downloadDir\ai-dev-setup-$versionNum"
 
 # Clean up existing temp files
 if (Test-Path $downloadDir) { Remove-Item $downloadDir -Recurse -Force }
@@ -24,17 +34,27 @@ New-Item -ItemType Directory -Path $downloadDir -Force | Out-Null
 Invoke-WebRequest -Uri $repoUrl -OutFile $zipFile -UseBasicParsing
 Write-Host "  ✅ Download complete" -ForegroundColor Green
 
-# SHA256 verification
-$actualSha256 = (Get-FileHash -Path $zipFile -Algorithm SHA256).Hash.ToLower()
-if ($actualSha256 -ne $expectedSha256) {
-    Write-Host "  ❌ SHA256 mismatch!" -ForegroundColor Red
-    Write-Host "     Expected: $expectedSha256"
-    Write-Host "     Actual:   $actualSha256"
-    Write-Host "     Download may be corrupted or tampered with."
-    Remove-Item $downloadDir -Recurse -Force
-    exit 1
+# SHA256 verification (if checksum available in release)
+$checksumsUrl = "https://github.com/$repo/releases/download/$version/SHA256SUMS"
+try {
+    Invoke-WebRequest -Uri $checksumsUrl -OutFile "$downloadDir\SHA256SUMS" -UseBasicParsing
+    $checksumLine = Get-Content "$downloadDir\SHA256SUMS" | Select-String "source.zip"
+    if ($checksumLine) {
+        $expectedSha256 = ($checksumLine -split '\s+')[0]
+        $actualSha256 = (Get-FileHash -Path $zipFile -Algorithm SHA256).Hash.ToLower()
+        if ($actualSha256 -ne $expectedSha256) {
+            Write-Host "  ❌ SHA256 mismatch!" -ForegroundColor Red
+            Write-Host "     Expected: $expectedSha256"
+            Write-Host "     Actual:   $actualSha256"
+            Write-Host "     Download may be corrupted or tampered with."
+            Remove-Item $downloadDir -Recurse -Force
+            exit 1
+        }
+        Write-Host "  ✅ SHA256 verified" -ForegroundColor Green
+    }
+} catch {
+    Write-Host "  ⚠️  SHA256 checksum not available, skipping verification" -ForegroundColor Yellow
 }
-Write-Host "  ✅ SHA256 verified" -ForegroundColor Green
 
 # Extract
 Expand-Archive -Path $zipFile -DestinationPath $downloadDir -Force
