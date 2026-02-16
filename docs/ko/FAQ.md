@@ -85,7 +85,7 @@ ai-dev-setup은 macOS 및 Windows에서 개발 환경을 한 줄로 설치하는
 
 `[Y/n]` 프롬프트가 보인다면 구버전을 사용 중입니다. 최신 버전으로 업데이트하세요:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 ```
 
 ---
@@ -115,7 +115,7 @@ echo "ja" > ~/.dev-setup-lang  # 일본어
 정리 방법은 **[제거 가이드](UNINSTALL.md)**를 참조하세요. 정리 후 재설치:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 ```
 
 ---
@@ -160,13 +160,13 @@ Homebrew와 동일 - **자동으로 감지하고 건너뜁니다**:
 **모든 컴퓨터에서 동일한 설정**:
 ```bash
 # 컴퓨터 1
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 
 # 컴퓨터 2
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 
 # 컴퓨터 3
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 ```
 
 각 설치는 독립적이지만 동일한 설정 패턴을 따릅니다.

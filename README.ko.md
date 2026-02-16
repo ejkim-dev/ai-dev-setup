@@ -60,13 +60,13 @@ Phase 2 이후 완전한 Claude Code 워크스페이스가 구성됩니다:
 ### macOS
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
 ```
 
 ### Windows
 
 ```powershell
-irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.ps1 | iex
 ```
 
 화살표 키 메뉴로 진행되는 대화형 설정. 한국어, 영어, 일본어를 지원합니다.
@@ -89,7 +89,7 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | 
 Phase 1 설치 제거:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/cleanup.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/uninstall-tools.sh -o /tmp/cleanup.sh
 
 bash /tmp/cleanup.sh
 ```

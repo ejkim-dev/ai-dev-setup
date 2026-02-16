@@ -35,9 +35,9 @@ echo ""
 select_menu "English" "한국어" "日本語"
 
 case "$MENU_RESULT" in
+  0) USER_LANG="en" ;;
   1) USER_LANG="ko" ;;
   2) USER_LANG="ja" ;;
-  *) USER_LANG="en" ;;
 esac
 
 # Create Phase 2 directory early to save language setting
