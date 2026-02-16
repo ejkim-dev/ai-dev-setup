@@ -71,6 +71,16 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.ps1 
 
 화살표 키 메뉴로 진행되는 대화형 설정. 한국어, 영어, 일본어를 지원합니다.
 
+> **보안**: 설치 스크립트가 다운로드 파일의 SHA256 체크섬을 자동으로 검증합니다.
+> 실행 전 직접 검증하려면:
+>
+> ```bash
+> # macOS
+> curl -fsSL https://github.com/ejkim-dev/ai-dev-setup/archive/refs/tags/v1.0.0.zip -o /tmp/ai-dev-setup.zip
+> shasum -a 256 /tmp/ai-dev-setup.zip
+> # Expected: 031b7c84dab1c3bbd49c02315669ba476d6bf4444aaab7b46d0d9f4d6cb2662f
+> ```
+
 ---
 
 ## 📚 문서
