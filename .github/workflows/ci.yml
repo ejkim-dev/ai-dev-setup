@@ -42,3 +42,136 @@ jobs:
             exit 1
           }
           Write-Host "All PowerShell scripts passed."
+
+  windows-parse:
+    name: Windows PowerShell Parse Test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse all PowerShell scripts
+        shell: pwsh
+        run: |
+          $failed = $false
+          $scripts = @(
+            "setup.ps1",
+            "install.ps1",
+            "claude-code/setup-claude.ps1",
+            "claude-code/locale/en.ps1",
+            "claude-code/locale/ko.ps1",
+            "claude-code/locale/ja.ps1"
+          )
+          foreach ($script in $scripts) {
+            $errors = $null
+            [System.Management.Automation.PSParser]::Tokenize(
+              (Get-Content -Raw $script), [ref]$errors
+            ) | Out-Null
+            if ($errors.Count -gt 0) {
+              Write-Host "FAIL: $script" -ForegroundColor Red
+              $errors | ForEach-Object { Write-Host "  Line $($_.Token.StartLine): $($_.Message)" }
+              $failed = $true
+            } else {
+              Write-Host "OK: $script" -ForegroundColor Green
+            }
+          }
+          if ($failed) { exit 1 }
+
+  locale-load:
+    name: Locale File Load Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load bash locale files
+        run: |
+          failed=false
+          for f in claude-code/locale/*.sh; do
+            if bash -n "$f" 2>&1; then
+              echo "OK: $f"
+            else
+              echo "FAIL: $f"
+              failed=true
+            fi
+          done
+          if [ "$failed" = true ]; then exit 1; fi
+
+      - name: Load PowerShell locale files
+        shell: pwsh
+        run: |
+          $failed = $false
+          foreach ($f in Get-ChildItem "claude-code/locale/*.ps1") {
+            try {
+              . $f.FullName
+              Write-Host "OK: $($f.Name)" -ForegroundColor Green
+            } catch {
+              Write-Host "FAIL: $($f.Name) - $($_.Exception.Message)" -ForegroundColor Red
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }
+
+  locale-consistency:
+    name: Locale Variable Consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check bash locale consistency
+        run: |
+          extract_vars() {
+            grep -oP '^MSG_\w+' "$1" | sort -u
+          }
+
+          en_vars=$(extract_vars claude-code/locale/en.sh)
+          failed=false
+
+          for lang in ko ja; do
+            lang_vars=$(extract_vars "claude-code/locale/${lang}.sh")
+
+            missing=$(comm -23 <(echo "$en_vars") <(echo "$lang_vars"))
+            if [ -n "$missing" ]; then
+              echo "FAIL: ${lang}.sh missing variables:"
+              echo "$missing" | sed 's/^/  /'
+              failed=true
+            fi
+
+            extra=$(comm -13 <(echo "$en_vars") <(echo "$lang_vars"))
+            if [ -n "$extra" ]; then
+              echo "WARN: ${lang}.sh has extra variables:"
+              echo "$extra" | sed 's/^/  /'
+            fi
+          done
+
+          if [ "$failed" = true ]; then exit 1; fi
+          echo "All bash locale files consistent."
+
+      - name: Check PowerShell locale consistency
+        shell: pwsh
+        run: |
+          function Get-MsgVars($path) {
+            (Get-Content $path | Select-String '^\$MSG_\w+' -AllMatches |
+              ForEach-Object { $_.Matches.Value }) | Sort-Object -Unique
+          }
+
+          $enVars = Get-MsgVars "claude-code/locale/en.ps1"
+          $failed = $false
+
+          foreach ($lang in @("ko", "ja")) {
+            $langVars = Get-MsgVars "claude-code/locale/${lang}.ps1"
+
+            $missing = $enVars | Where-Object { $_ -notin $langVars }
+            if ($missing) {
+              Write-Host "FAIL: ${lang}.ps1 missing variables:" -ForegroundColor Red
+              $missing | ForEach-Object { Write-Host "  $_" }
+              $failed = $true
+            }
+
+            $extra = $langVars | Where-Object { $_ -notin $enVars }
+            if ($extra) {
+              Write-Host "WARN: ${lang}.ps1 has extra variables:" -ForegroundColor Yellow
+              $extra | ForEach-Object { Write-Host "  $_" }
+            }
+          }
+
+          if ($failed) { exit 1 }
+          Write-Host "All PowerShell locale files consistent." -ForegroundColor Green
