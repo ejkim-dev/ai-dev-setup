@@ -146,23 +146,6 @@ MSG_MCP_CREATING_FILE="Creating %s..."
 MSG_MCP_FILE_CREATED=".mcp.json created with %d server(s)"
 MSG_MCP_INSTALLING_PREFIX="Adding %s..."
 
-# Git (Phase 2)
-MSG_GIT_TITLE="Git (Version Control)"
-MSG_GIT_DESC_1="To get the most out of Claude Code, Git is recommended:"
-MSG_GIT_DESC_2="• Claude can track code changes (git status, git diff)"
-MSG_GIT_DESC_3="• Auto-generate commits (AI writes commit messages)"
-MSG_GIT_DESC_4="• GitHub integration (create PRs, manage issues)"
-MSG_GIT_DESC_5="• Version control and collaboration"
-MSG_GIT_DESC_NOTE="Claude Code works without Git, but version control features require it."
-MSG_GIT_INSTALL_ASK="Install Git?"
-MSG_GIT_CONFIG_ASK="Configure Git user info? (name & email)"
-MSG_GIT_CONFIG_NOW="Set up now"
-MSG_GIT_CONFIG_LATER="Later"
-MSG_GIT_NAME="Your name: "
-MSG_GIT_EMAIL="Your email: "
-MSG_GIT_CONFIG_DONE="Git configured"
-MSG_GIT_INSTALL_FAILED="Installation failed. Install manually: brew install git gh"
-
 # Phase 1 → 2 Transition
 MSG_PHASE1_COMPLETE="Phase 1 Complete!"
 MSG_PHASE2_NEXT="Next: Phase 2 - Claude Code Setup (optional)"
@@ -273,15 +256,6 @@ MSG_GH_INSTALL_CMD="brew install gh"
 # Xcode
 MSG_XCODE_INSTALLING="Installing... (click 'Install' if a popup appears)"
 MSG_XCODE_ENTER="Press Enter after installation completes..."
-
-# SSH
-MSG_SSH_EXISTS="SSH key already exists."
-MSG_SSH_REGISTER="Register existing key to GitHub?"
-MSG_SSH_COPIED="SSH public key copied to clipboard!"
-MSG_SSH_GITHUB_URL="→ Go to https://github.com/settings/keys and click 'New SSH key' to paste"
-MSG_SSH_ENTER="Press Enter after registration..."
-MSG_SSH_GENERATE="Generate SSH key?"
-MSG_SSH_EMAIL="Enter your GitHub email: "
 
 # macOS settings
 MSG_MACOS_APPLY="Apply macOS developer settings?"

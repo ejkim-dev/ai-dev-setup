@@ -146,23 +146,6 @@ MSG_MCP_CREATING_FILE="%s 생성 중..."
 MSG_MCP_FILE_CREATED=".mcp.json이 %d개 서버로 생성됨"
 MSG_MCP_INSTALLING_PREFIX="%s 추가 중..."
 
-# Git (Phase 2)
-MSG_GIT_TITLE="Git (버전 관리)"
-MSG_GIT_DESC_1="Claude Code를 최대한 활용하려면 Git 설치를 권장합니다:"
-MSG_GIT_DESC_2="• Claude가 코드 변경사항 추적 (git status, git diff)"
-MSG_GIT_DESC_3="• 자동 커밋 생성 (AI가 커밋 메시지 작성)"
-MSG_GIT_DESC_4="• GitHub 연동 (PR 생성, 이슈 관리)"
-MSG_GIT_DESC_5="• 버전 관리 및 협업"
-MSG_GIT_DESC_NOTE="Git 없이도 Claude Code 기본 기능은 사용 가능하지만, 버전 관리 기능에는 필요합니다."
-MSG_GIT_INSTALL_ASK="Git을 설치하시겠습니까?"
-MSG_GIT_CONFIG_ASK="Git 사용자 정보를 설정하시겠습니까? (이름 & 이메일)"
-MSG_GIT_CONFIG_NOW="지금 설정"
-MSG_GIT_CONFIG_LATER="나중에"
-MSG_GIT_NAME="이름: "
-MSG_GIT_EMAIL="이메일: "
-MSG_GIT_CONFIG_DONE="Git 설정 완료"
-MSG_GIT_INSTALL_FAILED="설치 실패. 수동 설치: brew install git gh"
-
 # Phase 1 → 2 Transition
 MSG_PHASE1_COMPLETE="Phase 1 완료!"
 MSG_PHASE2_NEXT="다음: Phase 2 - Claude Code 설정 (선택 사항)"
@@ -273,15 +256,6 @@ MSG_GH_INSTALL_CMD="brew install gh"
 # Xcode
 MSG_XCODE_INSTALLING="설치 중... (팝업이 뜨면 '설치'를 눌러주세요)"
 MSG_XCODE_ENTER="설치가 완료되면 Enter를 눌러주세요..."
-
-# SSH
-MSG_SSH_EXISTS="SSH 키가 이미 존재합니다."
-MSG_SSH_REGISTER="기존 키를 GitHub에 등록하시겠습니까?"
-MSG_SSH_COPIED="SSH 공개키가 클립보드에 복사되었습니다!"
-MSG_SSH_GITHUB_URL="→ https://github.com/settings/keys 에서 'New SSH key'를 눌러 붙여넣기 하세요"
-MSG_SSH_ENTER="등록 완료 후 Enter를 눌러주세요..."
-MSG_SSH_GENERATE="SSH 키를 생성하시겠습니까?"
-MSG_SSH_EMAIL="GitHub 이메일을 입력하세요: "
 
 # macOS settings
 MSG_MACOS_APPLY="macOS 개발자 설정을 적용하시겠습니까?"
