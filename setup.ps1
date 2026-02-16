@@ -6,6 +6,14 @@
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
+# Debug mode: set DEV_SETUP_DEBUG=1 to enable
+$DebugMode = $env:DEV_SETUP_DEBUG -eq "1"
+function Write-Dbg($msg) {
+    if ($script:DebugMode) {
+        Write-Host "  [DEBUG] $msg" -ForegroundColor DarkGray
+    }
+}
+
 $STEP = 0
 $TOTAL = 6
 
@@ -35,6 +43,8 @@ function Ask-YN($prompt, $default = "Y") {
 }
 
 # === Language selection ===
+Write-Dbg "PowerShell $($PSVersionTable.PSVersion) | OS: $([System.Environment]::OSVersion.VersionString)"
+Write-Dbg "ScriptDir: $ScriptDir"
 Write-Host ""
 Write-Host "🔧 ai-dev-setup" -ForegroundColor Cyan
 Write-Host ""
@@ -95,11 +105,21 @@ foreach ($pkg in $packages) {
         Write-Host "  $($pkg.name) - $MSG_ALREADY_INSTALLED"
     } else {
         Write-Host "  $($pkg.name) $MSG_INSTALLING"
+        Write-Dbg "winget install --id $($pkg.id)"
         winget install --id $pkg.id -e --accept-source-agreements --accept-package-agreements
+        Write-Dbg "winget exit code: $LASTEXITCODE"
     }
 }
 
+# Refresh PATH so newly installed tools are available in this session
+Write-Dbg "PATH refresh: before=$(($env:Path -split ';').Count) entries"
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+Write-Dbg "PATH refresh: after=$(($env:Path -split ';').Count) entries"
+
 # Verify Git (recommended for Claude Code)
+Write-Dbg "git: $(if (Get-Command git -ErrorAction SilentlyContinue) { (Get-Command git).Source } else { 'NOT FOUND' })"
+Write-Dbg "node: $(if (Get-Command node -ErrorAction SilentlyContinue) { (Get-Command node).Source } else { 'NOT FOUND' })"
+Write-Dbg "npm: $(if (Get-Command npm -ErrorAction SilentlyContinue) { (Get-Command npm).Source } else { 'NOT FOUND' })"
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     Write-Host ""
     Write-Host "⚠️  Git installation failed or not found" -ForegroundColor Yellow
@@ -153,6 +173,7 @@ Write-Done
 Write-Step "$MSG_STEP_WINTERMINAL"
 $wtSettingsDir = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
 $wtSettingsFile = "$wtSettingsDir\settings.json"
+Write-Dbg "WT settings: $wtSettingsFile (exists: $(Test-Path $wtSettingsFile))"
 
 if (Test-Path $wtSettingsFile) {
     if (Ask-YN "$MSG_WINTERMINAL_APPLY") {
@@ -161,68 +182,80 @@ if (Test-Path $wtSettingsFile) {
         Copy-Item $wtSettingsFile $backupFile -Force
         Write-Host "  → $MSG_WINTERMINAL_BACKUP $backupFile"
 
-        # Parse JSON (strip single-line comments, protect URLs)
-        $rawContent = Get-Content $wtSettingsFile -Raw
-        # Only strip comments at line start or after whitespace, not inside strings
-        $lines = $rawContent -split "`n"
-        $cleanLines = @()
-        foreach ($line in $lines) {
-            # Remove single-line comments (lines where // appears outside of quotes)
-            $trimmed = $line.TrimStart()
-            if ($trimmed -match '^\s*//') {
-                continue
+        try {
+            # Parse JSON (strip single-line comments, protect URLs)
+            $rawContent = Get-Content $wtSettingsFile -Raw
+            # Only strip comments at line start or after whitespace, not inside strings
+            $lines = $rawContent -split "`n"
+            $cleanLines = @()
+            foreach ($line in $lines) {
+                # Remove single-line comments (lines where // appears outside of quotes)
+                $trimmed = $line.TrimStart()
+                if ($trimmed -match '^\s*//') {
+                    continue
+                }
+                $cleanLines += $line
             }
-            $cleanLines += $line
-        }
-        $cleanJson = $cleanLines -join "`n"
-        $settings = $cleanJson | ConvertFrom-Json
+            $cleanJson = $cleanLines -join "`n"
+            # Remove trailing commas before } or ] (JSONC compatibility)
+            $cleanJson = $cleanJson -replace ',\s*(\}|\])', '$1'
+            Write-Dbg "JSON cleanup: $($lines.Count) lines -> $($cleanLines.Count) lines"
+            $settings = $cleanJson | ConvertFrom-Json
 
-        # Dev color scheme
-        $devScheme = @{
-            name             = "Dev"
-            background       = "#282A36"
-            foreground       = "#F1F1F0"
-            cursorColor      = "#F7F8F8"
-            selectionBackground = "#9BBBDC"
-            black            = "#000000"
-            brightBlack      = "#686868"
-            red              = "#EC6768"
-            brightRed        = "#ED6A5E"
-            green            = "#89F38E"
-            brightGreen      = "#89F38E"
-            yellow           = "#F4F99D"
-            brightYellow     = "#F4F99D"
-            blue             = "#76C3FA"
-            brightBlue       = "#76C3FA"
-            purple           = "#ED6ABD"
-            brightPurple     = "#EE73B3"
-            cyan             = "#ABECED"
-            brightCyan       = "#ABECED"
-            white            = "#F1F1F0"
-            brightWhite      = "#F1F1F0"
-        }
+            # Dev color scheme
+            $devScheme = @{
+                name             = "Dev"
+                background       = "#282A36"
+                foreground       = "#F1F1F0"
+                cursorColor      = "#F7F8F8"
+                selectionBackground = "#9BBBDC"
+                black            = "#000000"
+                brightBlack      = "#686868"
+                red              = "#EC6768"
+                brightRed        = "#ED6A5E"
+                green            = "#89F38E"
+                brightGreen      = "#89F38E"
+                yellow           = "#F4F99D"
+                brightYellow     = "#F4F99D"
+                blue             = "#76C3FA"
+                brightBlue       = "#76C3FA"
+                purple           = "#ED6ABD"
+                brightPurple     = "#EE73B3"
+                cyan             = "#ABECED"
+                brightCyan       = "#ABECED"
+                white            = "#F1F1F0"
+                brightWhite      = "#F1F1F0"
+            }
 
-        # Add Dev scheme (replace if exists)
-        if (-not $settings.schemes) {
-            $settings | Add-Member -NotePropertyName "schemes" -NotePropertyValue @()
-        }
-        $existingSchemes = @($settings.schemes | Where-Object { $_.name -ne "Dev" })
-        $settings.schemes = @($existingSchemes) + @($devScheme)
+            # Add Dev scheme (replace if exists)
+            if (-not $settings.schemes) {
+                $settings | Add-Member -NotePropertyName "schemes" -NotePropertyValue @()
+            }
+            $existingSchemes = @($settings.schemes | Where-Object { $_.name -ne "Dev" })
+            $settings.schemes = @($existingSchemes) + @($devScheme)
 
-        # Set defaults: font + theme
-        if (-not $settings.profiles.defaults) {
-            $settings.profiles | Add-Member -NotePropertyName "defaults" -NotePropertyValue @{}
-        }
-        $defaults = $settings.profiles.defaults
-        $defaults | Add-Member -NotePropertyName "colorScheme" -NotePropertyValue "Dev" -Force
-        $defaults | Add-Member -NotePropertyName "font" -NotePropertyValue @{ face = "D2Coding"; size = 11 } -Force
-        $defaults | Add-Member -NotePropertyName "opacity" -NotePropertyValue 95 -Force
+            # Set defaults: font + theme
+            if (-not $settings.profiles.defaults) {
+                $settings.profiles | Add-Member -NotePropertyName "defaults" -NotePropertyValue @{}
+            }
+            $defaults = $settings.profiles.defaults
+            $defaults | Add-Member -NotePropertyName "colorScheme" -NotePropertyValue "Dev" -Force
+            $defaults | Add-Member -NotePropertyName "font" -NotePropertyValue @{ face = "D2Coding"; size = 11 } -Force
+            $defaults | Add-Member -NotePropertyName "opacity" -NotePropertyValue 95 -Force
 
-        # Save
-        $settings | ConvertTo-Json -Depth 10 | Set-Content $wtSettingsFile -Encoding UTF8
-        Write-Host "  → $MSG_WINTERMINAL_DONE"
-        Write-Host "  💡 $MSG_WINTERMINAL_RESTORE $backupFile"
-        Write-Done
+            # Save
+            $settings | ConvertTo-Json -Depth 10 | Set-Content $wtSettingsFile -Encoding UTF8
+            Write-Host "  → $MSG_WINTERMINAL_DONE"
+            Write-Host "  💡 $MSG_WINTERMINAL_RESTORE $backupFile"
+            Write-Done
+        } catch {
+            # Restore backup on failure
+            Write-Dbg "WT settings error: $($_.Exception.Message)"
+            Copy-Item $backupFile $wtSettingsFile -Force
+            Write-Host "  ⚠️  $MSG_WINTERMINAL_PARSE_FAIL" -ForegroundColor Yellow
+            Write-Host "  → $MSG_WINTERMINAL_BACKUP_RESTORED"
+            Write-Skip
+        }
     } else {
         Write-Skip
     }
@@ -370,6 +403,7 @@ if ($installedClaude) {
 # Copy claude-code/ for later setup, then remove entire install directory
 # This handles both ZIP download (install.ps1) and git clone cases cleanly
 $claudeCodeDir = "$env:USERPROFILE\claude-code-setup"
+Write-Dbg "Copying claude-code/ to $claudeCodeDir"
 if (Test-Path "$ScriptDir\claude-code") {
     if (Test-Path $claudeCodeDir) { Remove-Item $claudeCodeDir -Recurse -Force }
     New-Item -ItemType Directory -Path $claudeCodeDir -Force | Out-Null
@@ -401,6 +435,7 @@ if (Test-Path "$ScriptDir\claude-code") {
     }
 }
 # Remove entire install directory (with safety check)
+Write-Dbg "Cleanup: removing $ScriptDir"
 if (-not [string]::IsNullOrWhiteSpace($ScriptDir) -and
     $ScriptDir -ne $env:USERPROFILE -and
     $ScriptDir -ne "C:\" -and

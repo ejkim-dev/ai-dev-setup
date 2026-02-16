@@ -7,6 +7,14 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Workspace = "$env:USERPROFILE\claude-workspace"
 $ConfigFile = "$Workspace\config.json"
 
+# Debug mode: set DEV_SETUP_DEBUG=1 to enable
+$DebugMode = $env:DEV_SETUP_DEBUG -eq "1"
+function Write-Dbg($msg) {
+    if ($script:DebugMode) {
+        Write-Host "  [DEBUG] $msg" -ForegroundColor DarkGray
+    }
+}
+
 function Write-Done() {
     Write-Host "  ✅ $MSG_DONE" -ForegroundColor Green
 }
@@ -53,6 +61,9 @@ function Test-SafePath($path) {
     return $true
 }
 
+Write-Dbg "PowerShell $($PSVersionTable.PSVersion) | OS: $([System.Environment]::OSVersion.VersionString)"
+Write-Dbg "ScriptDir: $ScriptDir"
+Write-Dbg "Workspace: $Workspace"
 Write-Host ""
 Write-Host "🤖 Claude Code Setup" -ForegroundColor Cyan
 Write-Host ""
@@ -139,11 +150,18 @@ $OptMcpPuppeteer = $false
 $ConnectedProjects = @()
 
 # --- Prerequisite checks ---
+Write-Dbg "node: $(if (Get-Command node -ErrorAction SilentlyContinue) { (Get-Command node).Source } else { 'NOT FOUND' })"
+Write-Dbg "npm: $(if (Get-Command npm -ErrorAction SilentlyContinue) { (Get-Command npm).Source } else { 'NOT FOUND' })"
+Write-Dbg "claude: $(if (Get-Command claude -ErrorAction SilentlyContinue) { (Get-Command claude).Source } else { 'NOT FOUND' })"
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     Write-Host "  ⚠️  $MSG_NODE_NOT_INSTALLED"
     if (Ask-YN $MSG_NODE_INSTALL_ASK) {
         try {
             winget install --id OpenJS.NodeJS.LTS -e --accept-source-agreements --accept-package-agreements
+            Write-Dbg "winget exit code: $LASTEXITCODE"
+            # Refresh PATH so node/npm are available in this session
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+            Write-Dbg "PATH refreshed, npm: $(if (Get-Command npm -ErrorAction SilentlyContinue) { 'FOUND' } else { 'NOT FOUND' })"
             Write-Done
         } catch {
             Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow
@@ -161,10 +179,16 @@ if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
     Write-Host "  $MSG_CLAUDE_NOT_INSTALLED"
     if (Ask-YN $MSG_INSTALL_NOW) {
         try {
+            Write-Dbg "npm install -g @anthropic-ai/claude-code"
             npm install -g @anthropic-ai/claude-code
+            Write-Dbg "npm exit code: $LASTEXITCODE"
             if ($LASTEXITCODE -ne 0) {
                 throw "npm install returned error code $LASTEXITCODE"
             }
+
+            # Refresh PATH so claude command is available in this session
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+            Write-Dbg "PATH refreshed, claude: $(if (Get-Command claude -ErrorAction SilentlyContinue) { 'FOUND' } else { 'NOT FOUND' })"
 
             # Verify installation succeeded
             if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
@@ -198,6 +222,7 @@ if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
 
 # Check symlink capability
 $canSymlink = Test-SymlinkCapability
+Write-Dbg "Symlink capability: $canSymlink"
 if (-not $canSymlink) {
     Write-Host ""
     Write-Host "  ⚠️  $MSG_WS_SYMLINK_NEED_ADMIN" -ForegroundColor Yellow
@@ -548,6 +573,7 @@ if (Ask-YN $MSG_MCP_ASK) {
                             }
                         }
 
+                        Write-Dbg ".mcp.json servers: $($McpServers -join ', ')"
                         $mcpConfig | ConvertTo-Json -Depth 5 | Set-Content -Path $mcpFile -Encoding UTF8
                         Write-Host ("  ✅ " + ($MSG_MCP_FILE_CREATED -f $McpServers.Count)) -ForegroundColor Green
                     }
@@ -617,6 +643,7 @@ if ($OptWorkspace) {
     }
 
     $configObj | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Encoding UTF8
+    Write-Dbg "config.json saved: $ConfigFile"
 
     # Verify config.json was created
     if (-not (Test-Path $ConfigFile)) {
@@ -660,6 +687,7 @@ if (Test-Path "$Workspace\setup-lang") {
 }
 
 # Remove installation directory (with safety check)
+Write-Dbg "Cleanup: removing $ScriptDir"
 if ((Test-SafePath $ScriptDir) -and (Test-Path "$ScriptDir\setup-claude.ps1")) {
     Set-Location $env:USERPROFILE
     Remove-Item $ScriptDir -Recurse -Force -ErrorAction SilentlyContinue
