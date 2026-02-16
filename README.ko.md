@@ -60,26 +60,18 @@ Phase 2 이후 완전한 Claude Code 워크스페이스가 구성됩니다:
 ### macOS
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
 ```
 
 ### Windows
 
 ```powershell
-irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.ps1 | iex
+irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex
 ```
 
 화살표 키 메뉴로 진행되는 대화형 설정. 한국어, 영어, 일본어를 지원합니다.
 
-> **보안**: 설치 스크립트가 다운로드 파일의 SHA256 체크섬을 자동으로 검증합니다.
-> 실행 전 직접 검증하려면:
->
-> ```bash
-> # macOS
-> curl -fsSL https://github.com/ejkim-dev/ai-dev-setup/archive/refs/tags/v1.0.0.zip -o /tmp/ai-dev-setup.zip
-> shasum -a 256 /tmp/ai-dev-setup.zip
-> # Expected: 031b7c84dab1c3bbd49c02315669ba476d6bf4444aaab7b46d0d9f4d6cb2662f
-> ```
+> **보안**: 설치 스크립트가 최신 릴리즈를 자동으로 가져오고, SHA256 체크섬을 검증하여 불일치 시 설치를 중단합니다.
 
 ---
 
@@ -99,7 +91,7 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.ps1 
 Phase 1 설치 제거:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/uninstall-tools.sh -o /tmp/cleanup.sh
+curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/cleanup.sh
 
 bash /tmp/cleanup.sh
 ```
