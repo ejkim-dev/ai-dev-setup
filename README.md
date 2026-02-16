@@ -71,6 +71,16 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/v1.0.0/install.ps1 
 
 Interactive setup with arrow-key menus. Supports English, Korean, and Japanese.
 
+> **Security**: The install script automatically verifies the download via SHA256 checksum.
+> To verify manually before running:
+>
+> ```bash
+> # macOS
+> curl -fsSL https://github.com/ejkim-dev/ai-dev-setup/archive/refs/tags/v1.0.0.zip -o /tmp/ai-dev-setup.zip
+> shasum -a 256 /tmp/ai-dev-setup.zip
+> # Expected: 031b7c84dab1c3bbd49c02315669ba476d6bf4444aaab7b46d0d9f4d6cb2662f
+> ```
+
 ---
 
 ## 📚 Documentation
