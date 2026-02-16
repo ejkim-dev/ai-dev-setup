@@ -108,6 +108,12 @@ bash /tmp/cleanup.sh
 
 ---
 
+## 📝 개발 이야기
+
+- **[한 줄로 끝나는 AI 개발 환경 설치 스크립트를 만든 이야기](https://www.keyflow.me/ko/@ejkim/post/2026-02-16-%ED%95%9C-%EC%A4%84%EB%A1%9C-%EB%81%9D%EB%82%98%EB%8A%94-ai-%EA%B0%9C%EB%B0%9C-%ED%99%98%EA%B2%BD-%EC%84%A4%EC%B9%98-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EB%A5%BC-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0)** - 프로젝트 동기, Claude Code 활용기, 개발 과정에서 겪은 일들
+
+---
+
 ## 📄 라이선스
 
 [MIT](LICENSE)
