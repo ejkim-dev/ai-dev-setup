@@ -200,6 +200,8 @@ $MSG_WINTERMINAL_VERIFY_HEADER = "터미널 테마 확인"
 $MSG_WINTERMINAL_VERIFY_DESC = "Windows Terminal을 재시작하여 Dev 테마를 확인하세요"
 $MSG_WINTERMINAL_MANUAL_SETUP = "테마가 적용되지 않았다면 수동 설정:"
 $MSG_WINTERMINAL_MANUAL = "Settings(Ctrl+,) → Color schemes에서 Dev 확인 → Profiles → Defaults → Appearance → Color scheme: Dev"
+$MSG_WINTERMINAL_PARSE_FAIL = "settings.json 파싱 실패 (JSONC 형식 미지원). 테마가 적용되지 않았습니다."
+$MSG_WINTERMINAL_BACKUP_RESTORED = "백업에서 기존 설정을 복원했습니다."
 
 # Oh My Posh
 $MSG_OHMYPOSH_INSTALL = "Oh My Posh를 설치하시겠습니까?"
