@@ -38,6 +38,21 @@ Includes optional [Claude Code](https://claude.ai/code) setup with workspace man
 
 **[→ Phase 2 Details](docs/en/PHASE2.md)**
 
+### What You Get
+
+After Phase 2, you'll have a complete Claude Code workspace:
+
+```
+~/claude-workspace/
+├── shared/agents/          # Available in all projects
+├── shared/templates/       # CLAUDE.md, .mcp.json examples
+├── shared/mcp/             # MCP server configs
+├── projects/               # Per-project settings
+└── config.json             # User settings
+```
+
+**[→ Workspace Guide](docs/en/WORKSPACE.md)** | **[→ Design Philosophy](claude-code/doc/en/workspace-philosophy.md)**
+
 ---
 
 ## 🚀 Quick Start
@@ -55,21 +70,6 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | 
 ```
 
 Interactive setup with arrow-key menus. Supports English, Korean, and Japanese.
-
----
-
-## 🗂️ What You Get
-
-After Phase 2, you'll have a complete Claude Code workspace:
-
-```
-~/claude-workspace/
-├── shared/agents/          # Available in all projects
-├── shared/templates/       # CLAUDE.md, .mcp.json examples
-└── projects/               # Per-project settings
-```
-
-**[→ Workspace Guide](docs/en/WORKSPACE.md)**
 
 ---
 

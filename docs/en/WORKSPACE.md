@@ -31,6 +31,7 @@ The `claude-workspace` provides a single location to manage:
 │       ├── CLAUDE.md              # Project rules
 │       └── CLAUDE.local.md        # Local-only settings
 │
+├── config.json                   # User settings
 └── .gitignore
 ```
 

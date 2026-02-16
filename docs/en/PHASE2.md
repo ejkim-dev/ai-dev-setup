@@ -46,9 +46,11 @@ Creates centralized workspace for managing Claude Code resources.
 ```
 ~/claude-workspace/
 ├── shared/
-│   └── agents/           # Shared agents (all projects)
+│   ├── agents/           # Shared agents (all projects)
+│   ├── templates/        # CLAUDE.md, .mcp.json templates
+│   └── mcp/              # MCP server configs
 ├── projects/             # Per-project settings
-└── templates/            # MCP, CLAUDE.md templates
+└── config.json           # User settings
 ```
 
 **What it does**:
@@ -412,12 +414,15 @@ MCP server configuration:
 Central workspace structure:
 ```
 claude-workspace/
-├── shared/agents/        # Shared agents
-│   ├── workspace-manager.md
-│   ├── translate.md
-│   └── doc-writer.md
-├── projects/             # Project backups
-└── templates/            # Templates
+├── shared/
+│   ├── agents/           # Shared agents
+│   │   ├── workspace-manager.md
+│   │   ├── translate.md
+│   │   └── doc-writer.md
+│   ├── templates/        # CLAUDE.md, .mcp.json examples
+│   └── mcp/              # MCP server configs
+├── projects/             # Per-project settings
+└── config.json           # User settings
 ```
 
 ### ~/.dev-setup-lang

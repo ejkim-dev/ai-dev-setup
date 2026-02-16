@@ -31,6 +31,7 @@
 │       ├── CLAUDE.md              # 프로젝트 규칙
 │       └── CLAUDE.local.md        # 로컬 전용 설정
 │
+├── config.json                   # 사용자 설정
 └── .gitignore
 ```
 

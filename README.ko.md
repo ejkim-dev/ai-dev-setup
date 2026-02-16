@@ -38,6 +38,21 @@ Claude Code 워크스페이스를 설정하는 3단계:
 
 **[→ Phase 2 상세 가이드](docs/ko/PHASE2.md)**
 
+### 설치 후 구조
+
+Phase 2 이후 완전한 Claude Code 워크스페이스가 구성됩니다:
+
+```
+~/claude-workspace/
+├── shared/agents/          # 모든 프로젝트에서 사용 가능
+├── shared/templates/       # CLAUDE.md, .mcp.json 예시
+├── shared/mcp/             # MCP 서버 설정
+├── projects/               # 프로젝트별 설정
+└── config.json             # 사용자 설정
+```
+
+**[→ Workspace 가이드](docs/ko/WORKSPACE.md)** | **[→ 설계 철학](claude-code/doc/ko/workspace-philosophy.md)**
+
 ---
 
 ## 🚀 빠른 시작
@@ -55,21 +70,6 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | 
 ```
 
 화살표 키 메뉴로 진행되는 대화형 설정. 한국어, 영어, 일본어를 지원합니다.
-
----
-
-## 🗂️ 설치 후 구조
-
-Phase 2 이후 완전한 Claude Code 워크스페이스가 구성됩니다:
-
-```
-~/claude-workspace/
-├── shared/agents/          # 모든 프로젝트에서 사용 가능
-├── shared/templates/       # CLAUDE.md, .mcp.json 예시
-└── projects/               # 프로젝트별 설정
-```
-
-**[→ Workspace 가이드](docs/ko/WORKSPACE.md)**
 
 ---
 
