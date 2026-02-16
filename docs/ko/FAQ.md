@@ -112,42 +112,9 @@ echo "ja" > ~/.dev-setup-lang  # 일본어
 
 ### 재설치하거나 정리하려면?
 
-**Phase 1 정리** (macOS):
+정리 방법은 **[제거 가이드](UNINSTALL.md)**를 참조하세요. 정리 후 재설치:
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
-
-bash /tmp/uninstall-tools.sh
-```
-
-**제거되는 항목**:
-- Oh My Zsh (`~/.oh-my-zsh/`)
-- 셸 설정 (`~/.zshrc`)
-- tmux 설정 (`~/.tmux.conf`)
-- Terminal.app Dev 프로필
-- Phase 2 파일 (`~/claude-code-setup/`)
-- 언어 설정
-
-**제거되지 않는 항목** (다른 앱에서 사용될 수 있음):
-- Homebrew
-- Xcode Command Line Tools
-- D2Coding 폰트
-- 설치된 패키지 (Node.js, ripgrep 등)
-
-**Phase 2 정리**:
-```bash
-rm -rf ~/claude-workspace
-rm -rf ~/.claude
-npm uninstall -g @anthropic-ai/claude-code
-```
-
-**전체 재설치**:
-```bash
-# 1. 정리
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
-
-bash /tmp/uninstall-tools.sh
-
-# 2. 재설치
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
 ```
 
@@ -560,118 +527,7 @@ alias gl="git log --oneline -20"
 
 ### 모든 것을 제거하려면?
 
-**중요한 구분**:
-
-- **Phase 1 정리**: 자동화 스크립트 사용 가능 (임시 설치 파일 제거)
-- **Phase 2 정리**: 수동만 가능 (워크스페이스 및 데이터 제거 - 주의 필요)
-
-#### Phase 1 제거 (자동화)
-
-**완전 제거** (macOS):
-
-```bash
-# 정리 스크립트 실행
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
-
-bash /tmp/uninstall-tools.sh
-```
-
-**제거되는 항목**:
-- Oh My Zsh (`~/.oh-my-zsh/`)
-- 셸 설정 (`~/.zshrc`)
-- tmux 설정 (`~/.tmux.conf`)
-- Terminal.app Dev 프로필
-- Phase 2 파일 (`~/claude-code-setup/`)
-- 언어 설정 (`~/.dev-setup-lang`)
-
-**제거되지 않는 항목** (다른 앱에서 사용될 수 있음):
-- Homebrew
-- Xcode Command Line Tools
-- D2Coding 폰트
-- 설치된 패키지 (Node.js, ripgrep 등)
-
-#### Phase 2 제거 (수동만 가능)
-
-⚠️ **경고**: 커스텀 에이전트, 템플릿, 설정을 포함한 Claude 워크스페이스가 제거됩니다.
-
-**언제 필요한가요?**:
-- 완전 제거 - Claude Code 사용을 완전히 중단
-- 설정 재설정 - 잘못된 구성으로 인해 처음부터 시작
-- 테스트 롤백 - 테스트 후 실행 취소
-
-**1단계: 백업 (선택사항이지만 권장)**
-
-```bash
-# 전체 워크스페이스 백업
-cp -r ~/claude-workspace ~/claude-workspace-backup
-
-# 특정 항목만 백업
-cp -r ~/claude-workspace/shared/agents ~/agents-backup
-cp -r ~/claude-workspace/projects ~/projects-backup
-```
-
-**2단계: 워크스페이스 제거**
-
-```bash
-rm -rf ~/claude-workspace
-```
-
-**3단계: 공유 에이전트 심볼릭 링크 제거**
-
-```bash
-rm ~/.claude/agents
-```
-
-**4단계: 프로젝트 심볼릭 링크 제거**
-
-연결된 각 프로젝트에서:
-```bash
-cd /path/to/your/project
-rm .claude
-rm CLAUDE.md
-rm CLAUDE.local.md
-```
-
-**5단계: Claude Code CLI 제거 (선택사항)**
-
-```bash
-npm uninstall -g @anthropic-ai/claude-code
-```
-
-**6단계: MCP 서버 제거 (선택사항)**
-
-```bash
-npm uninstall -g @anthropic-ai/local-rag-mcp
-npm uninstall -g @anthropic-ai/filesystem-mcp
-npm uninstall -g serena-mcp
-npm uninstall -g @anthropic-ai/fetch-mcp
-npm uninstall -g puppeteer-mcp
-```
-
-**7단계: 설정 제거**
-
-```bash
-rm -rf ~/.claude
-```
-
-**백업에서 복원**
-
-마음이 바뀐 경우:
-```bash
-mv ~/claude-workspace-backup ~/claude-workspace
-ln -s ~/claude-workspace/shared/agents ~/.claude/agents
-```
-
-**선택사항: Homebrew 및 Node.js 제거**
-
-다른 도구에서 사용하지 않는 경우에만:
-```bash
-# Homebrew 제거
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall-tools.sh)"
-
-# Node.js 제거
-brew uninstall node
-```
+자세한 단계별 안내는 **[제거 가이드](UNINSTALL.md)**를 참조하세요.
 
 ---
 

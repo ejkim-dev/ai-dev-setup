@@ -112,42 +112,9 @@ echo "ja" > ~/.dev-setup-lang  # Japanese
 
 ### How do I reinstall or clean up?
 
-**Clean up Phase 1** (macOS):
+See **[Uninstall Guide](UNINSTALL.md)** for cleanup instructions. To reinstall after cleanup:
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
-
-bash /tmp/uninstall-tools.sh
-```
-
-**What gets removed**:
-- Oh My Zsh (`~/.oh-my-zsh/`)
-- Shell configuration (`~/.zshrc`)
-- tmux configuration (`~/.tmux.conf`)
-- Terminal.app Dev profile
-- Phase 2 files (`~/claude-code-setup/`)
-- Language settings
-
-**What is NOT removed** (might be used by other apps):
-- Homebrew
-- Xcode Command Line Tools
-- D2Coding font
-- Installed packages (Node.js, ripgrep, etc.)
-
-**Clean up Phase 2**:
-```bash
-rm -rf ~/claude-workspace
-rm -rf ~/.claude
-npm uninstall -g @anthropic-ai/claude-code
-```
-
-**Full reinstall**:
-```bash
-# 1. Clean up
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
-
-bash /tmp/uninstall-tools.sh
-
-# 2. Reinstall
 curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.sh | bash
 ```
 
@@ -560,118 +527,7 @@ Everything between markers is managed by ai-dev-setup. You can add your own conf
 
 ### How do I uninstall everything?
 
-**Important distinction**:
-
-- **Phase 1 cleanup**: Automated script available (removes temporary install files)
-- **Phase 2 cleanup**: Manual only (removes your workspace and data - must be careful)
-
-#### Phase 1 Uninstall (Automated)
-
-**Complete removal** (macOS):
-
-```bash
-# Run cleanup script
-curl -fsSL https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/uninstall-tools.sh -o /tmp/uninstall-tools.sh
-
-bash /tmp/uninstall-tools.sh
-```
-
-**What gets removed**:
-- Oh My Zsh (`~/.oh-my-zsh/`)
-- Shell configuration (`~/.zshrc`)
-- tmux configuration (`~/.tmux.conf`)
-- Terminal.app Dev profile
-- Phase 2 files (`~/claude-code-setup/`)
-- Language settings (`~/.dev-setup-lang`)
-
-**What is NOT removed** (might be used by other apps):
-- Homebrew
-- Xcode Command Line Tools
-- D2Coding font
-- Installed packages (Node.js, ripgrep, etc.)
-
-#### Phase 2 Uninstall (Manual Only)
-
-⚠️ **Warning**: This removes your Claude workspace including custom agents, templates, and settings.
-
-**When you might need this**:
-- Complete removal - Stop using Claude Code entirely
-- Reset configuration - Start fresh due to misconfiguration
-- Test rollback - Undo after testing
-
-**Step 1: Backup (Optional but Recommended)**
-
-```bash
-# Backup entire workspace
-cp -r ~/claude-workspace ~/claude-workspace-backup
-
-# Backup specific items only
-cp -r ~/claude-workspace/shared/agents ~/agents-backup
-cp -r ~/claude-workspace/projects ~/projects-backup
-```
-
-**Step 2: Remove Workspace**
-
-```bash
-rm -rf ~/claude-workspace
-```
-
-**Step 3: Remove Shared Agents Symlink**
-
-```bash
-rm ~/.claude/agents
-```
-
-**Step 4: Remove Project Symlinks**
-
-For each connected project:
-```bash
-cd /path/to/your/project
-rm .claude
-rm CLAUDE.md
-rm CLAUDE.local.md
-```
-
-**Step 5: Uninstall Claude Code CLI (Optional)**
-
-```bash
-npm uninstall -g @anthropic-ai/claude-code
-```
-
-**Step 6: Uninstall MCP Servers (Optional)**
-
-```bash
-npm uninstall -g @anthropic-ai/local-rag-mcp
-npm uninstall -g @anthropic-ai/filesystem-mcp
-npm uninstall -g serena-mcp
-npm uninstall -g @anthropic-ai/fetch-mcp
-npm uninstall -g puppeteer-mcp
-```
-
-**Step 7: Remove Configuration**
-
-```bash
-rm -rf ~/.claude
-```
-
-**Restore from Backup**
-
-If you change your mind:
-```bash
-mv ~/claude-workspace-backup ~/claude-workspace
-ln -s ~/claude-workspace/shared/agents ~/.claude/agents
-```
-
-**Optional: Remove Homebrew and Node.js**
-
-Only if not used by other tools:
-```bash
-# Remove Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall-tools.sh)"
-
-# Remove Node.js
-brew uninstall node
-```
+See **[Uninstall Guide](UNINSTALL.md)** for detailed step-by-step instructions.
 
 ---
 
