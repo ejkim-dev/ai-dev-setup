@@ -272,36 +272,6 @@ Note: Package downloads will still fail without internet.
 
 ## Usage Questions
 
-### Why use select_menu instead of [Y/n]?
-
-**User Experience Reasons**:
-
-1. **No typing required** - Arrow keys only
-2. **No typos** - Can't accidentally press wrong key
-3. **Clear options** - See all choices at once
-4. **Consistent interface** - Same pattern everywhere
-5. **Accessibility** - Keyboard-only navigation
-
-**Old way** (confusing):
-```
-Install Node.js? [Y/n]: y
-Install Node.js? [Y/n]: yes
-Install Node.js? [Y/n]: Yes
-Install Node.js? [Y/n]: n
-Install Node.js? [Y/n]: no
-Install Node.js? [Y/n]: [just Enter]
-```
-
-**New way** (clear):
-```
-  ▸ Install Node.js
-    Skip
-```
-
-Press ↓ to move cursor, Enter to select. No ambiguity.
-
----
-
 ### What's the auto-linking feature?
 
 **Auto-linking** connects package installation (Step 3) with shell configuration (Step 5).
