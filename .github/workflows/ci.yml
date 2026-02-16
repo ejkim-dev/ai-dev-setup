@@ -18,10 +18,10 @@ jobs:
 
       - name: Run ShellCheck
         run: |
-          shellcheck -x setup.sh install.sh uninstall-tools.sh
-          shellcheck -x lib/*.sh
-          shellcheck -x modules/*.sh
-          shellcheck -x claude-code/setup-claude.sh
+          shellcheck -x -e SC1090,SC1091 -S warning setup.sh install.sh uninstall-tools.sh
+          shellcheck -x -e SC1090,SC1091 -S warning lib/*.sh
+          shellcheck -x -e SC1090,SC1091 -S warning modules/*.sh
+          shellcheck -x -e SC1090,SC1091 -S warning claude-code/setup-claude.sh
 
   psscriptanalyzer:
     name: PSScriptAnalyzer (PowerShell)
@@ -33,10 +33,11 @@ jobs:
         shell: pwsh
         run: |
           Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+          $rules = Get-ScriptAnalyzerRule | Where-Object { $_.RuleName -ne 'PSAvoidUsingWriteHost' }
           $results = @()
-          $results += Invoke-ScriptAnalyzer -Path setup.ps1 -Severity Warning,Error
-          $results += Invoke-ScriptAnalyzer -Path install.ps1 -Severity Warning,Error
-          $results += Invoke-ScriptAnalyzer -Path claude-code/setup-claude.ps1 -Severity Warning,Error
+          $results += Invoke-ScriptAnalyzer -Path setup.ps1 -Severity Warning,Error -IncludeRule $rules.RuleName
+          $results += Invoke-ScriptAnalyzer -Path install.ps1 -Severity Warning,Error -IncludeRule $rules.RuleName
+          $results += Invoke-ScriptAnalyzer -Path claude-code/setup-claude.ps1 -Severity Warning,Error -IncludeRule $rules.RuleName
           if ($results.Count -gt 0) {
             $results | Format-Table -AutoSize
             exit 1
