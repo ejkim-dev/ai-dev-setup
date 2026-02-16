@@ -153,61 +153,13 @@ my-project/
 
 ### CLAUDE.md vs CLAUDE.local.md
 
-**CLAUDE.md** (git에 커밋됨):
-- 프로젝트 규칙 및 가이드라인
-- 코딩 표준
-- 아키텍처 결정
-- 사용 가능한 에이전트 및 도구
-- 전체 팀이 공유
+| | CLAUDE.md | CLAUDE.local.md |
+|---|---|---|
+| **용도** | 팀 공유 프로젝트 규칙 | 개인 설정 |
+| **Git** | 커밋됨 | Gitignore됨 |
+| **내용** | 아키텍처, 코딩 표준, 에이전트 | 비공개 노트, 로컬 설정 |
 
-**CLAUDE.local.md** (gitignore됨):
-- 개인 선호도
-- 로컬 전용 노트
-- 비공개 리마인더
-- 개별 워크플로우 설정
-
-### CLAUDE.md 예시
-
-```markdown
-# 내 웹 앱
-
-## 기술 스택
-- React 18
-- TypeScript
-- Tailwind CSS
-
-## 코드 스타일
-- 함수형 컴포넌트 사용
-- 명명된 내보내기 선호
-- 최대 줄 길이: 100
-
-## 사용 가능한 공유 에이전트
-- workspace-manager
-- translate
-- doc-writer
-
-## MCP 서버
-- local-rag (프로젝트 문서)
-- filesystem (코드 접근)
-- serena (웹 검색)
-```
-
-### CLAUDE.local.md 예시
-
-```markdown
-# 개인 설정
-
-## 선호도
-- 자세한 설명 선호
-- TypeScript 모범 사례에 집중
-
-## 로컬 MCP 서버
-- 없음 (공유만 사용)
-
-## 노트
-- 커밋 전 테스트 실행 기억
-- 새 기능은 feature 브랜치 사용
-```
+자세한 예시 및 사용법은 **[Claude 가이드 - CLAUDE.md](../../claude-code/doc/ko/claude-guide.md#claudemd)** 참조.
 
 ---
 

@@ -84,53 +84,14 @@ As part of workspace creation, you can select agents to install via a **multi-se
 
 **Default selection**: All 3 agents are recommended and pre-selected
 
-**Agent descriptions**:
-
-##### workspace-manager (recommended)
-**What it does**:
-- Connect/disconnect projects to workspace
-- Manage symlinks automatically
-- Set up .gitignore entries
-- Check workspace status
-
-**Use cases**:
-- Initialize new project structure
-- Link existing project to workspace
-- Sync CLAUDE.md across projects
-
-##### translate (recommended)
-**What it does**:
-- Translate documents between languages (en/ko/ja)
-- Preserve markdown formatting
-- Preserve code blocks
-- Batch translation
-
-**Use cases**:
-- Translate README files
-- Localize documentation
-- Create multi-language guides
-
-##### doc-writer (recommended)
-**What it does**:
-- Generate README from code
-- Create CLAUDE.md for projects
-- Write API documentation
-- Generate architecture docs
-
-**Use cases**:
-- Bootstrap project documentation
-- Update docs after code changes
-- Standardize documentation format
+**Available agents**:
+- **workspace-manager** — Project connection and symlink management
+- **translate** — Multi-language document translation (en/ko/ja)
+- **doc-writer** — README, API docs, architecture docs generation
 
 **Installation**: Copies selected agents to `~/claude-workspace/shared/agents/`
 
-**Usage in projects**: Reference in CLAUDE.md:
-```markdown
-# Available Shared Agents
-- workspace-manager
-- translate
-- doc-writer
-```
+For detailed capabilities and usage, see **[Workspace Guide - Shared Agents](WORKSPACE.md#shared-agents)**.
 
 ---
 

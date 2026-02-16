@@ -247,59 +247,15 @@ Claude Code provides built-in slash commands for common operations:
 
 **What is MCP?** Standard for connecting Claude to external data sources and tools.
 
-### Common MCP Servers
+### Available MCP Servers
 
-#### 1. local-rag
-**Purpose:** Search your documents and code
+- **local-rag** — Search documents and code (recommended)
+- **filesystem** — Read/write files in your project (recommended)
+- **serena** — Web browsing and research (recommended)
+- **fetch** — HTTP requests and REST API calls
+- **puppeteer** — Browser automation and screenshots
 
-**Setup:**
-```json
-{
-  "mcpServers": {
-    "local-rag": {
-      "command": "npx",
-      "args": ["-y", "@local-rag/mcp-server"],
-      "env": {
-        "DATA_PATH": "/path/to/project/.claude-data"
-      }
-    }
-  }
-}
-```
-
-**Use case:** "Search my docs for authentication examples"
-
-#### 2. filesystem
-**Purpose:** Read/write files in your project
-
-```json
-{
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/project"]
-    }
-  }
-}
-```
-
-**Use case:** Claude can directly access your files
-
-#### 3. serena
-**Purpose:** Web browsing and research
-
-```json
-{
-  "mcpServers": {
-    "serena": {
-      "command": "npx",
-      "args": ["-y", "@serena/mcp-server"]
-    }
-  }
-}
-```
-
-**Use case:** "Look up the latest React 19 features"
+For detailed descriptions, configuration examples, and setup instructions, see **[Phase 2 Guide - MCP Servers](../../docs/en/PHASE2.md#step-2-23-mcp-servers)**.
 
 ### MCP Configuration
 

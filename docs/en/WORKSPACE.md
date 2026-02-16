@@ -153,61 +153,13 @@ my-project/
 
 ### CLAUDE.md vs CLAUDE.local.md
 
-**CLAUDE.md** (committed to git):
-- Project rules and guidelines
-- Coding standards
-- Architecture decisions
-- Available agents and tools
-- Shared by entire team
+| | CLAUDE.md | CLAUDE.local.md |
+|---|---|---|
+| **Purpose** | Team-shared project rules | Personal preferences |
+| **Git** | Committed | Gitignored |
+| **Content** | Architecture, coding standards, agents | Private notes, local settings |
 
-**CLAUDE.local.md** (gitignored):
-- Personal preferences
-- Local-only notes
-- Private reminders
-- Individual workflow settings
-
-### Example CLAUDE.md
-
-```markdown
-# My Web App
-
-## Tech Stack
-- React 18
-- TypeScript
-- Tailwind CSS
-
-## Code Style
-- Use functional components
-- Prefer named exports
-- Max line length: 100
-
-## Available Shared Agents
-- workspace-manager
-- translate
-- doc-writer
-
-## MCP Servers
-- local-rag (project documentation)
-- filesystem (code access)
-- serena (web search)
-```
-
-### Example CLAUDE.local.md
-
-```markdown
-# Personal Settings
-
-## Preferences
-- Prefer verbose explanations
-- Focus on TypeScript best practices
-
-## Local MCP Servers
-- None (using shared only)
-
-## Notes
-- Remember to run tests before committing
-- Use feature branches for new features
-```
+For detailed examples and usage, see **[Claude Guide - CLAUDE.md](../../claude-code/doc/en/claude-guide.md#claudemd)**.
 
 ---
 
