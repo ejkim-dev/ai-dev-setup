@@ -1,6 +1,6 @@
 #Requires -Version 5.1
 #
-# Claude Code Setup: workspace, agents, MCP servers, Obsidian, Git
+# Claude Code Setup: workspace, agents, MCP servers, Obsidian
 #
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -208,7 +208,7 @@ if (-not $canSymlink) {
 
 # === 1. claude-workspace ===
 Write-Host ""
-Write-Host "[1/4] $MSG_WS_TITLE" -ForegroundColor Cyan
+Write-Host "[1/3] $MSG_WS_TITLE" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  $MSG_WS_DESC_1"
 Write-Host "  $MSG_WS_DESC_2"
@@ -446,7 +446,7 @@ Thumbs.db
 
 # === 2. MCP Servers (5 servers, project-specific) ===
 Write-Host ""
-Write-Host "[2/4] $MSG_MCP_TITLE" -ForegroundColor Cyan
+Write-Host "[2/3] $MSG_MCP_TITLE" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  $MSG_MCP_DESC_1"
 Write-Host "  $MSG_MCP_DESC_2"
@@ -570,7 +570,7 @@ if (Ask-YN $MSG_MCP_ASK) {
 
 # === 3. Obsidian ===
 Write-Host ""
-Write-Host "[3/4] $MSG_OBS_TITLE" -ForegroundColor Cyan
+Write-Host "[3/3] $MSG_OBS_TITLE" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  $MSG_OBS_DESC_1"
 Write-Host "  $MSG_OBS_DESC_2"
@@ -587,80 +587,6 @@ if (Ask-YN $MSG_OBS_ASK) {
     }
 } else {
     Write-Skip
-}
-
-# === 4. Git + SSH (Windows-specific) ===
-Write-Host ""
-Write-Host "[4/4] $MSG_GIT_TITLE" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  $MSG_GIT_DESC_1"
-Write-Host "  $MSG_GIT_DESC_2"
-Write-Host "  $MSG_GIT_DESC_3"
-Write-Host "  $MSG_GIT_DESC_4"
-Write-Host "  $MSG_GIT_DESC_5"
-Write-Host ""
-Write-Host "  $MSG_GIT_DESC_NOTE"
-Write-Host ""
-
-if (Get-Command git -ErrorAction SilentlyContinue) {
-    Write-Host "  $MSG_ALREADY_INSTALLED"
-    Write-Done
-} else {
-    if (Ask-YN $MSG_GIT_INSTALL_ASK) {
-        Write-Host "  $MSG_INSTALLING"
-        try {
-            winget install --id Git.Git -e --accept-source-agreements --accept-package-agreements
-            winget install --id GitHub.cli -e --accept-source-agreements --accept-package-agreements
-            if (Get-Command git -ErrorAction SilentlyContinue) {
-                Write-Done
-            } else {
-                Write-Host "  ⚠️  Installation failed. Install manually: https://git-scm.com" -ForegroundColor Yellow
-                Write-Skip
-            }
-        } catch {
-            Write-Host "  ⚠️  Installation failed. Install manually: https://git-scm.com" -ForegroundColor Yellow
-            Write-Skip
-        }
-    } else {
-        Write-Skip
-    }
-}
-
-# Git config (if Git is available)
-if (Get-Command git -ErrorAction SilentlyContinue) {
-    if (Ask-YN $MSG_GIT_CONFIG_ASK) {
-        $gitName = Read-Host "  $MSG_GIT_NAME"
-        $gitEmail = Read-Host "  $MSG_GIT_EMAIL"
-        git config --global user.name $gitName
-        git config --global user.email $gitEmail
-        Write-Host "  $MSG_GIT_CONFIG_DONE"
-        Write-Done
-    }
-
-    # SSH key (if Git is configured)
-    if (Test-Path "$env:USERPROFILE\.ssh\id_ed25519") {
-        Write-Host ""
-        Write-Host "  $MSG_SSH_EXISTS"
-        if (Ask-YN "$MSG_SSH_REGISTER") {
-            Get-Content "$env:USERPROFILE\.ssh\id_ed25519.pub" | Set-Clipboard
-            Write-Host ""
-            Write-Host "  📋 $MSG_SSH_COPIED"
-            Write-Host "  $MSG_SSH_GITHUB_URL"
-            Read-Host "  $MSG_SSH_ENTER"
-        }
-    } elseif (Ask-YN "$MSG_SSH_GENERATE") {
-        $sshEmail = Read-Host "  $MSG_SSH_EMAIL"
-        ssh-keygen -t ed25519 -C $sshEmail -f "$env:USERPROFILE\.ssh\id_ed25519"
-        if (Test-Path "$env:USERPROFILE\.ssh\id_ed25519.pub") {
-            Get-Content "$env:USERPROFILE\.ssh\id_ed25519.pub" | Set-Clipboard
-            Write-Host ""
-            Write-Host "  📋 $MSG_SSH_COPIED"
-            Write-Host "  $MSG_SSH_GITHUB_URL"
-            Read-Host "  $MSG_SSH_ENTER"
-        } else {
-            Write-Host "  ⚠️  SSH key generation cancelled."
-        }
-    }
 }
 
 # === Save config.json + summary ===

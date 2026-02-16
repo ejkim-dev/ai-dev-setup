@@ -121,20 +121,6 @@ $MSG_MCP_CREATING_FILE = "{0} を作成中..."
 $MSG_MCP_FILE_CREATED = ".mcp.jsonが{0}個のサーバーで作成されました"
 $MSG_MCP_INSTALLING_PREFIX = "{0} を追加中..."
 
-# Git (Phase 2)
-$MSG_GIT_TITLE = "Git + SSH (バージョン管理)"
-$MSG_GIT_DESC_1 = "Claude Codeを最大限活用するには、Gitのインストールをお勧めします："
-$MSG_GIT_DESC_2 = "  Claudeがコード変更を追跡（git status, git diff）"
-$MSG_GIT_DESC_3 = "  自動コミット生成（AIがコミットメッセージを作成）"
-$MSG_GIT_DESC_4 = "  GitHub連携（PR作成、Issue管理）"
-$MSG_GIT_DESC_5 = "  バージョン管理とコラボレーション"
-$MSG_GIT_DESC_NOTE = "Gitなしでも基本機能は使用可能ですが、バージョン管理機能には必要です。"
-$MSG_GIT_INSTALL_ASK = "Gitをインストールしますか？"
-$MSG_GIT_CONFIG_ASK = "Gitユーザー情報を設定しますか？（名前とメール）"
-$MSG_GIT_NAME = "名前: "
-$MSG_GIT_EMAIL = "メール: "
-$MSG_GIT_CONFIG_DONE = "Git設定完了"
-
 # Phase 1 → 2 Transition
 $MSG_PHASE1_COMPLETE = "Phase 1 完了！"
 $MSG_PHASE2_NEXT = "次: Phase 2 - Claude Code セットアップ（オプション）"
@@ -202,15 +188,6 @@ $MSG_WINGET_NOT_INSTALLED = "wingetがインストールされていません。
 $MSG_WINGET_STORE = "→ Microsoft Storeから 'App Installer' をインストールしてください。"
 $MSG_WINGET_UPDATE = "→ または Windows 10 1709 以降にアップデートしてください。"
 $MSG_WINGET_ENTER = "インストール後、Enterを押してください..."
-
-# SSH
-$MSG_SSH_EXISTS = "SSHキーが既に存在します。"
-$MSG_SSH_REGISTER = "既存のキーをGitHubに登録しますか？"
-$MSG_SSH_COPIED = "SSH公開鍵がクリップボードにコピーされました！"
-$MSG_SSH_GITHUB_URL = "→ https://github.com/settings/keys で 'New SSH key' をクリックして貼り付けてください"
-$MSG_SSH_ENTER = "登録完了後、Enterを押してください..."
-$MSG_SSH_GENERATE = "SSHキーを生成しますか？"
-$MSG_SSH_EMAIL = "GitHubのメールアドレスを入力してください: "
 
 # Windows Terminal
 $MSG_WINTERMINAL_NOT_INSTALLED = "Windows Terminalがインストールされていません。"
