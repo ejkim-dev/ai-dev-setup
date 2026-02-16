@@ -1,16 +1,16 @@
-# === 기본 설정 ===
+# === General settings ===
 export LANG=en_US.UTF-8
 export EDITOR=vim
 
-# === 히스토리 ===
+# === History ===
 HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.zsh_history
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 
-# === zsh 플러그인 ===
-# Homebrew로 설치한 플러그인 로드
+# === zsh plugins ===
+# Load plugins installed via Homebrew
 if [ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
   source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
@@ -18,14 +18,14 @@ if [ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.
   source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
-# === 프롬프트 커스터마이징 (agnoster 테마) ===
+# === Prompt customization (agnoster theme) ===
 prompt_context() {
   emojis=("🔥" "👑" "😎" "🍺" "🐵" "🦄" "🌈" "🚀" "🐧" "🎉" "🐱" "🐶" "🦋" "🔅")
   RAND_EMOJI_N=$(( $RANDOM % ${#emojis[@]} + 1))
   prompt_segment black default "%(!.%{%F{yellow}%}.) $USER ${emojis[$RAND_EMOJI_N]} "
 }
 
-# === 유용한 alias ===
+# === Useful aliases ===
 alias ll="ls -la"
 alias gs="git status"
 alias gl="git log --oneline -20"

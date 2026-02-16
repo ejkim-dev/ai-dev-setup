@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Phase 1 설치 항목 정리 스크립트
-# 주의: 이 스크립트는 Phase 1에서 설치한 모든 항목을 제거합니다!
+# Phase 1 tool uninstall script
+# Warning: This script removes all items installed during Phase 1!
 #
 
 set -e
@@ -104,7 +104,7 @@ echo "정리 시작..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-# 1. AI CLI 도구 제거
+# 1. Remove AI CLI tools
 echo "[1/8] AI CLI 도구 제거..."
 if command -v npm &>/dev/null || command -v gh &>/dev/null; then
   echo "AI CLI 도구를 제거하시겠습니까?"
@@ -128,23 +128,23 @@ fi
 
 echo ""
 
-# 2. Homebrew 패키지 제거
+# 2. Remove Homebrew packages
 echo "[2/8] Homebrew 패키지 제거..."
 if command -v brew &>/dev/null; then
   echo "Homebrew 패키지를 제거하시겠습니까?"
   echo "(폰트, zsh plugins, tmux, ripgrep 등)"
   select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    # 폰트
+    # Fonts
     brew uninstall --cask font-d2coding 2>/dev/null || true
 
-    # 패키지
+    # Packages
     brew uninstall zsh-syntax-highlighting 2>/dev/null || true
     brew uninstall zsh-autosuggestions 2>/dev/null || true
     brew uninstall tmux 2>/dev/null || true
     brew uninstall ripgrep 2>/dev/null || true
 
-    # Node.js는 선택적으로 (다른 용도로 사용 중일 수 있음)
+    # Node.js is optional (may be used for other purposes)
     echo ""
     echo "  Node.js도 제거하시겠습니까?"
     select_menu "제거" "건너뛰기"
@@ -165,16 +165,16 @@ fi
 
 echo ""
 
-# 3. Oh My Zsh 제거
+# 3. Remove Oh My Zsh
 echo "[3/8] Oh My Zsh 제거..."
 if [ -d "$HOME/.oh-my-zsh" ]; then
   echo "Oh My Zsh를 제거하시겠습니까?"
   select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    # 직접 삭제 (uninstall.sh는 입력 대기할 수 있음)
+    # Direct removal (uninstall.sh may wait for input)
     rm -rf "$HOME/.oh-my-zsh"
 
-    # custom 폴더도 제거
+    # Also remove custom folder
     rm -rf "$HOME/.oh-my-zsh.custom" 2>/dev/null || true
 
     echo "  ✅ Oh My Zsh 제거 완료"
@@ -187,15 +187,15 @@ fi
 
 echo ""
 
-# 4. .zshrc 백업 및 복원
+# 4. Backup and restore .zshrc
 echo "[4/8] .zshrc 정리..."
 if [ -f "$HOME/.zshrc" ]; then
-  # ai-dev-setup 추가 부분 제거
+  # Remove ai-dev-setup section
   if grep -q "=== ai-dev-setup ===" "$HOME/.zshrc" 2>/dev/null; then
-    # 백업 (이전 백업 덮어쓰기)
+    # Backup (overwrites previous backup)
     cp "$HOME/.zshrc" "$HOME/.zshrc.backup"
 
-    # ai-dev-setup 섹션 제거
+    # Delete ai-dev-setup section
     sed -i.tmp '/# === ai-dev-setup ===/,/# === End ai-dev-setup ===/d' "$HOME/.zshrc" 2>/dev/null || true
     rm -f "$HOME/.zshrc.tmp"
 
@@ -205,7 +205,7 @@ if [ -f "$HOME/.zshrc" ]; then
     echo "  ℹ️  .zshrc에 ai-dev-setup 설정 없음"
   fi
 
-  # .zshrc.pre-oh-my-zsh 복원
+  # Restore .zshrc.pre-oh-my-zsh
   if [ -f "$HOME/.zshrc.pre-oh-my-zsh" ]; then
     echo ""
     echo "  원래 .zshrc로 복원하시겠습니까?"
@@ -221,13 +221,13 @@ fi
 
 echo ""
 
-# 5. .tmux.conf 제거
+# 5. Remove .tmux.conf
 echo "[5/8] .tmux.conf 제거..."
 if [ -f "$HOME/.tmux.conf" ]; then
   echo ".tmux.conf를 제거하시겠습니까?"
   select_menu "제거" "건너뛰기"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    # 백업 (이전 백업 덮어쓰기)
+    # Backup (overwrites previous backup)
     cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup"
     rm "$HOME/.tmux.conf"
     echo "  ✅ .tmux.conf 제거 완료"
@@ -241,17 +241,17 @@ fi
 
 echo ""
 
-# 6. Terminal.app Dev 프로필 제거
+# 6. Remove Terminal.app Dev profile
 echo "[6/8] Terminal.app Dev 프로필 제거..."
 if defaults read com.apple.Terminal "Window Settings" &>/dev/null; then
   if defaults read com.apple.Terminal "Window Settings" | grep -q "Dev" 2>/dev/null; then
     echo "Terminal.app Dev 프로필을 제거하시겠습니까?"
     select_menu "제거" "건너뛰기"
     if [ "$MENU_RESULT" -eq 0 ]; then
-      # Dev 프로필 제거
+      # Remove Dev profile
       defaults delete com.apple.Terminal "Window Settings.Dev" 2>/dev/null || true
 
-      # Default로 Basic 설정
+      # Reset default to Basic
       defaults write com.apple.Terminal "Default Window Settings" -string "Basic"
       defaults write com.apple.Terminal "Startup Window Settings" -string "Basic"
 
@@ -268,7 +268,7 @@ fi
 
 echo ""
 
-# 7. Phase 2 관련 파일 제거
+# 7. Remove Phase 2 files
 echo "[7/8] Phase 2 관련 파일 제거..."
 if [ -d "$HOME/claude-code-setup" ] || [ -d "$HOME/claude-workspace" ]; then
   echo "Phase 2 관련 파일을 제거하시겠습니까?"
@@ -287,7 +287,7 @@ fi
 
 echo ""
 
-# 8. Obsidian 제거
+# 8. Remove Obsidian
 echo "[8/8] Obsidian 제거..."
 if [ -d "/Applications/Obsidian.app" ]; then
   echo "Obsidian을 제거하시겠습니까?"
@@ -305,7 +305,7 @@ fi
 
 echo ""
 
-# 추가 정리 옵션
+# Additional cleanup options
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "추가 정리 옵션"
@@ -314,7 +314,7 @@ echo ""
 echo "다음 항목들도 제거하시겠습니까?"
 echo ""
 
-# iTerm2 제거
+# Remove iTerm2
 if [ -d "/Applications/iTerm.app" ]; then
   echo "iTerm2를 제거하시겠습니까?"
   MENU_DEFAULT=1 select_menu "제거" "건너뛰기"
@@ -329,7 +329,7 @@ else
   echo "  ⏭️  iTerm2 없음"
 fi
 
-# Homebrew 제거
+# Remove Homebrew
 if command -v brew &>/dev/null; then
   echo ""
   echo "Homebrew를 완전히 제거하시겠습니까?"
@@ -338,11 +338,11 @@ if command -v brew &>/dev/null; then
     echo "  Homebrew 제거 중... (시간이 걸릴 수 있습니다)"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)" -- --force
 
-    # Homebrew 디렉토리 완전 삭제
+    # Completely remove Homebrew directories
     sudo rm -rf /opt/homebrew 2>/dev/null || true
     sudo rm -rf /usr/local/Homebrew 2>/dev/null || true
 
-    # PATH에서 Homebrew 제거
+    # Remove Homebrew from PATH
     if [ -f "$HOME/.zprofile" ]; then
       sed -i.tmp '/homebrew/d' "$HOME/.zprofile" 2>/dev/null || true
       rm -f "$HOME/.zprofile.tmp"
@@ -354,7 +354,7 @@ if command -v brew &>/dev/null; then
   fi
 fi
 
-# Xcode Command Line Tools 제거
+# Remove Xcode Command Line Tools
 if xcode-select -p &>/dev/null; then
   echo ""
   echo "Xcode Command Line Tools를 제거하시겠습니까?"
@@ -368,7 +368,7 @@ if xcode-select -p &>/dev/null; then
   fi
 fi
 
-# 백업 파일 정리
+# Clean up backup files
 backup_files=()
 for f in "$HOME"/.zshrc.backup* "$HOME"/.tmux.conf.backup* "$HOME"/.zshrc.pre-oh-my-zsh; do
   [ -f "$f" ] && backup_files+=("$f")
@@ -393,7 +393,7 @@ if [ ${#backup_files[@]} -gt 0 ]; then
   fi
 fi
 
-# 완료
+# Done
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "✅ 정리 완료!"
