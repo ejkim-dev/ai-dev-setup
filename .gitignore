@@ -5,6 +5,7 @@ Thumbs.db
 .claude/
 CLAUDE.local.md
 .claude-data/
+.mcp.json
 
 # Local properties
 local.properties
