@@ -108,6 +108,12 @@ bash /tmp/cleanup.sh
 
 ---
 
+## 📝 Blog
+
+- **[One Line to Start: Building an AI Dev Environment Setup Script with Claude Code](https://medium.com/@biz.ejkim/one-line-to-start-building-an-ai-dev-environment-setup-script-with-claude-code-c220e3813696)** - Project motivation, Claude Code workflow, and lessons learned
+
+---
+
 ## 📄 License
 
 [MIT](LICENSE)
