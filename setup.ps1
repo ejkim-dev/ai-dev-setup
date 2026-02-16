@@ -379,50 +379,78 @@ if (Test-Path "$ScriptDir\claude-code") {
     Copy-Item "$ScriptDir\claude-code\templates" $claudeCodeDir\ -Recurse
     Copy-Item "$ScriptDir\claude-code\examples" $claudeCodeDir\ -Recurse
     Copy-Item "$ScriptDir\claude-code\locale" $claudeCodeDir\ -Recurse
+
+    # Verify critical files were copied
+    $requiredFiles = @("setup-claude.ps1")
+    $requiredDirs = @("agents", "templates", "locale")
+    $copyOk = $true
+    foreach ($f in $requiredFiles) {
+        if (-not (Test-Path "$claudeCodeDir\$f")) {
+            Write-Host "  ⚠️  Missing: $f" -ForegroundColor Yellow
+            $copyOk = $false
+        }
+    }
+    foreach ($d in $requiredDirs) {
+        if (-not (Test-Path "$claudeCodeDir\$d")) {
+            Write-Host "  ⚠️  Missing directory: $d" -ForegroundColor Yellow
+            $copyOk = $false
+        }
+    }
+    if (-not $copyOk) {
+        Write-Host "  ⚠️  Some Phase 2 files failed to copy. Phase 2 may not work correctly." -ForegroundColor Yellow
+    }
 }
-# Remove entire install directory (including .git if cloned)
-Set-Location $env:USERPROFILE
-Remove-Item $ScriptDir -Recurse -Force -ErrorAction SilentlyContinue
+# Remove entire install directory (with safety check)
+if (-not [string]::IsNullOrWhiteSpace($ScriptDir) -and
+    $ScriptDir -ne $env:USERPROFILE -and
+    $ScriptDir -ne "C:\" -and
+    $ScriptDir -ne $env:SystemRoot -and
+    (Test-Path "$ScriptDir\setup.ps1")) {
+    Set-Location $env:USERPROFILE
+    Remove-Item $ScriptDir -Recurse -Force -ErrorAction SilentlyContinue
+} else {
+    Write-Host "  ⚠️  Install directory preserved for safety: $ScriptDir" -ForegroundColor Yellow
+}
 
 # === Done ===
 Write-Host ""
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor White
-Write-Host "✨ Phase 1 Complete!" -ForegroundColor Green
+Write-Host "✨ $MSG_PHASE1_COMPLETE" -ForegroundColor Green
 Write-Host ""
-Write-Host "  Next: Phase 2 - Claude Code Setup (optional)"
+Write-Host "  $MSG_PHASE2_NEXT"
 Write-Host ""
-Write-Host "  • Workspace management (central config)"
-Write-Host "  • Global agents (workspace-manager, translate, doc-writer)"
-Write-Host "  • MCP servers (document search)"
-Write-Host "  • Git + GitHub (recommended for Claude features)"
+Write-Host "  $MSG_PHASE2_DESC_1"
+Write-Host "  $MSG_PHASE2_DESC_2"
+Write-Host "  $MSG_PHASE2_DESC_3"
+Write-Host "  $MSG_PHASE2_DESC_4"
 Write-Host ""
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor White
 Write-Host ""
 
-if (Ask-YN "Continue to Phase 2 now?") {
+if (Ask-YN $MSG_PHASE2_ASK) {
     Write-Host ""
-    Write-Host "  ⚠️  Terminal restart required for Phase 2" -ForegroundColor Yellow
-    Write-Host "     (to load updated PATH and environment)"
+    Write-Host "  ⚠️  $MSG_PHASE2_RESTART_WARN" -ForegroundColor Yellow
+    Write-Host "     $MSG_PHASE2_RESTART_REASON"
     Write-Host ""
 
-    if (Ask-YN "Open new PowerShell and start Phase 2?") {
+    if (Ask-YN $MSG_PHASE2_OPEN_TERM_ASK) {
         Write-Host ""
-        Write-Host "  🚀 Opening new PowerShell..." -ForegroundColor Cyan
+        Write-Host "  🚀 $MSG_PHASE2_OPENING" -ForegroundColor Cyan
         Write-Host ""
 
         # Open new PowerShell window with setup-claude.ps1
         Start-Process powershell -ArgumentList "-NoExit", "-Command", "& '$env:USERPROFILE\claude-code-setup\setup-claude.ps1'"
 
-        Write-Host "  ✅ New PowerShell opened with Phase 2 setup" -ForegroundColor Green
-        Write-Host "  ℹ️  You can close this window after Phase 2 starts"
+        Write-Host "  ✅ $MSG_PHASE2_OPENED" -ForegroundColor Green
+        Write-Host "  ℹ️  $MSG_PHASE2_CLOSE_INFO"
     } else {
         Write-Host ""
-        Write-Host "  💡 Run Phase 2 later in a new PowerShell:"
+        Write-Host "  💡 $MSG_PHASE2_MANUAL"
         Write-Host "     ~\claude-code-setup\setup-claude.ps1"
     }
 } else {
     Write-Host ""
-    Write-Host "  💡 You can run Phase 2 anytime:"
+    Write-Host "  💡 $MSG_PHASE2_MANUAL_LATER"
     Write-Host "     ~\claude-code-setup\setup-claude.ps1"
 }
 

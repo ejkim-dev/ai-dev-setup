@@ -1,8 +1,8 @@
 #Requires -Version 5.1
 #
-# Claude Code Setup: workspace, agents, MCP servers, Obsidian
+# Claude Code Setup: workspace, agents, MCP servers, Obsidian, Git
 #
-$ErrorActionPreference = "Continue"
+$ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Workspace = "$env:USERPROFILE\claude-workspace"
 $ConfigFile = "$Workspace\config.json"
@@ -40,6 +40,17 @@ function Test-SymlinkCapability {
         Remove-Item $testTarget -Force -ErrorAction SilentlyContinue
         return $false
     }
+}
+
+# Safety check: validate path before deletion
+function Test-SafePath($path) {
+    if ([string]::IsNullOrWhiteSpace($path)) { return $false }
+    if ($path -eq $env:USERPROFILE) { return $false }
+    if ($path -eq "C:\") { return $false }
+    if ($path -eq $env:SystemRoot) { return $false }
+    if ($path -eq $Workspace) { return $false }
+    if ($path -eq "$env:USERPROFILE\.claude") { return $false }
+    return $true
 }
 
 Write-Host ""
@@ -121,14 +132,22 @@ Write-Host "  → $MSG_LANG_SET $LangName" -ForegroundColor Green
 $OptWorkspace = $false
 $OptObsidian = $false
 $OptMcpRag = $false
+$OptMcpFilesystem = $false
+$OptMcpSerena = $false
+$OptMcpFetch = $false
+$OptMcpPuppeteer = $false
 $ConnectedProjects = @()
 
 # --- Prerequisite checks ---
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     Write-Host "  ⚠️  $MSG_NODE_NOT_INSTALLED"
     if (Ask-YN $MSG_NODE_INSTALL_ASK) {
-        winget install --id OpenJS.NodeJS.LTS -e --accept-source-agreements --accept-package-agreements
-        Write-Done
+        try {
+            winget install --id OpenJS.NodeJS.LTS -e --accept-source-agreements --accept-package-agreements
+            Write-Done
+        } catch {
+            Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow
+        }
     }
 }
 
@@ -150,24 +169,24 @@ if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
             # Verify installation succeeded
             if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
                 Write-Host ""
-                Write-Host "  ❌ Claude Code installed but not in PATH" -ForegroundColor Red
+                Write-Host "  ❌ $MSG_CLAUDE_NOT_IN_PATH" -ForegroundColor Red
                 Write-Host ""
-                Write-Host "  Please restart PowerShell and re-run this script."
+                Write-Host "  $MSG_CLAUDE_RESTART_TERMINAL"
                 exit 1
             }
 
             Write-Done
         } catch {
             Write-Host ""
-            Write-Host "  ❌ Installation failed" -ForegroundColor Red
+            Write-Host "  ❌ $MSG_CLAUDE_INSTALL_FAILED" -ForegroundColor Red
             Write-Host ""
-            Write-Host "  Claude Code is required for this setup." -ForegroundColor Yellow
-            Write-Host "  Please check:"
-            Write-Host "    1. npm is working: npm --version"
-            Write-Host "    2. Internet connection"
-            Write-Host "    3. Run PowerShell as Administrator if needed"
+            Write-Host "  $MSG_CLAUDE_REQUIRED" -ForegroundColor Yellow
+            Write-Host "  $MSG_CLAUDE_CHECK_HEADER"
+            Write-Host "    $MSG_CLAUDE_CHECK_NPM"
+            Write-Host "    $MSG_CLAUDE_CHECK_INTERNET"
+            Write-Host "    $MSG_CLAUDE_CHECK_PERMISSIONS"
             Write-Host ""
-            Write-Host "  Try manually: npm install -g @anthropic-ai/claude-code"
+            Write-Host "  $MSG_CLAUDE_TRY_MANUAL"
             exit 1
         }
     } else {
@@ -196,35 +215,46 @@ Write-Host "  $MSG_WS_DESC_2"
 Write-Host "  $MSG_WS_DESC_3"
 Write-Host ""
 Write-Host "  ~\claude-workspace\"
-Write-Host "  ├── global\agents\    ← $MSG_WS_TREE_AGENTS"
-Write-Host "  ├── projects\         ← $MSG_WS_TREE_PROJECTS"
-Write-Host "  └── templates\        ← $MSG_WS_TREE_TEMPLATES"
+Write-Host "  ├── shared\agents\    ← $MSG_WS_TREE_AGENTS"
+Write-Host "  ├── shared\templates\ ← $MSG_WS_TREE_TEMPLATES"
+Write-Host "  ├── shared\mcp\       ← MCP configs"
+Write-Host "  └── projects\         ← $MSG_WS_TREE_PROJECTS"
 Write-Host ""
 
 if (Ask-YN $MSG_WS_ASK) {
     $OptWorkspace = $true
 
-    New-Item -ItemType Directory -Path "$Workspace\global\agents" -Force | Out-Null
-    New-Item -ItemType Directory -Path "$Workspace\projects" -Force | Out-Null
-    New-Item -ItemType Directory -Path "$Workspace\templates" -Force | Out-Null
+    # Copy setup language resources (for Phase 2 UI messages)
+    New-Item -ItemType Directory -Path "$Workspace\setup-lang" -Force | Out-Null
+    if (Test-Path "$ScriptDir\locale") {
+        Copy-Item "$ScriptDir\locale\*.ps1" "$Workspace\setup-lang\" -Force -ErrorAction SilentlyContinue
+    }
 
-    # Copy global agents
-    Copy-Item "$ScriptDir\agents\workspace-manager.md" "$Workspace\global\agents\" -Force
-    Copy-Item "$ScriptDir\agents\translate.md" "$Workspace\global\agents\" -Force
-    Copy-Item "$ScriptDir\agents\doc-writer.md" "$Workspace\global\agents\" -Force
+    # Create workspace structure (shared/ instead of global/)
+    New-Item -ItemType Directory -Path "$Workspace\shared\agents" -Force | Out-Null
+    New-Item -ItemType Directory -Path "$Workspace\shared\templates" -Force | Out-Null
+    New-Item -ItemType Directory -Path "$Workspace\shared\mcp" -Force | Out-Null
+    New-Item -ItemType Directory -Path "$Workspace\projects" -Force | Out-Null
+
+    # Copy shared agents
+    foreach ($agentFile in @("workspace-manager.md", "translate.md", "doc-writer.md")) {
+        if (Test-Path "$ScriptDir\agents\$agentFile") {
+            Copy-Item "$ScriptDir\agents\$agentFile" "$Workspace\shared\agents\" -Force
+        }
+    }
     Write-Host "  → $MSG_WS_AGENTS_DONE"
 
     # Copy templates
     if (Test-Path "$ScriptDir\templates") {
-        Copy-Item "$ScriptDir\templates\*" "$Workspace\templates\" -Force -ErrorAction SilentlyContinue
+        Copy-Item "$ScriptDir\templates\*" "$Workspace\shared\templates\" -Force -ErrorAction SilentlyContinue
     }
     if (Test-Path "$ScriptDir\examples") {
-        Copy-Item "$ScriptDir\examples\*" "$Workspace\templates\" -Force -ErrorAction SilentlyContinue
+        Copy-Item "$ScriptDir\examples\*" "$Workspace\shared\templates\" -Force -ErrorAction SilentlyContinue
     }
     Write-Host "  → $MSG_WS_TEMPLATES_DONE"
 
     # Inject language into CLAUDE.local.md template
-    $localMdTemplate = "$Workspace\templates\CLAUDE.local.md"
+    $localMdTemplate = "$Workspace\shared\templates\CLAUDE.local.md"
     if (Test-Path $localMdTemplate) {
         $content = Get-Content $localMdTemplate -Raw
         # Replace placeholder with actual multiline instruction
@@ -232,6 +262,30 @@ if (Ask-YN $MSG_WS_ASK) {
         $content = $content -replace "__LANGUAGE_INSTRUCTION__", $resolved
         Set-Content -Path $localMdTemplate -Value $content -Encoding UTF8 -NoNewline
     }
+
+    # Create .gitignore for workspace
+    $gitignoreContent = @"
+# Project-specific (managed separately)
+projects/*/
+
+# Setup files (temporary during installation)
+setup-lang/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Sensitive
+*.key
+*.pem
+*.env
+*.secret
+
+# Local overrides
+*.local
+"@
+    Set-Content -Path "$Workspace\.gitignore" -Value $gitignoreContent -Encoding UTF8
+    Write-Host "  → .gitignore created"
 
     # Symlink ~/.claude/agents/
     $claudeAgentsDir = "$env:USERPROFILE\.claude\agents"
@@ -244,20 +298,20 @@ if (Ask-YN $MSG_WS_ASK) {
                 Write-Host "  ⚠️  $MSG_WS_FOLDER_EXISTS"
                 if (Ask-YN $MSG_WS_BACKUP_ASK) {
                     Rename-Item $claudeAgentsDir "$claudeAgentsDir.backup"
-                    New-Item -ItemType SymbolicLink -Path $claudeAgentsDir -Target "$Workspace\global\agents" | Out-Null
+                    New-Item -ItemType SymbolicLink -Path $claudeAgentsDir -Target "$Workspace\shared\agents" | Out-Null
                     Write-Host "  → $MSG_WS_BACKUP_DONE"
                     Write-Host "  → $MSG_WS_SYMLINK_DONE"
                 }
             }
         } else {
             New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude" -Force | Out-Null
-            New-Item -ItemType SymbolicLink -Path $claudeAgentsDir -Target "$Workspace\global\agents" | Out-Null
+            New-Item -ItemType SymbolicLink -Path $claudeAgentsDir -Target "$Workspace\shared\agents" | Out-Null
             Write-Host "  → $MSG_WS_SYMLINK_DONE"
         }
     } else {
         # Fallback: copy agents instead of symlink
         New-Item -ItemType Directory -Path $claudeAgentsDir -Force | Out-Null
-        Copy-Item "$Workspace\global\agents\*" $claudeAgentsDir -Force
+        Copy-Item "$Workspace\shared\agents\*" $claudeAgentsDir -Force
         Write-Host "  → $MSG_WS_SYMLINK_SKIP"
     }
 
@@ -269,36 +323,72 @@ if (Ask-YN $MSG_WS_ASK) {
     Write-Host "  $MSG_PROJ_DESC_2"
     Write-Host ""
 
-    while (Ask-YN $MSG_PROJ_ASK) {
+    while ($true) {
+        if (-not (Ask-YN $MSG_PROJ_ASK)) { break }
+
         $projectPath = Read-Host "  $MSG_PROJ_PATH"
+
+        # Empty path = skip
+        if ([string]::IsNullOrWhiteSpace($projectPath)) {
+            Write-Host "  → $MSG_PROJ_SKIP"
+            continue
+        }
 
         if (-not (Test-Path $projectPath)) {
             Write-Host "  ❌ $MSG_PROJ_NOT_FOUND $projectPath"
+            Write-Host "  → $MSG_PROJ_TRY_AGAIN"
+            continue
+        }
+
+        # Resolve to full path
+        $projectPath = (Resolve-Path $projectPath).Path
+
+        # Check duplicate
+        $isDup = $false
+        foreach ($cp in $ConnectedProjects) {
+            if ($cp.Path -eq $projectPath) {
+                $isDup = $true
+                break
+            }
+        }
+        if ($isDup) {
+            Write-Host "  ⚠️  $MSG_PROJ_ALREADY_CONNECTED"
+            Write-Host ""
             continue
         }
 
         $projectName = Split-Path $projectPath -Leaf
 
-        # Handle name collision
+        # Handle name collision with auto-numbering
         $wsProject = "$Workspace\projects\$projectName"
         if (Test-Path $wsProject) {
             Write-Host "  ⚠️  '$projectName' $MSG_PROJ_NAME_CONFLICT"
-            $altName = Read-Host "  →"
-            if ([string]::IsNullOrWhiteSpace($altName)) {
-                continue
+            Write-Host "  $MSG_PROJ_USE_EXISTING"
+            if (Ask-YN "$MSG_PROJ_USE_EXISTING_YES?" "N") {
+                # Use existing workspace settings
+            } else {
+                $counter = 1
+                while (Test-Path "$Workspace\projects\${projectName}_${counter}") {
+                    $counter++
+                }
+                $projectName = "${projectName}_${counter}"
+                $wsProject = "$Workspace\projects\$projectName"
+                Write-Host "  → $MSG_PROJ_AUTO_NAMED '$projectName'"
             }
-            $projectName = $altName
-            $wsProject = "$Workspace\projects\$projectName"
         }
 
         New-Item -ItemType Directory -Path "$wsProject\.claude\agents" -Force | Out-Null
 
         if (-not (Test-Path "$wsProject\CLAUDE.md")) {
-            Copy-Item "$Workspace\templates\CLAUDE.md" "$wsProject\CLAUDE.md"
+            if (Test-Path "$Workspace\shared\templates\CLAUDE.md") {
+                Copy-Item "$Workspace\shared\templates\CLAUDE.md" "$wsProject\CLAUDE.md"
+            }
         }
 
         if (-not (Test-Path "$wsProject\CLAUDE.local.md")) {
-            Copy-Item "$Workspace\templates\CLAUDE.local.md" "$wsProject\CLAUDE.local.md"
+            if (Test-Path "$Workspace\shared\templates\CLAUDE.local.md") {
+                Copy-Item "$Workspace\shared\templates\CLAUDE.local.md" "$wsProject\CLAUDE.local.md"
+            }
         }
 
         if ($canSymlink) {
@@ -344,7 +434,7 @@ if (Ask-YN $MSG_WS_ASK) {
             Write-Host "  → $MSG_PROJ_GITIGNORE"
         }
 
-        $ConnectedProjects += $projectName
+        $ConnectedProjects += @{ Name = $projectName; Path = $projectPath }
 
         Write-Host "  ✅ $projectName $MSG_PROJ_DONE" -ForegroundColor Green
         Write-Host ""
@@ -354,25 +444,9 @@ if (Ask-YN $MSG_WS_ASK) {
     Write-Skip
 }
 
-# === 2. Obsidian ===
+# === 2. MCP Servers (5 servers, project-specific) ===
 Write-Host ""
-Write-Host "[2/4] $MSG_OBS_TITLE" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  $MSG_OBS_DESC_1"
-Write-Host "  $MSG_OBS_DESC_2"
-Write-Host ""
-
-if (Ask-YN $MSG_OBS_ASK) {
-    $OptObsidian = $true
-    winget install --id Obsidian.Obsidian -e --accept-source-agreements --accept-package-agreements
-    Write-Done
-} else {
-    Write-Skip
-}
-
-# === 3. MCP Servers ===
-Write-Host ""
-Write-Host "[3/4] $MSG_MCP_TITLE" -ForegroundColor Cyan
+Write-Host "[2/4] $MSG_MCP_TITLE" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  $MSG_MCP_DESC_1"
 Write-Host "  $MSG_MCP_DESC_2"
@@ -380,36 +454,113 @@ Write-Host "  $MSG_MCP_DESC_3"
 Write-Host ""
 
 if (Ask-YN $MSG_MCP_ASK) {
-
-    # --- local-rag ---
     Write-Host ""
-    Write-Host "  📚 $MSG_RAG_TITLE" -ForegroundColor Cyan
-    Write-Host "  $MSG_RAG_DESC"
+    Write-Host "  $MSG_MCP_SELECT_PROMPT"
     Write-Host ""
+    Write-Host "  📦 $MSG_MCP_RECOMMENDED_HEADER"
+    Write-Host "  $MSG_MCP_RECOMMENDED_DESC_1"
+    Write-Host "  $MSG_MCP_RECOMMENDED_DESC_2"
+    Write-Host "  $MSG_MCP_RECOMMENDED_DESC_3"
+    Write-Host ""
+    Write-Host "  $MSG_MCP_ADDITIONAL_HEADER"
+    Write-Host "  $MSG_MCP_ADDITIONAL_DESC_1"
+    Write-Host "  $MSG_MCP_ADDITIONAL_DESC_2"
+    Write-Host ""
+    Write-Host "  1. $MSG_MCP_SERVER_LOCALRAG $MSG_RECOMMENDED"
+    Write-Host "  2. $MSG_MCP_SERVER_FILESYSTEM $MSG_RECOMMENDED"
+    Write-Host "  3. $MSG_MCP_SERVER_SERENA $MSG_RECOMMENDED"
+    Write-Host "  4. $MSG_MCP_SERVER_FETCH"
+    Write-Host "  5. $MSG_MCP_SERVER_PUPPETEER"
+    Write-Host ""
+    Write-Host "  $MSG_MCP_SELECT_HINT"
+    $mcpChoice = Read-Host "  Selection [1,2,3]"
+    if ([string]::IsNullOrWhiteSpace($mcpChoice)) { $mcpChoice = "1,2,3" }
 
-    if (Ask-YN $MSG_RAG_ASK) {
-        $OptMcpRag = $true
-        $ragProject = Read-Host "  $MSG_RAG_PATH"
+    $mcpSelections = $mcpChoice -split "," | ForEach-Object { $_.Trim() }
+    $McpServers = @()
 
-        if (Test-Path $ragProject) {
-            $ragDataDir = Join-Path $ragProject ".claude-data"
-            New-Item -ItemType Directory -Path $ragDataDir -Force | Out-Null
-
-            $mcpFile = Join-Path $ragProject ".mcp.json"
-            if (Test-Path $mcpFile) {
-                Write-Host "  ⚠️  $MSG_MCP_FILE_EXISTS"
-                Write-Host "  → $MSG_MCP_FILE_REF $ScriptDir\templates\mcp-local-rag.json"
-            } else {
-                $template = Get-Content "$ScriptDir\templates\mcp-local-rag.json" -Raw
-                $template = $template.Replace("__BASE_DIR__", ($ragDataDir -replace "\\", "/"))
-                Set-Content -Path $mcpFile -Value $template -Encoding UTF8
-                Write-Host "  → $mcpFile $MSG_MCP_FILE_DONE"
-            }
-            Write-Done
-        } else {
-            Write-Host "  ❌ $MSG_PROJ_NOT_FOUND $ragProject"
+    foreach ($sel in $mcpSelections) {
+        switch ($sel) {
+            "1" { $OptMcpRag = $true; $McpServers += "local-rag"; Write-Host ("  → " + ($MSG_MCP_INSTALLING_PREFIX -f "local-rag")) }
+            "2" { $OptMcpFilesystem = $true; $McpServers += "filesystem"; Write-Host ("  → " + ($MSG_MCP_INSTALLING_PREFIX -f "filesystem")) }
+            "3" { $OptMcpSerena = $true; $McpServers += "serena"; Write-Host ("  → " + ($MSG_MCP_INSTALLING_PREFIX -f "serena")) }
+            "4" { $OptMcpFetch = $true; $McpServers += "fetch"; Write-Host ("  → " + ($MSG_MCP_INSTALLING_PREFIX -f "fetch")) }
+            "5" { $OptMcpPuppeteer = $true; $McpServers += "puppeteer"; Write-Host ("  → " + ($MSG_MCP_INSTALLING_PREFIX -f "puppeteer")) }
         }
+    }
+
+    if ($McpServers.Count -gt 0) {
+        Write-Host ""
+        Write-Host ("  " + ($MSG_MCP_INSTALLING_COUNT -f $McpServers.Count))
+        Write-Host ""
+
+        if ($ConnectedProjects.Count -gt 0) {
+            foreach ($proj in $ConnectedProjects) {
+                $mcpProjectPath = $proj.Path
+                $mcpProjectName = $proj.Name
+
+                if (Ask-YN ($MSG_MCP_PROJECT_ASK_EACH -f $mcpProjectName)) {
+                    $mcpFile = Join-Path $mcpProjectPath ".mcp.json"
+
+                    if (Test-Path $mcpFile) {
+                        Write-Host "  ⚠️  $MSG_MCP_FILE_EXISTS"
+                    } else {
+                        Write-Host ("  → " + ($MSG_MCP_CREATING_FILE -f $mcpFile))
+
+                        # Build .mcp.json dynamically
+                        $mcpConfig = @{ mcpServers = @{} }
+
+                        foreach ($server in $McpServers) {
+                            switch ($server) {
+                                "local-rag" {
+                                    $ragDataDir = Join-Path $mcpProjectPath ".claude-data"
+                                    New-Item -ItemType Directory -Path $ragDataDir -Force | Out-Null
+                                    $mcpConfig.mcpServers["local-rag"] = @{
+                                        command = "npx"
+                                        args = @("-y", "@local-rag/mcp-server")
+                                        env = @{ DATA_PATH = ($ragDataDir -replace "\\", "/") }
+                                    }
+                                }
+                                "filesystem" {
+                                    $mcpConfig.mcpServers["filesystem"] = @{
+                                        command = "npx"
+                                        args = @("-y", "@modelcontextprotocol/server-filesystem", ($mcpProjectPath -replace "\\", "/"))
+                                    }
+                                }
+                                "serena" {
+                                    $mcpConfig.mcpServers["serena"] = @{
+                                        command = "npx"
+                                        args = @("-y", "@serena/mcp-server")
+                                    }
+                                }
+                                "fetch" {
+                                    $mcpConfig.mcpServers["fetch"] = @{
+                                        command = "npx"
+                                        args = @("-y", "@modelcontextprotocol/server-fetch")
+                                    }
+                                }
+                                "puppeteer" {
+                                    $mcpConfig.mcpServers["puppeteer"] = @{
+                                        command = "npx"
+                                        args = @("-y", "@modelcontextprotocol/server-puppeteer")
+                                    }
+                                }
+                            }
+                        }
+
+                        $mcpConfig | ConvertTo-Json -Depth 5 | Set-Content -Path $mcpFile -Encoding UTF8
+                        Write-Host ("  ✅ " + ($MSG_MCP_FILE_CREATED -f $McpServers.Count)) -ForegroundColor Green
+                    }
+                }
+                Write-Host ""
+            }
+        } else {
+            Write-Host "  $MSG_MCP_NO_PROJECTS"
+        }
+
+        Write-Done
     } else {
+        Write-Host "  $MSG_MCP_NO_SERVERS"
         Write-Skip
     }
 
@@ -417,34 +568,30 @@ if (Ask-YN $MSG_MCP_ASK) {
     Write-Skip
 }
 
-# === 4. Save config.json + summary ===
-if ($OptWorkspace) {
-    New-Item -ItemType Directory -Path $Workspace -Force | Out-Null
-    $projectsJson = ($ConnectedProjects | ForEach-Object { "`"$_`"" }) -join ", "
-
-    $configContent = @"
-{
-  "language": "$UserLang",
-  "languageName": "$LangName",
-  "os": "windows",
-  "installedAt": "$(Get-Date -Format 'yyyy-MM-dd')",
-  "options": {
-    "workspace": $($OptWorkspace.ToString().ToLower()),
-    "obsidian": $($OptObsidian.ToString().ToLower()),
-    "mcp": {
-      "localRag": $($OptMcpRag.ToString().ToLower())
-    }
-  },
-  "projects": [$projectsJson]
-}
-"@
-
-    Set-Content -Path $ConfigFile -Value $configContent -Encoding UTF8
-}
-
-# === 5. Git + SSH (Optional) ===
+# === 3. Obsidian ===
 Write-Host ""
-Write-Host "[5/5] $MSG_GIT_TITLE" -ForegroundColor Cyan
+Write-Host "[3/4] $MSG_OBS_TITLE" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  $MSG_OBS_DESC_1"
+Write-Host "  $MSG_OBS_DESC_2"
+Write-Host ""
+
+if (Ask-YN $MSG_OBS_ASK) {
+    $OptObsidian = $true
+    try {
+        winget install --id Obsidian.Obsidian -e --accept-source-agreements --accept-package-agreements
+        Write-Done
+    } catch {
+        Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow
+        Write-Skip
+    }
+} else {
+    Write-Skip
+}
+
+# === 4. Git + SSH (Windows-specific) ===
+Write-Host ""
+Write-Host "[4/4] $MSG_GIT_TITLE" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  $MSG_GIT_DESC_1"
 Write-Host "  $MSG_GIT_DESC_2"
@@ -516,20 +663,92 @@ if (Get-Command git -ErrorAction SilentlyContinue) {
     }
 }
 
+# === Save config.json + summary ===
+if ($OptWorkspace) {
+    New-Item -ItemType Directory -Path $Workspace -Force | Out-Null
+    $projectsArray = @()
+    foreach ($proj in $ConnectedProjects) {
+        $projectsArray += @{ name = $proj.Name; path = $proj.Path }
+    }
+
+    $configObj = @{
+        language = $UserLang
+        languageName = $LangName
+        os = "windows"
+        installedAt = (Get-Date -Format 'yyyy-MM-dd')
+        options = @{
+            workspace = $OptWorkspace
+            obsidian = $OptObsidian
+            mcp = @{
+                localRag = $OptMcpRag
+                filesystem = $OptMcpFilesystem
+                serena = $OptMcpSerena
+                fetch = $OptMcpFetch
+                puppeteer = $OptMcpPuppeteer
+            }
+        }
+        projects = $projectsArray
+    }
+
+    $configObj | ConvertTo-Json -Depth 5 | Set-Content -Path $ConfigFile -Encoding UTF8
+
+    # Verify config.json was created
+    if (-not (Test-Path $ConfigFile)) {
+        Write-Host "  ⚠️  config.json creation failed" -ForegroundColor Yellow
+    }
+}
+
+# === Next Steps Guide ===
 Write-Host ""
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor White
-Write-Host "✨ $MSG_COMPLETE" -ForegroundColor Green
-Write-Host ""
-Write-Host "  $MSG_USAGE"
-Write-Host ""
+
 if ($OptWorkspace -and (Test-Path $Workspace)) {
+    Write-Host ""
     Write-Host "  📁 $MSG_INFO_WORKSPACE ~\claude-workspace\"
     Write-Host "  🤖 $MSG_INFO_AGENTS"
     Write-Host "  🌐 $MSG_INFO_LANGUAGE $LangName"
     Write-Host "  ⚙️  $MSG_INFO_CONFIG ~\claude-workspace\config.json"
     Write-Host ""
-    Write-Host "  💡 $MSG_TIP_ADD_PROJECT"
-    Write-Host "     $MSG_TIP_ADD_CMD"
+    Write-Host "  📖 $MSG_NEXT_STEPS"
+    Write-Host ""
+    Write-Host "  $MSG_STEP_1_TITLE"
+    Write-Host "     $MSG_STEP_1_DESC"
+    Write-Host "     $MSG_STEP_1_NOTE"
+    Write-Host ""
+    Write-Host "  $MSG_STEP_2_TITLE"
+    Write-Host "     $MSG_STEP_2_DESC"
+    Write-Host ""
+    Write-Host "  $MSG_STEP_3_TITLE"
+    Write-Host "     $MSG_STEP_3_DESC"
+    Write-Host "     $MSG_STEP_3_NOTE"
+    Write-Host ""
+    Write-Host "  📚 $MSG_DOCS_AVAILABLE"
+    Write-Host ""
 }
+
+# === Cleanup ===
+# Remove setup language resources (no longer needed)
+if (Test-Path "$Workspace\setup-lang") {
+    Remove-Item "$Workspace\setup-lang" -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host "  🧹 Setup language resources removed"
+}
+
+# Remove installation directory (with safety check)
+if ((Test-SafePath $ScriptDir) -and (Test-Path "$ScriptDir\setup-claude.ps1")) {
+    Set-Location $env:USERPROFILE
+    Remove-Item $ScriptDir -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host "  🧹 Installation files removed: ~\claude-code-setup\"
+} else {
+    Write-Host "  ⚠️  Installation directory preserved for safety: $ScriptDir"
+}
+
+Write-Host ""
+Write-Host "  💡 Version control your workspace:"
+Write-Host "     cd ~\claude-workspace"
+Write-Host "     git init"
+Write-Host "     git add ."
+Write-Host "     git commit -m `"Initial Claude workspace`""
+Write-Host ""
+Write-Host "✨ $MSG_COMPLETE" -ForegroundColor Green
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor White
 Write-Host ""
