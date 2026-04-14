@@ -311,34 +311,54 @@ if ! command -v claude &>/dev/null; then
   echo ""
   select_menu "$MSG_YES" "$MSG_NO"
   if [ "$MENU_RESULT" -eq 0 ]; then
-    if npm install -g @anthropic-ai/claude-code; then
-      # Verify installation succeeded
-      if command -v claude &>/dev/null; then
-        done_msg
+    # Try Homebrew first (recommended method)
+    if command -v brew &>/dev/null; then
+      if brew install claude-code; then
+        # Verify installation succeeded
+        if command -v claude &>/dev/null; then
+          done_msg
+        else
+          echo ""
+          echo "  ⚠️  Installation completed but 'claude' not in PATH yet"
+          echo "  $MSG_CLAUDE_RESTART_TERMINAL"
+        fi
       else
-        echo ""
-        echo "  ❌ $MSG_CLAUDE_NOT_IN_PATH"
-        echo ""
-        echo "  $MSG_CLAUDE_RESTART_TERMINAL"
-        exit 1
+        echo "  ⚠️  Homebrew installation failed, trying alternative method..."
+        # Fallback: Try native installer
+        if command -v curl &>/dev/null; then
+          if curl -fsSL https://raw.githubusercontent.com/anthropics/claude-code/main/install.sh | bash; then
+            if command -v claude &>/dev/null; then
+              done_msg
+            else
+              echo "  ⚠️  Installation script completed, restart terminal to use 'claude'"
+            fi
+          else
+            echo "  ⚠️  Could not install Claude Code via any method"
+            echo "  $MSG_CLAUDE_REQUIRED"
+            echo "  See: https://claude.ai/code"
+          fi
+        else
+          echo "  ⚠️  Could not install Claude Code (curl not available)"
+        fi
       fi
     else
-      echo ""
-      echo "  ❌ $MSG_CLAUDE_INSTALL_FAILED"
-      echo ""
-      echo "  $MSG_CLAUDE_REQUIRED"
-      echo "  $MSG_CLAUDE_CHECK_HEADER"
-      echo "    $MSG_CLAUDE_CHECK_NPM"
-      echo "    $MSG_CLAUDE_CHECK_INTERNET"
-      echo "    $MSG_CLAUDE_CHECK_PERMISSIONS"
-      echo ""
-      echo "  $MSG_CLAUDE_TRY_MANUAL"
-      exit 1
+      # Homebrew not available, use native installer
+      echo "  Homebrew not found, using official installer..."
+      if curl -fsSL https://raw.githubusercontent.com/anthropics/claude-code/main/install.sh | bash; then
+        if command -v claude &>/dev/null; then
+          done_msg
+        else
+          echo "  ⚠️  Installation script completed, restart terminal to use 'claude'"
+        fi
+      else
+        echo "  ⚠️  Could not install Claude Code"
+        echo "  $MSG_CLAUDE_REQUIRED"
+        echo "  See: https://claude.ai/code"
+      fi
     fi
   else
-    echo "  $MSG_CLAUDE_REQUIRED"
-    echo "$MSG_CLAUDE_INSTALL_CMD"
-    exit 1
+    echo "  $MSG_CLAUDE_REQUIRED (optional for Phase 2)"
+    echo "  You can still proceed without Claude Code setup."
   fi
 fi
 

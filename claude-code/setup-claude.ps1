@@ -169,54 +169,38 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     }
 }
 
-if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
-    Write-Host "  ⚠️  $MSG_NPM_NOT_FOUND"
-    Write-Host "  → https://nodejs.org/"
-    exit 1
-}
-
 if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
     Write-Host "  $MSG_CLAUDE_NOT_INSTALLED"
     if (Ask-YN $MSG_INSTALL_NOW) {
         try {
-            Write-Dbg "npm install -g @anthropic-ai/claude-code"
-            npm install -g @anthropic-ai/claude-code
-            Write-Dbg "npm exit code: $LASTEXITCODE"
-            if ($LASTEXITCODE -ne 0) {
-                throw "npm install returned error code $LASTEXITCODE"
-            }
+            Write-Host "  Running official Claude Code installer..."
+            Write-Dbg "Downloading installer from anthropics/claude-code"
+
+            # Use official Native Installer
+            $installerScript = Invoke-WebRequest -Uri "https://raw.githubusercontent.com/anthropics/claude-code/main/install.ps1" -UseBasicParsing | Select-Object -ExpandProperty Content
+            Invoke-Expression $installerScript
+            Write-Dbg "Installer exit code: $LASTEXITCODE"
 
             # Refresh PATH so claude command is available in this session
             $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
             Write-Dbg "PATH refreshed, claude: $(if (Get-Command claude -ErrorAction SilentlyContinue) { 'FOUND' } else { 'NOT FOUND' })"
 
             # Verify installation succeeded
-            if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
+            if (Get-Command claude -ErrorAction SilentlyContinue) {
+                Write-Done
+            } else {
                 Write-Host ""
-                Write-Host "  ❌ $MSG_CLAUDE_NOT_IN_PATH" -ForegroundColor Red
-                Write-Host ""
+                Write-Host "  ⚠️  Claude Code installer ran, but 'claude' not found in PATH yet" -ForegroundColor Yellow
                 Write-Host "  $MSG_CLAUDE_RESTART_TERMINAL"
-                exit 1
             }
-
-            Write-Done
         } catch {
             Write-Host ""
-            Write-Host "  ❌ $MSG_CLAUDE_INSTALL_FAILED" -ForegroundColor Red
-            Write-Host ""
-            Write-Host "  $MSG_CLAUDE_REQUIRED" -ForegroundColor Yellow
-            Write-Host "  $MSG_CLAUDE_CHECK_HEADER"
-            Write-Host "    $MSG_CLAUDE_CHECK_NPM"
-            Write-Host "    $MSG_CLAUDE_CHECK_INTERNET"
-            Write-Host "    $MSG_CLAUDE_CHECK_PERMISSIONS"
-            Write-Host ""
-            Write-Host "  $MSG_CLAUDE_TRY_MANUAL"
-            exit 1
+            Write-Host "  ⚠️  Could not install Claude Code automatically" -ForegroundColor Yellow
+            Write-Host "  Install it manually from: https://claude.ai/code"
+            Write-Host "  Then restart PowerShell to continue."
         }
     } else {
-        Write-Host "  $MSG_CLAUDE_REQUIRED"
-        Write-Host $MSG_CLAUDE_INSTALL_CMD
-        exit 1
+        Write-Host "  Claude Code installation skipped (optional for Phase 2)"
     }
 }
 
