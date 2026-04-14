@@ -138,10 +138,13 @@ install_ai_tools() {
           continue
         fi
 
-        # Only install if not already installed
-        if [ $copilot_installed -eq 0 ]; then
-          echo "  $MSG_INSTALLING GitHub Copilot CLI..."
-          gh extension install github/gh-copilot || echo "  ⚠️  Installation failed."
+        # GitHub Copilot is now integrated into GitHub CLI
+        # Running 'gh copilot' auto-installs it if needed
+        echo "  $MSG_INSTALLING GitHub Copilot CLI..."
+        if gh copilot 2>/dev/null | head -1 >/dev/null; then
+          echo "  ✅ GitHub Copilot CLI ready"
+        else
+          echo "  ⚠️  Installation or authentication needed."
         fi
         ;;
     esac
