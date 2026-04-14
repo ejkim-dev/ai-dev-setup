@@ -77,7 +77,11 @@ Interactive setup with arrow-key menus. Supports English, Korean, and Japanese.
 
 ## 📚 Documentation
 
-- **[Phase 1 Details](docs/en/PHASE1.md)** - Basic environment setup
+**Phase 1: Basic Environment**
+- **[macOS Guide](docs/en/PHASE1-macOS.md)** - Terminal setup on macOS
+- **[Windows Guide](docs/en/PHASE1-windows.md)** - Terminal setup on Windows
+
+**Phase 2 & Beyond**
 - **[Phase 2 Details](docs/en/PHASE2.md)** - Claude Code setup
 - **[Workspace Guide](docs/en/WORKSPACE.md)** - Workspace structure and usage
 - **[Troubleshooting](docs/en/TROUBLESHOOTING.md)** - Common issues and fixes
