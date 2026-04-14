@@ -299,10 +299,11 @@ if ! command -v node &>/dev/null; then
   fi
 fi
 
-if ! command -v npm &>/dev/null; then
-  echo "  ⚠️  $MSG_NPM_NOT_FOUND"
-  echo "  → https://nodejs.org/"
-  exit 1
+# Note: npm is optional for MCP server setup (can install via Homebrew)
+# Only check if Claude Code installation needs npm
+if ! command -v npm &>/dev/null && ! command -v claude &>/dev/null; then
+  echo "  ℹ️  $MSG_NPM_NOT_FOUND"
+  echo "  → Install from https://nodejs.org/ if you need MCP servers"
 fi
 
 if ! command -v claude &>/dev/null; then
