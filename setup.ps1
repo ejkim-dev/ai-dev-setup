@@ -320,24 +320,17 @@ $installedClaude = $false
 foreach ($choice in $choices) {
     switch ($choice) {
         "1" {
-            # Check npm prerequisite
-            if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
-                Write-Host "  ❌ Claude Code requires Node.js/npm" -ForegroundColor Red
-                Write-Host "     npm not found. Please install Node.js first:"
-                Write-Host "     winget install --id OpenJS.NodeJS.LTS"
-                continue
-            }
-
             $installedClaude = $true
             if (Get-Command claude -ErrorAction SilentlyContinue) {
                 Write-Host "  Claude Code: $MSG_ALREADY_INSTALLED"
-                if (Ask-YN "$MSG_CLAUDE_UPDATE_ASK") {
-                    Write-Host "  $MSG_UPDATING"
-                    try { npm update -g @anthropic-ai/claude-code } catch { Write-Host "  ⚠️  Update failed." -ForegroundColor Yellow }
-                }
             } else {
                 Write-Host "  $MSG_INSTALLING Claude Code..."
-                try { npm install -g @anthropic-ai/claude-code } catch { Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow }
+                Write-Host "  Downloading and running official installer..."
+                try {
+                    Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/anthropics/claude-code/main/install.ps1" -UseBasicParsing | Select-Object -ExpandProperty Content)
+                } catch {
+                    Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow
+                }
             }
         }
         "2" {
