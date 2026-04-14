@@ -374,11 +374,14 @@ foreach ($choice in $choices) {
                 continue
             }
 
-            if (gh extension list 2>$null | Select-String "gh-copilot") {
+            Write-Host "  $MSG_INSTALLING GitHub Copilot CLI..."
+            try {
+                # GitHub Copilot is now integrated into GitHub CLI
+                # Running 'gh copilot' auto-installs it if needed
+                gh copilot 2>&1 | Out-Null
                 Write-Host "  GitHub Copilot CLI: $MSG_ALREADY_INSTALLED"
-            } else {
-                Write-Host "  $MSG_INSTALLING GitHub Copilot CLI..."
-                try { gh extension install github/gh-copilot } catch { Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow }
+            } catch {
+                Write-Host "  ⚠️  Installation failed." -ForegroundColor Yellow
             }
         }
     }
