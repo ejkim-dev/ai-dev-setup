@@ -77,7 +77,11 @@ irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | 
 
 ## 📚 문서
 
-- **[Phase 1 가이드](docs/ko/PHASE1.md)** - 기본 환경 설정
+**Phase 1: 기본 환경**
+- **[macOS 가이드](docs/ko/PHASE1-macOS.md)** - macOS 터미널 설정
+- **[Windows 가이드](docs/ko/PHASE1-windows.md)** - Windows 터미널 설정
+
+**Phase 2 이상**
 - **[Phase 2 가이드](docs/ko/PHASE2.md)** - Claude Code 설정
 - **[Workspace 가이드](docs/ko/WORKSPACE.md)** - Workspace 구조 및 사용법
 - **[문제 해결](docs/ko/TROUBLESHOOTING.md)** - 일반적인 문제 및 해결책
