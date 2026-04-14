@@ -5,11 +5,12 @@
 An AI coding assistant that runs in your terminal.
 Write code, fix bugs, search files, and more — all through conversation with AI.
 
-```bash
-# Install
-npm install -g @anthropic-ai/claude-code
+**Install Claude Code:**
+- Visit: https://claude.ai/code
+- Or run setup: `./setup-claude.sh`
 
-# Usage: run in your project folder
+**Usage:**
+```bash
 cd ~/projects/my-app
 claude
 ```

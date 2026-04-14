@@ -115,9 +115,8 @@ if command -v npm &>/dev/null || command -v gh &>/dev/null; then
       npm uninstall -g @google/gemini-cli 2>/dev/null || true
       npm uninstall -g @openai/codex 2>/dev/null || true
     fi
-    if command -v gh &>/dev/null; then
-      gh extension remove github/gh-copilot 2>/dev/null || true
-    fi
+    # Note: GitHub Copilot CLI is now integrated into gh CLI (as of 2026-01-14)
+    # The separate gh-copilot extension is deprecated and no longer needs removal
     echo "  ✅ AI CLI 도구 제거 완료"
   else
     echo "  ⏭️  건너뜀"

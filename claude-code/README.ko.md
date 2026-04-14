@@ -5,11 +5,12 @@
 터미널에서 실행되는 AI 코딩 어시스턴트입니다.
 AI와 대화하며 코드 작성, 버그 수정, 파일 검색 등을 할 수 있습니다.
 
-```bash
-# 설치
-npm install -g @anthropic-ai/claude-code
+**Claude Code 설치:**
+- 방문: https://claude.ai/code
+- 또는 설정 실행: `./setup-claude.sh`
 
-# 사용법: 프로젝트 폴더에서 실행
+**사용법:**
+```bash
 cd ~/projects/my-app
 claude
 ```

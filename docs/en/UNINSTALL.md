@@ -168,7 +168,14 @@ mkdir -p ~/.claude
 ln -s ~/claude-workspace/shared/agents ~/.claude/agents
 
 # Reinstall Claude Code
-npm install -g @anthropic-ai/claude-code
+
+**macOS (Homebrew)**:
+```bash
+brew install claude-code
+```
+
+**Windows/All Platforms (Official Installer)**:
+Visit https://claude.ai/code and follow the installation guide
 
 # Restore configuration (if backed up)
 mv ~/.claude-backup ~/.claude

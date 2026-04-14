@@ -125,10 +125,13 @@ echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-**옵션 3: sudo 사용 (권장하지 않음)**:
+**옵션 3: Homebrew를 통한 Claude Code 설치 (macOS)**:
 ```bash
-sudo npm install -g @anthropic-ai/claude-code
+brew install claude-code
 ```
+
+**옵션 4: 공식 설치 프로그램 사용**:
+- https://claude.ai/code 방문 후 네이티브 설치 프로그램 사용
 
 ---
 

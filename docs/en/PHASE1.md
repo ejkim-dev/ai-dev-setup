@@ -37,6 +37,53 @@ Set up essential development tools and terminal environment on macOS or Windows.
 
 ## Installation Steps
 
+### Before You Start: Open Terminal
+
+Before running the setup script, you need to open a terminal on your system.
+
+#### macOS
+
+**Option 1: Using Spotlight Search (Recommended)**
+1. Press `Cmd + Space`
+2. Type `terminal`
+3. Press Enter
+
+**Option 2: Using Finder**
+1. Open Finder
+2. Go to Applications → Utilities
+3. Double-click "Terminal"
+
+**Option 3: Using LaunchPad**
+1. Click the LaunchPad icon in Dock
+2. Search for "Terminal"
+3. Click "Terminal"
+
+#### Windows
+
+**Option 1: Using Windows Key (Recommended)**
+1. Press `Win + X`
+2. Select "Windows PowerShell (Admin)" or "PowerShell (Admin)"
+   - **Important**: Choose the one with "(Admin)" for administrator privileges
+
+**Option 2: Using Run Dialog**
+1. Press `Win + R`
+2. Type `powershell`
+3. Press Enter
+4. Right-click the window title → "Run as administrator"
+
+**Option 3: Using Windows Terminal (if installed)**
+1. Press `Win + X`
+2. Select "Windows Terminal (Admin)"
+3. Click the dropdown arrow → Select "PowerShell"
+
+#### Important Notes
+
+- **macOS**: Regular Terminal works fine (no admin needed initially)
+- **Windows**: You MUST run PowerShell as administrator for installations to work
+- Look for **(Admin)** label in the window title to verify
+
+---
+
 ### Step 0: Language Selection
 
 Choose your preferred language at startup:

@@ -23,12 +23,13 @@ install_ai_tools() {
   command -v claude >/dev/null 2>&1 && claude_installed=1
   command -v gemini >/dev/null 2>&1 && gemini_installed=1
   command -v codex >/dev/null 2>&1 && codex_installed=1
-  gh extension list 2>/dev/null | grep -q "gh-copilot" && copilot_installed=1
+  # GitHub Copilot is now integrated into GitHub CLI (as of 2026-01-14)
+  # Check if gh CLI is available (copilot works through 'gh copilot' command)
+  command -v gh >/dev/null 2>&1 && copilot_installed=1
 
-  # Check for Claude Code updates (if installed)
+  # Check for Claude Code updates (if installed via Homebrew)
   if [ $claude_installed -eq 1 ]; then
-    # Use timeout to prevent hanging on network issues
-    if timeout 5 npm outdated -g @anthropic-ai/claude-code 2>/dev/null | grep -q "@anthropic-ai/claude-code"; then
+    if brew outdated --quiet claude-code 2>/dev/null | grep -q "claude-code"; then
       claude_update_available=1
     fi
   fi
@@ -84,24 +85,20 @@ install_ai_tools() {
   for idx in "${MULTI_RESULT[@]}"; do
     case "$idx" in
       0) # Claude Code
-        # Check npm prerequisite
-        if ! command -v npm &>/dev/null; then
-          echo "  ❌ Claude Code $MSG_AI_TOOL_NEEDS_NPM"
-          echo "     $MSG_NPM_NOT_FOUND_INSTALL"
-          echo "     $MSG_NPM_INSTALL_CMD"
-          continue
-        fi
-
         INSTALLED_CLAUDE=true
 
         if [ $claude_installed -eq 0 ]; then
           # Not installed - install it
           echo "  $MSG_INSTALLING Claude Code..."
-          npm install -g @anthropic-ai/claude-code || echo "  ⚠️  Installation failed."
+          install_brew_package "claude-code" "Claude Code" || {
+            echo "  ⚠️  Installation failed."
+          }
         else
           # Already installed and user selected it - must be for update
           echo "  $MSG_UPDATING Claude Code..."
-          npm update -g @anthropic-ai/claude-code || echo "  ⚠️  Update failed."
+          brew upgrade claude-code 2>/dev/null || {
+            echo "  ⚠️  Update failed."
+          }
         fi
         ;;
       1) # Gemini CLI
@@ -143,10 +140,13 @@ install_ai_tools() {
           continue
         fi
 
-        # Only install if not already installed
-        if [ $copilot_installed -eq 0 ]; then
-          echo "  $MSG_INSTALLING GitHub Copilot CLI..."
-          gh extension install github/gh-copilot || echo "  ⚠️  Installation failed."
+        # GitHub Copilot is now integrated into GitHub CLI
+        # Running 'gh copilot' auto-installs it if needed
+        echo "  $MSG_INSTALLING GitHub Copilot CLI..."
+        if gh copilot 2>/dev/null | head -1 >/dev/null; then
+          echo "  ✅ GitHub Copilot CLI ready"
+        else
+          echo "  ⚠️  Installation or authentication needed."
         fi
         ;;
     esac

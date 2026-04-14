@@ -37,6 +37,53 @@ macOS 또는 Windows에서 필수 개발 도구와 터미널 환경을 설정합
 
 ## 설치 단계
 
+### 시작하기 전에: 터미널 열기
+
+설치 스크립트를 실행하기 전에 먼저 시스템에서 터미널을 열어야 합니다.
+
+#### macOS
+
+**방법 1: Spotlight 검색 (권장)**
+1. `Cmd + Space` 누르기
+2. `terminal` 입력
+3. Enter 누르기
+
+**방법 2: Finder 사용**
+1. Finder 열기
+2. 응용 프로그램 → 유틸리티로 이동
+3. "Terminal" 더블클릭
+
+**방법 3: LaunchPad 사용**
+1. Dock의 LaunchPad 아이콘 클릭
+2. "Terminal" 검색
+3. "Terminal" 클릭
+
+#### Windows
+
+**방법 1: Windows 키 사용 (권장)**
+1. `Win + X` 누르기
+2. "Windows PowerShell (관리자)" 또는 "PowerShell (관리자)" 선택
+   - **중요**: "(관리자)" 표시가 있는 것을 선택해야 합니다
+
+**방법 2: 실행 대화상자 사용**
+1. `Win + R` 누르기
+2. `powershell` 입력
+3. Enter 누르기
+4. 창 제목 우클릭 → "관리자 권한으로 실행"
+
+**방법 3: Windows Terminal 사용 (설치된 경우)**
+1. `Win + X` 누르기
+2. "Windows Terminal (관리자)" 선택
+3. 드롭다운 화살표 클릭 → "PowerShell" 선택
+
+#### 중요 사항
+
+- **macOS**: 일반 Terminal에서도 괜찮습니다 (처음에 관리자 권한 필요 없음)
+- **Windows**: **반드시 관리자 권한으로 PowerShell을 실행**해야 설치가 작동합니다
+- 창 제목에서 **(관리자)** 표시를 확인하세요
+
+---
+
 ### Step 0: 언어 선택
 
 시작 시 원하는 언어를 선택합니다:
