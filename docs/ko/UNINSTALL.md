@@ -168,7 +168,14 @@ mkdir -p ~/.claude
 ln -s ~/claude-workspace/shared/agents ~/.claude/agents
 
 # Claude Code 재설치
-npm install -g @anthropic-ai/claude-code
+
+**macOS (Homebrew)**:
+```bash
+brew install claude-code
+```
+
+**Windows/모든 플랫폼 (공식 설치 프로그램)**:
+https://claude.ai/code 방문 후 설치 가이드 참조
 
 # 설정 복원 (백업한 경우)
 mv ~/.claude-backup ~/.claude
