@@ -31,15 +31,68 @@ function Write-Skip() {
     Write-Host "  ⏭  $MSG_SKIP" -ForegroundColor Yellow
 }
 
-function Ask-YN($prompt, $default = "Y") {
-    if ($default -eq "Y") {
-        $answer = Read-Host "  $prompt [Y/n]"
-        if ([string]::IsNullOrWhiteSpace($answer)) { $answer = "Y" }
-    } else {
-        $answer = Read-Host "  $prompt [y/N]"
-        if ([string]::IsNullOrWhiteSpace($answer)) { $answer = "N" }
+# Arrow key based menu selector (replaces Ask-YN)
+# Usage: Select-Menu "Yes" "No" | returns 0 or 1
+function Select-Menu {
+    param([Parameter(Mandatory=$true)][string[]]$Options)
+
+    $selected = 0
+    $maxIndex = $Options.Count - 1
+
+    # Show initial menu
+    Write-Host ""
+    for ($i = 0; $i -lt $Options.Count; $i++) {
+        if ($i -eq $selected) {
+            Write-Host "  ▸ $($Options[$i])" -ForegroundColor Cyan
+        } else {
+            Write-Host "    $($Options[$i])"
+        }
     }
-    return $answer -match "^[Yy]"
+    Write-Host ""
+
+    while ($true) {
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+
+        switch ($key.VirtualKeyCode) {
+            38 {  # Up arrow
+                if ($selected -gt 0) {
+                    $selected--
+                    # Redraw menu
+                    $cursorTop = [Console]::CursorTop - $Options.Count - 1
+                    [Console]::CursorTop = [Math]::Max(0, $cursorTop)
+                    Write-Host ""
+                    for ($i = 0; $i -lt $Options.Count; $i++) {
+                        if ($i -eq $selected) {
+                            Write-Host "  ▸ $($Options[$i])" -ForegroundColor Cyan
+                        } else {
+                            Write-Host "    $($Options[$i])"
+                        }
+                    }
+                    Write-Host ""
+                }
+            }
+            40 {  # Down arrow
+                if ($selected -lt $maxIndex) {
+                    $selected++
+                    # Redraw menu
+                    $cursorTop = [Console]::CursorTop - $Options.Count - 1
+                    [Console]::CursorTop = [Math]::Max(0, $cursorTop)
+                    Write-Host ""
+                    for ($i = 0; $i -lt $Options.Count; $i++) {
+                        if ($i -eq $selected) {
+                            Write-Host "  ▸ $($Options[$i])" -ForegroundColor Cyan
+                        } else {
+                            Write-Host "    $($Options[$i])"
+                        }
+                    }
+                    Write-Host ""
+                }
+            }
+            13 {  # Enter
+                return $selected
+            }
+        }
+    }
 }
 
 # === Language selection ===
@@ -176,7 +229,9 @@ $wtSettingsFile = "$wtSettingsDir\settings.json"
 Write-Dbg "WT settings: $wtSettingsFile (exists: $(Test-Path $wtSettingsFile))"
 
 if (Test-Path $wtSettingsFile) {
-    if (Ask-YN "$MSG_WINTERMINAL_APPLY") {
+    Write-Host "  $MSG_WINTERMINAL_APPLY"
+    $choice = Select-Menu "Yes" "No"
+    if ($choice -eq 0) {
         # Backup
         $backupFile = "$wtSettingsFile.backup"
         Copy-Item $wtSettingsFile $backupFile -Force
@@ -261,7 +316,9 @@ if (Test-Path $wtSettingsFile) {
     }
 } else {
     Write-Host "  $MSG_WINTERMINAL_NOT_INSTALLED"
-    if (Ask-YN "$MSG_WINTERMINAL_INSTALL") {
+    Write-Host "  $MSG_WINTERMINAL_INSTALL"
+    $choice = Select-Menu "Yes" "No"
+    if ($choice -eq 0) {
         winget install --id Microsoft.WindowsTerminal -e --accept-source-agreements --accept-package-agreements
         Write-Done
     } else {
@@ -274,13 +331,17 @@ Write-Step "$MSG_STEP_OHMYPOSH"
 if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
     Write-Host "  $MSG_ALREADY_INSTALLED"
     Write-Done
-} elseif (Ask-YN "$MSG_OHMYPOSH_INSTALL") {
-    winget install --id JanDeDobbeleer.OhMyPosh -e --accept-source-agreements --accept-package-agreements
-    Write-Host "  $MSG_OHMYPOSH_PROFILE"
-    Write-Host '  oh-my-posh init pwsh | Invoke-Expression'
-    Write-Done
 } else {
-    Write-Skip
+    Write-Host "  $MSG_OHMYPOSH_INSTALL"
+    $choice = Select-Menu "Yes" "No"
+    if ($choice -eq 0) {
+        winget install --id JanDeDobbeleer.OhMyPosh -e --accept-source-agreements --accept-package-agreements
+        Write-Host "  $MSG_OHMYPOSH_PROFILE"
+        Write-Host '  oh-my-posh init pwsh | Invoke-Expression'
+        Write-Done
+    } else {
+        Write-Skip
+    }
 }
 
 # Terminal theme verification guide

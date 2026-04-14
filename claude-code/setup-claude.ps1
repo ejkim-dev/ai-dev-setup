@@ -23,15 +23,68 @@ function Write-Skip() {
     Write-Host "  ⏭  $MSG_SKIP" -ForegroundColor Yellow
 }
 
-function Ask-YN($prompt, $default = "Y") {
-    if ($default -eq "Y") {
-        $answer = Read-Host "  $prompt [Y/n]"
-        if ([string]::IsNullOrWhiteSpace($answer)) { $answer = "Y" }
-    } else {
-        $answer = Read-Host "  $prompt [y/N]"
-        if ([string]::IsNullOrWhiteSpace($answer)) { $answer = "N" }
+# Arrow key based menu selector (replaces Ask-YN)
+# Usage: Select-Menu "Yes" "No" | returns 0 or 1
+function Select-Menu {
+    param([Parameter(Mandatory=$true)][string[]]$Options)
+
+    $selected = 0
+    $maxIndex = $Options.Count - 1
+
+    # Show initial menu
+    Write-Host ""
+    for ($i = 0; $i -lt $Options.Count; $i++) {
+        if ($i -eq $selected) {
+            Write-Host "  ▸ $($Options[$i])" -ForegroundColor Cyan
+        } else {
+            Write-Host "    $($Options[$i])"
+        }
     }
-    return $answer -match "^[Yy]"
+    Write-Host ""
+
+    while ($true) {
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+
+        switch ($key.VirtualKeyCode) {
+            38 {  # Up arrow
+                if ($selected -gt 0) {
+                    $selected--
+                    # Redraw menu
+                    $cursorTop = [Console]::CursorTop - $Options.Count - 1
+                    [Console]::CursorTop = [Math]::Max(0, $cursorTop)
+                    Write-Host ""
+                    for ($i = 0; $i -lt $Options.Count; $i++) {
+                        if ($i -eq $selected) {
+                            Write-Host "  ▸ $($Options[$i])" -ForegroundColor Cyan
+                        } else {
+                            Write-Host "    $($Options[$i])"
+                        }
+                    }
+                    Write-Host ""
+                }
+            }
+            40 {  # Down arrow
+                if ($selected -lt $maxIndex) {
+                    $selected++
+                    # Redraw menu
+                    $cursorTop = [Console]::CursorTop - $Options.Count - 1
+                    [Console]::CursorTop = [Math]::Max(0, $cursorTop)
+                    Write-Host ""
+                    for ($i = 0; $i -lt $Options.Count; $i++) {
+                        if ($i -eq $selected) {
+                            Write-Host "  ▸ $($Options[$i])" -ForegroundColor Cyan
+                        } else {
+                            Write-Host "    $($Options[$i])"
+                        }
+                    }
+                    Write-Host ""
+                }
+            }
+            13 {  # Enter
+                return $selected
+            }
+        }
+    }
 }
 
 # Test if symlinks can be created (Developer Mode or admin)
@@ -155,7 +208,9 @@ Write-Dbg "npm: $(if (Get-Command npm -ErrorAction SilentlyContinue) { (Get-Comm
 Write-Dbg "claude: $(if (Get-Command claude -ErrorAction SilentlyContinue) { (Get-Command claude).Source } else { 'NOT FOUND' })"
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     Write-Host "  ⚠️  $MSG_NODE_NOT_INSTALLED"
-    if (Ask-YN $MSG_NODE_INSTALL_ASK) {
+    Write-Host "  $MSG_NODE_INSTALL_ASK"
+    $choice = Select-Menu "Yes" "No"
+    if ($choice -eq 0) {
         try {
             winget install --id OpenJS.NodeJS.LTS -e --accept-source-agreements --accept-package-agreements
             Write-Dbg "winget exit code: $LASTEXITCODE"
@@ -171,7 +226,9 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
 
 if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
     Write-Host "  $MSG_CLAUDE_NOT_INSTALLED"
-    if (Ask-YN $MSG_INSTALL_NOW) {
+    Write-Host "  $MSG_INSTALL_NOW"
+    $choice = Select-Menu "Yes" "No"
+    if ($choice -eq 0) {
         try {
             Write-Host "  Running official Claude Code installer..."
             Write-Dbg "Downloading installer from anthropics/claude-code"
@@ -229,8 +286,9 @@ Write-Host "  ├── shared\templates\ ← $MSG_WS_TREE_TEMPLATES"
 Write-Host "  ├── shared\mcp\       ← MCP configs"
 Write-Host "  └── projects\         ← $MSG_WS_TREE_PROJECTS"
 Write-Host ""
-
-if (Ask-YN $MSG_WS_ASK) {
+Write-Host "  $MSG_WS_ASK"
+$choice = Select-Menu "Yes" "No"
+if ($choice -eq 0) {
     $OptWorkspace = $true
 
     # Copy setup language resources (for Phase 2 UI messages)
@@ -305,7 +363,9 @@ Thumbs.db
                 Write-Host "  $MSG_WS_SYMLINK_EXISTS"
             } else {
                 Write-Host "  ⚠️  $MSG_WS_FOLDER_EXISTS"
-                if (Ask-YN $MSG_WS_BACKUP_ASK) {
+                Write-Host "  $MSG_WS_BACKUP_ASK"
+                $choice = Select-Menu "Yes" "No"
+                if ($choice -eq 0) {
                     Rename-Item $claudeAgentsDir "$claudeAgentsDir.backup"
                     New-Item -ItemType SymbolicLink -Path $claudeAgentsDir -Target "$Workspace\shared\agents" | Out-Null
                     Write-Host "  → $MSG_WS_BACKUP_DONE"
@@ -333,7 +393,10 @@ Thumbs.db
     Write-Host ""
 
     while ($true) {
-        if (-not (Ask-YN $MSG_PROJ_ASK)) { break }
+        Write-Host ""
+        Write-Host "  $MSG_PROJ_ASK"
+        $choice = Select-Menu "Yes" "No"
+        if ($choice -ne 0) { break }
 
         $projectPath = Read-Host "  $MSG_PROJ_PATH"
 
@@ -373,9 +436,10 @@ Thumbs.db
         if (Test-Path $wsProject) {
             Write-Host "  ⚠️  '$projectName' $MSG_PROJ_NAME_CONFLICT"
             Write-Host "  $MSG_PROJ_USE_EXISTING"
-            if (Ask-YN "$MSG_PROJ_USE_EXISTING_YES?" "N") {
-                # Use existing workspace settings
-            } else {
+            Write-Host "  $MSG_PROJ_USE_EXISTING_YES?"
+            $choice = Select-Menu "Use Existing" "Create New"
+            if ($choice -ne 0) {
+                # Create new with auto-numbering
                 $counter = 1
                 while (Test-Path "$Workspace\projects\${projectName}_${counter}") {
                     $counter++
@@ -461,8 +525,9 @@ Write-Host "  $MSG_MCP_DESC_1"
 Write-Host "  $MSG_MCP_DESC_2"
 Write-Host "  $MSG_MCP_DESC_3"
 Write-Host ""
-
-if (Ask-YN $MSG_MCP_ASK) {
+Write-Host "  $MSG_MCP_ASK"
+$choice = Select-Menu "Yes" "No"
+if ($choice -eq 0) {
     Write-Host ""
     Write-Host "  $MSG_MCP_SELECT_PROMPT"
     Write-Host ""
@@ -508,7 +573,10 @@ if (Ask-YN $MSG_MCP_ASK) {
                 $mcpProjectPath = $proj.Path
                 $mcpProjectName = $proj.Name
 
-                if (Ask-YN ($MSG_MCP_PROJECT_ASK_EACH -f $mcpProjectName)) {
+                Write-Host ""
+                Write-Host ("  " + ($MSG_MCP_PROJECT_ASK_EACH -f $mcpProjectName))
+                $choice = Select-Menu "Yes" "No"
+                if ($choice -eq 0) {
                     $mcpFile = Join-Path $mcpProjectPath ".mcp.json"
 
                     if (Test-Path $mcpFile) {
@@ -585,8 +653,9 @@ Write-Host ""
 Write-Host "  $MSG_OBS_DESC_1"
 Write-Host "  $MSG_OBS_DESC_2"
 Write-Host ""
-
-if (Ask-YN $MSG_OBS_ASK) {
+Write-Host "  $MSG_OBS_ASK"
+$choice = Select-Menu "Yes" "No"
+if ($choice -eq 0) {
     $OptObsidian = $true
     try {
         winget install --id Obsidian.Obsidian -e --accept-source-agreements --accept-package-agreements
