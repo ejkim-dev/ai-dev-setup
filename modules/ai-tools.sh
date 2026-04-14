@@ -23,7 +23,9 @@ install_ai_tools() {
   command -v claude >/dev/null 2>&1 && claude_installed=1
   command -v gemini >/dev/null 2>&1 && gemini_installed=1
   command -v codex >/dev/null 2>&1 && codex_installed=1
-  gh extension list 2>/dev/null | grep -q "gh-copilot" && copilot_installed=1
+  # GitHub Copilot is now integrated into GitHub CLI (as of 2026-01-14)
+  # Check if gh CLI is available (copilot works through 'gh copilot' command)
+  command -v gh >/dev/null 2>&1 && copilot_installed=1
 
   # Check for Claude Code updates (if installed via Homebrew)
   if [ $claude_installed -eq 1 ]; then
