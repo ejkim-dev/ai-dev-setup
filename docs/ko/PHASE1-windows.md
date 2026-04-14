@@ -55,6 +55,38 @@ Windows에서 필수 개발 도구와 터미널 환경을 설정합니다.
 
 ---
 
+### PowerShell Execution Policy 에러 (만났을 경우)
+
+**에러 메시지**:
+```
+이 시스템에서 스크립트를 실행할 수 없으므로 ... 파일을 로드할 수 없습니다.
+자세한 내용은 about_Execution_Policies를 참조하십시오.
+```
+
+**왜 이런 에러가 나나요?**:
+- Windows PowerShell은 보안상 기본적으로 스크립트 실행을 차단합니다
+- 설치 스크립트가 인터넷에서 다운로드되므로 추가 확인이 필요합니다
+
+**해결책** (둘 중 하나 선택):
+
+**옵션 1: 영구적으로 변경 (권장)**
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex
+```
+
+**옵션 2: 한 줄로 우회 (임시)**
+```powershell
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex"
+```
+
+**각 옵션의 의미**:
+- `RemoteSigned`: 로컬 스크립트는 허용, 인터넷 다운로드 스크립트는 서명 필수
+- `CurrentUser`: 현재 사용자만 영향 (다른 사용자는 영향 없음)
+- `Bypass`: 이 명령에 대해서만 정책을 무시 (일시적)
+
+---
+
 ### Step 0: 언어 선택
 
 시작 시 원하는 언어를 선택합니다:

@@ -55,6 +55,38 @@ Set up essential development tools and terminal environment on Windows.
 
 ---
 
+### PowerShell Execution Policy Error (If You Encounter It)
+
+**Error message**:
+```
+This system cannot execute scripts because this system has disabled script execution.
+For more information, see "about_Execution_Policies" at https://go.microsoft.com/...
+```
+
+**Why this happens**:
+- Windows PowerShell blocks script execution by default for security
+- The installation script is downloaded from the internet
+
+**Solution** (Choose One):
+
+**Option 1: Permanent change (Recommended)**
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex
+```
+
+**Option 2: One-line bypass (Temporary)**
+```powershell
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/ejkim-dev/ai-dev-setup/main/install.ps1 | iex"
+```
+
+**What each does**:
+- `RemoteSigned`: Allow local scripts, require signatures for downloaded scripts
+- `CurrentUser`: Only affects current user (not other users)
+- `Bypass`: Temporarily ignore policy for this command only
+
+---
+
 ### Step 0: Language Selection
 
 Choose your preferred language at startup:
